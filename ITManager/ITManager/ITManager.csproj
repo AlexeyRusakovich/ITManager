@@ -38,6 +38,12 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -63,8 +69,11 @@
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -110,10 +119,72 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Behaviors\PasswordBehavior.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Database\Education.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\Language.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\LanguageLevel.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\ManagerDatabase.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ManagerDatabase.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\ManagerDatabase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\ManagerDatabase.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ManagerDatabase.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Database\ProfessionalSkill.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\ProfessionalSummary.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\Project.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\Query.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\Role.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\Sertificate.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\SkillLevel.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\sysdiagrams.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\TechnicalGroup.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\User.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\UserRoles.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\UserSkills.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\NavigationHelper.cs" />
     <Compile Include="Helpers\NavigationService.cs" />
+    <Compile Include="Helpers\PasswordHasher.cs" />
     <Compile Include="Interfaces\INavigationService.cs" />
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -152,6 +223,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EntityDeploy Include="Database\ManagerDatabase.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ManagerDatabase.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Database\ManagerDatabase.edmx.diagram">
+      <DependentUpon>ManagerDatabase.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -163,6 +241,21 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\ManagerDatabase.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ManagerDatabase.edmx</DependentUpon>
+      <LastGenOutput>ManagerDatabase.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Database\ManagerDatabase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ManagerDatabase.edmx</DependentUpon>
+      <LastGenOutput>ManagerDatabase.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

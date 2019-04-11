@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="416c599d48fb48028d34eee0f3ad2426" Name="Diagram1">
+        <EntityTypeShape EntityType="ManagerModel.Education" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.Language" Width="1.5" PointX="6" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.LanguageLevel" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.ProfessionalSkill" Width="1.5" PointX="8.25" PointY="15.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.ProfessionalSummary" Width="1.5" PointX="3" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.Project" Width="1.5" PointX="3" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.Query" Width="1.5" PointX="3" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.Role" Width="1.5" PointX="3.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.Sertificate" Width="1.5" PointX="3" PointY="21.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.SkillLevel" Width="1.5" PointX="3.75" PointY="24.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.TechnicalGroup" Width="1.5" PointX="6" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.User" Width="1.5" PointX="0.75" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.UserRoles" Width="1.5" PointX="6" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.UserSkills" Width="1.5" PointX="6" PointY="15.375" IsExpanded="true" />
+        <AssociationConnector Association="ManagerModel.FK_Education_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_Language_LanguageLevel" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_Language_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_ProfessionalSkill_TechnicalGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_ProfessionalSkill_UserSkills" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_ProfessionalSummary_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_Project_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_Query_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_UserRoles_Role" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_Sertificate_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_UserSkills_SkillLevel" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_UserRoles_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ManagerModel.FK_UserSkills_User" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

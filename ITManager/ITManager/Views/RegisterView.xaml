@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:Behaviors="clr-namespace:ITManager.Behaviors"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             xmlns:local="clr-namespace:ITManager.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -17,22 +18,55 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-            <Label  Content="Register" 
+            <Label  Content="Registration" 
                     Style="{StaticResource DefaultLabelStyle}" 
                     HorizontalAlignment="Center"/>
             <TextBox Controls:TextBoxHelper.Watermark="Login"
+                     Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
                      Margin="0 20 0 0" Height="30" 
                      VerticalContentAlignment="Center"
                      Controls:TextBoxHelper.ClearTextButton="True"/>
+            <TextBox Controls:TextBoxHelper.Watermark="First Name"
+                     Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0 20 0 0" Height="30" 
+                     VerticalContentAlignment="Center"
+                     Controls:TextBoxHelper.ClearTextButton="True"/>
+            <TextBox Controls:TextBoxHelper.Watermark="Last Name"
+                     Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0 20 0 0" Height="30" 
+                     VerticalContentAlignment="Center"
+                     Controls:TextBoxHelper.ClearTextButton="True"/>
+            <DatePicker Controls:TextBoxHelper.Watermark="Birthday"
+                     Text="{Binding Birthday, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                     Margin="0 20 0 0" Height="30" 
+                     VerticalContentAlignment="Center"/>
+            <ComboBox Controls:TextBoxHelper.Watermark="Position"
+                     Text="{Binding Position, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0 20 0 0" Height="30" 
+                     VerticalContentAlignment="Center"/>
             <PasswordBox Controls:TextBoxHelper.Watermark="Password" 
                          Margin="0 20 0 0"
                          VerticalContentAlignment="Center"
-                         Controls:TextBoxHelper.ClearTextButton="True"/>
+                         Controls:TextBoxHelper.ClearTextButton="True">
+                <i:Interaction.Behaviors>
+                    <Behaviors:PasswordBehavior Password="{Binding Password, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+            </PasswordBox>
             <PasswordBox Controls:TextBoxHelper.Watermark="Confirm Password" 
                          Margin="0 20 0 0"
                          VerticalContentAlignment="Center"
-                         Controls:TextBoxHelper.ClearTextButton="True"/>
-            <Button Content="Log in" Style="{StaticResource DefaultButtonStyle}"/>
+                         Controls:TextBoxHelper.ClearTextButton="True">
+                <i:Interaction.Behaviors>
+                    <Behaviors:PasswordBehavior Password="{Binding ConfirmPassword, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+            </PasswordBox>
+            <Button Content="Register"
+                    Command="{Binding RegisterCommand}"
+                    Style="{StaticResource DefaultButtonStyle}"/>
+            <TextBlock Margin="0 10 0 0">
+                <Hyperlink Command="{Binding GoToLoginPageCommand}">Already have an account? Log in!
+                </Hyperlink>
+            </TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

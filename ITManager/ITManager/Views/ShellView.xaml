@@ -11,15 +11,14 @@
         WindowStartupLocation="CenterScreen"
         WindowState="{Binding WindowState}"
         mc:Ignorable="d"
-        Title="ITManager" Height="450" Width="700">
+        Title="ITManager" Height="600" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MaxWidth="150"/>
+            <ColumnDefinition Width="0.5*" MaxWidth="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <ContentControl Grid.Column="0"
-                        HorizontalAlignment="Left"
                         prism:RegionManager.RegionName="{x:Static c:Constants.MenuRegion}"/>
         <ContentControl Grid.Column="1" 
                         prism:RegionManager.RegionName="{x:Static c:Constants.MainRegion}"/>

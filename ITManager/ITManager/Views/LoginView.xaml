@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:Behaviors="clr-namespace:ITManager.Behaviors"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             xmlns:local="clr-namespace:ITManager.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -21,14 +22,25 @@
                     Style="{StaticResource DefaultLabelStyle}" 
                     HorizontalAlignment="Center"/>
             <TextBox Controls:TextBoxHelper.Watermark="Login"
+                     Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
                      Margin="0 20 0 0" Height="30" 
                      VerticalContentAlignment="Center"
                      Controls:TextBoxHelper.ClearTextButton="True"/>
-            <PasswordBox Controls:TextBoxHelper.Watermark="Password" 
+            <PasswordBox Controls:TextBoxHelper.Watermark="Password"
                          Margin="0 20 0 0"
                          VerticalContentAlignment="Center"
-                        Controls:TextBoxHelper.ClearTextButton="True"/>
-            <Button Content="Log in" Style="{StaticResource DefaultButtonStyle}"/>
+                        Controls:TextBoxHelper.ClearTextButton="True">
+                <i:Interaction.Behaviors>
+                    <Behaviors:PasswordBehavior Password="{Binding Password, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+            </PasswordBox>
+            <Button Content="Log in" 
+                    Command="{Binding LoginCommand}"
+                    Style="{StaticResource DefaultButtonStyle}"/>
+            <TextBlock Margin="0 10 0 0">
+                <Hyperlink Command="{Binding GoToRegisterPageCommand}">Don't have an account? Create it!
+                </Hyperlink>
+            </TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

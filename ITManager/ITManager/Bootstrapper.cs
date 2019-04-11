@@ -10,6 +10,7 @@ using ITManager.Helpers;
 using ITManager.Views;
 using Prism.Events;
 using ITManager.Interfaces;
+using Prism.Regions;
 
 namespace ITManager
 {
@@ -36,6 +37,8 @@ namespace ITManager
 
             Container.RegisterTypeForNavigation<ShellView>(Constants.ShellView);
             Container.RegisterTypeForNavigation<LoginView>(Constants.LoginView);
+            Container.RegisterTypeForNavigation<RegisterView>(Constants.RegisterView);
+
         }
     }
 }

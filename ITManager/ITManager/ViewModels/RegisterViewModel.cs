@@ -17,12 +17,15 @@ namespace ITManager.ViewModels
         public string Login { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime? Birthday { get; set; }
-        public string Position { get; set; }
+        public string Birthday { get; set; }
+        public Position Position { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public ICommand RegisterCommand { get; set; }
         public ICommand GoToLoginPageCommand { get; set; }
+
+        public IList<Position> Positions { get; set; }
+
 
         private ManagerEntities _database = new ManagerEntities();
         private readonly INavigationService _navigationService;
@@ -32,6 +35,7 @@ namespace ITManager.ViewModels
             _navigationService = navigationService;
             RegisterCommand = new DelegateCommand(RegisterMethod);
             GoToLoginPageCommand = new DelegateCommand(GoToLoginPageMethod);
+            Positions = _database.Position.ToList();
         }
 
         private async void RegisterMethod()
@@ -44,15 +48,19 @@ namespace ITManager.ViewModels
                 var user = _database.User.Add(new User
                 {
                     Login = Login,
-                    Password = Encoding.ASCII.GetString(hashedPassword),
-                    Salt = Encoding.ASCII.GetString(salt)
+                    Password = Convert.ToBase64String(hashedPassword),
+                    Salt = Convert.ToBase64String(salt),
+                    Name = FirstName,
+                    Surname = LastName,
+                    Birthday = DateTime.Parse(Birthday),
+                    PositionId = Position.Id
                 });
 
                 await _database.SaveChangesAsync();
 
                 user.UserRoles.Add(new UserRoles
                 {
-                    RoleId = Constants.UserRole,
+                    RoleId = Constants.AdministratorRole,
                     UserId = user.Id
                 });
                 

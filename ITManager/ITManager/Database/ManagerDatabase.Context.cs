@@ -28,6 +28,7 @@ namespace ITManager.Database
         public virtual DbSet<Education> Education { get; set; }
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<LanguageLevel> LanguageLevel { get; set; }
+        public virtual DbSet<Position> Position { get; set; }
         public virtual DbSet<ProfessionalSkill> ProfessionalSkill { get; set; }
         public virtual DbSet<ProfessionalSummary> ProfessionalSummary { get; set; }
         public virtual DbSet<Project> Project { get; set; }

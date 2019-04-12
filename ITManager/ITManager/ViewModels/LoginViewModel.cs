@@ -37,8 +37,8 @@ namespace ITManager.ViewModels
                 return; // TODO return validation error;
 
             var salt = user.Salt;
-            if (PasswordHasher.VerifyPassword(Password, Encoding.ASCII.GetBytes(salt),
-                Encoding.ASCII.GetBytes(user.Password)))
+            if (PasswordHasher.VerifyPassword(Password, Convert.FromBase64String(salt),
+                Convert.FromBase64String(user.Password)))
             {
                 ShellViewModel.CurrentUser = user;
 

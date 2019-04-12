@@ -19,9 +19,10 @@ namespace ITManager.Database
         public string Name { get; set; }
         public System.DateTime StartDate { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
-        public string Position { get; set; }
+        public int PositionId { get; set; }
         public string Description { get; set; }
     
+        public virtual Position Position { get; set; }
         public virtual User User { get; set; }
     }
 }

@@ -111,6 +111,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\RightsManagementView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -144,6 +148,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ManagerDatabase.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Database\Position.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\ProfessionalSkill.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
@@ -199,6 +206,9 @@
     </Compile>
     <Compile Include="Views\RegisterView.xaml.cs">
       <DependentUpon>RegisterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RightsManagementView.xaml.cs">
+      <DependentUpon>RightsManagementView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>

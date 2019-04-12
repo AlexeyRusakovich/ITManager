@@ -41,9 +41,11 @@
                      Margin="0 20 0 0" Height="30" 
                      VerticalContentAlignment="Center"/>
             <ComboBox Controls:TextBoxHelper.Watermark="Position"
-                     Text="{Binding Position, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="0 20 0 0" Height="30" 
-                     VerticalContentAlignment="Center"/>
+                      DisplayMemberPath="Name"
+                      ItemsSource="{Binding Positions}"
+                      SelectedValue="{Binding Position, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0 20 0 0" Height="30" 
+                      VerticalContentAlignment="Center"/>
             <PasswordBox Controls:TextBoxHelper.Watermark="Password" 
                          Margin="0 20 0 0"
                          VerticalContentAlignment="Center"

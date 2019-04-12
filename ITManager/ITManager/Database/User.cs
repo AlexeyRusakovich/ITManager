@@ -31,7 +31,7 @@ namespace ITManager.Database
         public string Name { get; set; }
         public string Surname { get; set; }
         public System.DateTime Birthday { get; set; }
-        public string Position { get; set; }
+        public int PositionId { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
         public string Salt { get; set; }
@@ -41,6 +41,7 @@ namespace ITManager.Database
         public virtual ICollection<Education> Education { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Language> Language { get; set; }
+        public virtual Position Position { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProfessionalSummary> ProfessionalSummary { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

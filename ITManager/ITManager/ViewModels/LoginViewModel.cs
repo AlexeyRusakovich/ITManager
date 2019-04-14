@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ITManager.Database;
+using ITManager.Events;
 using ITManager.Helpers;
 using ITManager.Interfaces;
 using ITManager.ViewModels.Base;
+using ITManager.Views;
 using Prism.Commands;
+using Prism.Events;
+using Prism.Regions;
 
 namespace ITManager.ViewModels
 {
@@ -16,6 +21,8 @@ namespace ITManager.ViewModels
     {
         private ManagerEntities _database = new ManagerEntities();
         private readonly INavigationService _navigationService;
+        private readonly IEventAggregator _eventAggregator;
+        private readonly IRegionManager _regionManager;
 
         public string Login { get; set; }
         public string Password { get; set; }
@@ -23,16 +30,20 @@ namespace ITManager.ViewModels
         public ICommand LoginCommand { get; set; }
         public ICommand GoToRegisterPageCommand { get; set; }
 
-        public LoginViewModel(INavigationService navigationService) : base("Log In")
+        public LoginViewModel(INavigationService navigationService, IRegionManager regionManager, IEventAggregator eventAggregator) : base("Log In")
         {
             LoginCommand = new DelegateCommand(LoginApplicationMethod);
             GoToRegisterPageCommand = new DelegateCommand(GoToRegisterPageMethod);
             _navigationService = navigationService;
+            _eventAggregator = eventAggregator;
+            _regionManager = regionManager;
+            _eventAggregator.GetEvent<CloseMenuEvent>().Publish(true);
+            ShellViewModel.CurrentUser = null;
         }
 
-        private void LoginApplicationMethod()
+        private async void LoginApplicationMethod()
         {
-            var user = _database.User.Where(u => u.Login == Login).FirstOrDefault();
+            var user = await _database.Users.Where(u => u.Login == Login).FirstOrDefaultAsync();
             if (user == null)
                 return; // TODO return validation error;
 
@@ -42,18 +53,21 @@ namespace ITManager.ViewModels
             {
                 ShellViewModel.CurrentUser = user;
 
-                if (user.UserRoles.Any(r => r.Id == Constants.AdministratorRole))
+                if (user.UserRoles.Any(r => r.RoleId == Constants.AdministratorRole))
                 {
-                    _navigationService.NavigateTo(Constants.RightsManagementView);
+                    _navigationService.NavigateTo(Constants.RolesManagementView);
                 }
-                else if (user.UserRoles.Any(r => r.Id == Constants.ManagerRole))
+                else if (user.UserRoles.Any(r => r.RoleId == Constants.ManagerRole))
                 {
                     _navigationService.NavigateTo(Constants.SearchView);
                 }
-                else if(user.UserRoles.Any(r => r.Id == Constants.UserRole))
+                else if(user.UserRoles.Any(r => r.RoleId == Constants.UserRole))
                 {
                     _navigationService.NavigateTo(Constants.MyPageView);
                 }
+
+                _regionManager.RegisterViewWithRegion(Helpers.Constants.MenuRegion, typeof(MenuView));
+                _eventAggregator.GetEvent<CloseMenuEvent>().Publish(false);
             }
         }
 

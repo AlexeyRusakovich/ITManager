@@ -25,21 +25,20 @@ namespace ITManager.Database
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Education> Education { get; set; }
-        public virtual DbSet<Language> Language { get; set; }
-        public virtual DbSet<LanguageLevel> LanguageLevel { get; set; }
-        public virtual DbSet<Position> Position { get; set; }
-        public virtual DbSet<ProfessionalSkill> ProfessionalSkill { get; set; }
-        public virtual DbSet<ProfessionalSummary> ProfessionalSummary { get; set; }
-        public virtual DbSet<Project> Project { get; set; }
-        public virtual DbSet<Query> Query { get; set; }
-        public virtual DbSet<Role> Role { get; set; }
-        public virtual DbSet<Sertificate> Sertificate { get; set; }
-        public virtual DbSet<SkillLevel> SkillLevel { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<TechnicalGroup> TechnicalGroup { get; set; }
-        public virtual DbSet<User> User { get; set; }
-        public virtual DbSet<UserRoles> UserRoles { get; set; }
-        public virtual DbSet<UserSkills> UserSkills { get; set; }
+        public virtual DbSet<Education> Educations { get; set; }
+        public virtual DbSet<Language> Languages { get; set; }
+        public virtual DbSet<LanguageLevel> LanguageLevels { get; set; }
+        public virtual DbSet<Position> Positions { get; set; }
+        public virtual DbSet<ProfessionalSkill> ProfessionalSkills { get; set; }
+        public virtual DbSet<ProfessionalSummary> ProfessionalSummaries { get; set; }
+        public virtual DbSet<Project> Projects { get; set; }
+        public virtual DbSet<Query> Queries { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Sertificate> Sertificates { get; set; }
+        public virtual DbSet<SkillLevel> SkillLevels { get; set; }
+        public virtual DbSet<TechnicalGroup> TechnicalGroups { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<UserSkill> UserSkills { get; set; }
     }
 }

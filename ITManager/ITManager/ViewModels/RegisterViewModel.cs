@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,12 @@ namespace ITManager.ViewModels
             _navigationService = navigationService;
             RegisterCommand = new DelegateCommand(RegisterMethod);
             GoToLoginPageCommand = new DelegateCommand(GoToLoginPageMethod);
-            Positions = _database.Position.ToList();
+            Init();
+        }
+
+        private async void Init()
+        {
+            Positions = await _database.Positions.ToListAsync();
         }
 
         private async void RegisterMethod()
@@ -43,9 +49,9 @@ namespace ITManager.ViewModels
             // validate
             var salt = PasswordHasher.GenerateSalt();
             var hashedPassword = PasswordHasher.ComputeHash(Password, salt);
-            if (!_database.User.Any(u => u.Login == Login))
+            if (!_database.Users.Any(u => u.Login == Login))
             {
-                var user = _database.User.Add(new User
+                var user = _database.Users.Add(new User
                 {
                     Login = Login,
                     Password = Convert.ToBase64String(hashedPassword),
@@ -58,13 +64,14 @@ namespace ITManager.ViewModels
 
                 await _database.SaveChangesAsync();
 
-                user.UserRoles.Add(new UserRoles
+                user.UserRoles.Add(new UserRole
                 {
-                    RoleId = Constants.AdministratorRole,
+                    RoleId = Constants.UserRole,
                     UserId = user.Id
                 });
                 
                 await _database.SaveChangesAsync();
+                GoToLoginPageMethod();
             }
         }
 

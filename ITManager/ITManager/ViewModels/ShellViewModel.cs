@@ -10,12 +10,15 @@ using System.Threading.Tasks;
 using ControlzEx.Native;
 using ITManager.Database;
 using ITManager.Views;
+using ITManager.Events;
+using System.Windows;
 
 namespace ITManager.ViewModels
 {
     public class ShellViewModel : BaseViewModel
     {
         public static User CurrentUser { get; set; }
+        public Visibility MenuVisibility { get; set;} 
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
 
@@ -24,8 +27,14 @@ namespace ITManager.ViewModels
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
 
-            _regionManager.RegisterViewWithRegion(Helpers.Constants.MenuRegion, typeof(MenuView));
             _regionManager.RegisterViewWithRegion(Helpers.Constants.MainRegion, typeof(LoginView));
+            _eventAggregator.GetEvent<CloseMenuEvent>().Subscribe(MenuStateChanged);
+        }
+
+        private void MenuStateChanged(bool value)
+        {
+            MenuVisibility = value ? Visibility.Collapsed : Visibility.Visible;
+            RaisePropertyChanged(nameof(MenuVisibility));            
         }
     }
 }

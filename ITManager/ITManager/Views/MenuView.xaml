@@ -7,7 +7,9 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:c="clr-namespace:ITManager.Helpers"
+             xmlns:a="clr-namespace:ITManager.AttachedProperties"
              mc:Ignorable="d"
+             Width="250"
              Background="AliceBlue">
     <Grid>
         <Grid.RowDefinitions>
@@ -18,7 +20,8 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="1">
             <Button Content="My page" 
-                    Style="{StaticResource MenuButtonStyle}">
+                    Style="{StaticResource MenuButtonStyle}"
+                    a:UserRolesAttachedProperties.RequiredRoles="2,3">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseDown">
                         <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.LoginView}"/>
@@ -26,7 +29,8 @@
                 </i:Interaction.Triggers>
             </Button>
             <Button Content="Search"
-                    Style="{StaticResource MenuButtonStyle}">
+                    Style="{StaticResource MenuButtonStyle}"
+                    a:UserRolesAttachedProperties.RequiredRoles="2,3">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseDown">
                         <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.LoginView}"/>
@@ -34,26 +38,29 @@
                 </i:Interaction.Triggers>
             </Button>
             <Button Content="Queries"
-                    Style="{StaticResource MenuButtonStyle}">
+                    Style="{StaticResource MenuButtonStyle}"
+                    a:UserRolesAttachedProperties.RequiredRoles="2">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseDown">
                         <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.LoginView}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
-            <Button Content="Rights management"
-                    Style="{StaticResource MenuButtonStyle}">
+            <Button Content="Roles management"
+                    Style="{StaticResource MenuButtonStyle}"
+                    a:UserRolesAttachedProperties.RequiredRoles="1">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseDown">
-                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.LoginView}"/>
+                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.RolesManagementView}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
             <Button Content="Accounts management"
-                    Style="{StaticResource MenuButtonStyle}">
+                    Style="{StaticResource MenuButtonStyle}"
+                    a:UserRolesAttachedProperties.RequiredRoles="1">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseDown">
-                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.LoginView}"/>
+                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.AccountsManagementView}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>

@@ -4,23 +4,22 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a59253052aae413392e0a97f5e564691" Name="Diagram1">
+      <Diagram DiagramId="454bb7e0121e44ccb3d80061088cc991" Name="Diagram1">
         <EntityTypeShape EntityType="ManagerModel.Education" Width="1.5" PointX="5.25" PointY="11.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.Language" Width="1.5" PointX="8.25" PointY="18.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.LanguageLevel" Width="1.5" PointX="6" PointY="26.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.Position" Width="1.5" PointX="0.75" PointY="12.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.ProfessionalSkill" Width="1.5" PointX="10.5" PointY="10.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.ProfessionalSummary" Width="1.5" PointX="5.25" PointY="17.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ManagerModel.Project" Width="1.5" PointX="8.25" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.Project" Width="1.5" PointX="8.25" PointY="14.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.Query" Width="1.5" PointX="5.25" PointY="20.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.Role" Width="1.5" PointX="3" PointY="12.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.Sertificate" Width="1.5" PointX="5.25" PointY="23.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.SkillLevel" Width="1.5" PointX="6" PointY="9.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ManagerModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ManagerModel.TechnicalGroup" Width="1.5" PointX="8.25" PointY="8.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ManagerModel.User" Width="1.5" PointX="3" PointY="14.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ManagerModel.UserRoles" Width="1.5" PointX="5.25" PointY="14.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ManagerModel.UserSkills" Width="1.5" PointX="8.25" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.User" Width="1.5" PointX="3" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.UserRole" Width="1.5" PointX="5.25" PointY="14.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ManagerModel.UserSkill" Width="1.5" PointX="8.25" PointY="10.75" IsExpanded="true" />
         <AssociationConnector Association="ManagerModel.FK_Education_User" ManuallyRouted="false" />
         <AssociationConnector Association="ManagerModel.FK_Language_LanguageLevel" ManuallyRouted="false" />
         <AssociationConnector Association="ManagerModel.FK_Language_User" ManuallyRouted="false" />

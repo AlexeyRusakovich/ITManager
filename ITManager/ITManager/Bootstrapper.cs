@@ -38,7 +38,8 @@ namespace ITManager
             Container.RegisterTypeForNavigation<ShellView>(Constants.ShellView);
             Container.RegisterTypeForNavigation<LoginView>(Constants.LoginView);
             Container.RegisterTypeForNavigation<RegisterView>(Constants.RegisterView);
-
+            Container.RegisterTypeForNavigation<RolesManagementView>(Constants.RolesManagementView);
+             Container.RegisterTypeForNavigation<AccountsManagementView>(Constants.AccountsManagementView);
         }
     }
 }

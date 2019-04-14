@@ -99,6 +99,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AccountsManagementView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChangePasswordView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -111,7 +119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\RightsManagementView.xaml">
+    <Page Include="Views\RolesManagementView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -123,6 +131,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AttachedProperties\UserRolesAttachedProperties.cs" />
     <Compile Include="Behaviors\PasswordBehavior.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Database\Education.cs">
@@ -173,31 +182,41 @@
     <Compile Include="Database\SkillLevel.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\sysdiagrams.cs">
-      <DependentUpon>ManagerDatabase.tt</DependentUpon>
-    </Compile>
     <Compile Include="Database\TechnicalGroup.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\User.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\UserRoles.cs">
+    <Compile Include="Database\UserRole.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\UserSkills.cs">
+    <Compile Include="Database\UserSkill.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Events\CloseMenuEvent.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\NavigationHelper.cs" />
     <Compile Include="Helpers\NavigationService.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
+    <Compile Include="Helpers\RandomStringGenerator.cs" />
     <Compile Include="Interfaces\INavigationService.cs" />
+    <Compile Include="Models\UserAccountManagementModel.cs" />
+    <Compile Include="Models\UserRoleManagementModel.cs" />
+    <Compile Include="ViewModels\AccountsManagementViewModel.cs" />
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\RolesManagementViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="Views\AccountsManagementView.xaml.cs">
+      <DependentUpon>AccountsManagementView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChangePasswordView.xaml.cs">
+      <DependentUpon>ChangePasswordView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
@@ -207,8 +226,8 @@
     <Compile Include="Views\RegisterView.xaml.cs">
       <DependentUpon>RegisterView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RightsManagementView.xaml.cs">
-      <DependentUpon>RightsManagementView.xaml</DependentUpon>
+    <Compile Include="Views\RolesManagementView.xaml.cs">
+      <DependentUpon>RolesManagementView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
@@ -249,9 +268,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
@@ -266,6 +283,9 @@
       <DependentUpon>ManagerDatabase.edmx</DependentUpon>
       <LastGenOutput>ManagerDatabase.cs</LastGenOutput>
     </Content>
+    <Content Include="Database\Scripts\Positions.sql" />
+    <Content Include="Database\Scripts\Roles.sql" />
+    <Content Include="Database\Scripts\Tables.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

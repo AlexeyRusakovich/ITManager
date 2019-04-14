@@ -17,14 +17,14 @@ namespace ITManager.Database
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.Education = new HashSet<Education>();
-            this.Language = new HashSet<Language>();
-            this.ProfessionalSummary = new HashSet<ProfessionalSummary>();
-            this.Project = new HashSet<Project>();
-            this.Query = new HashSet<Query>();
-            this.Sertificate = new HashSet<Sertificate>();
-            this.UserRoles = new HashSet<UserRoles>();
-            this.UserSkills = new HashSet<UserSkills>();
+            this.Educations = new HashSet<Education>();
+            this.Languages = new HashSet<Language>();
+            this.ProfessionalSummaries = new HashSet<ProfessionalSummary>();
+            this.Projects = new HashSet<Project>();
+            this.Queries = new HashSet<Query>();
+            this.Sertificates = new HashSet<Sertificate>();
+            this.UserRoles = new HashSet<UserRole>();
+            this.UserSkills = new HashSet<UserSkill>();
         }
     
         public int Id { get; set; }
@@ -36,23 +36,24 @@ namespace ITManager.Database
         public string Password { get; set; }
         public string Salt { get; set; }
         public bool IsInitial { get; set; }
+        public string DefaultPassword { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Education> Education { get; set; }
+        public virtual ICollection<Education> Educations { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Language> Language { get; set; }
+        public virtual ICollection<Language> Languages { get; set; }
         public virtual Position Position { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProfessionalSummary> ProfessionalSummary { get; set; }
+        public virtual ICollection<ProfessionalSummary> ProfessionalSummaries { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Project> Project { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Query> Query { get; set; }
+        public virtual ICollection<Query> Queries { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Sertificate> Sertificate { get; set; }
+        public virtual ICollection<Sertificate> Sertificates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserRoles> UserRoles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserSkills> UserSkills { get; set; }
+        public virtual ICollection<UserSkill> UserSkills { get; set; }
     }
 }

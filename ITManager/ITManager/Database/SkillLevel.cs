@@ -17,13 +17,13 @@ namespace ITManager.Database
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SkillLevel()
         {
-            this.UserSkills = new HashSet<UserSkills>();
+            this.UserSkills = new HashSet<UserSkill>();
         }
     
         public int Id { get; set; }
         public string Level { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserSkills> UserSkills { get; set; }
+        public virtual ICollection<UserSkill> UserSkills { get; set; }
     }
 }

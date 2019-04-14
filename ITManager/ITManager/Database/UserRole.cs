@@ -12,7 +12,7 @@ namespace ITManager.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class UserRoles
+    public partial class UserRole
     {
         public int Id { get; set; }
         public int UserId { get; set; }

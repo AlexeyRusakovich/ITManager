@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ITManager.Views
 {
     /// <summary>
-    /// Interaction logic for RightsManagementView.xaml
+    /// Interaction logic for ChangePasswordView.xaml
     /// </summary>
-    public partial class RightsManagementView : UserControl
+    public partial class ChangePasswordView : UserControl
     {
-        public RightsManagementView()
+        public ChangePasswordView()
         {
             InitializeComponent();
         }

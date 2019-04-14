@@ -19,6 +19,6 @@ namespace ITManager.Database
         public string Name { get; set; }
     
         public virtual TechnicalGroup TechnicalGroup { get; set; }
-        public virtual UserSkills UserSkills { get; set; }
+        public virtual UserSkill UserSkill { get; set; }
     }
 }

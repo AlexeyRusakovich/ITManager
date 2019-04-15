@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,7 @@ namespace ITManager.ViewModels
         public ICommand RegisterCommand { get; set; }
         public ICommand GoToLoginPageCommand { get; set; }
 
-        public IList<Position> Positions { get; set; }
+        public ObservableCollection<Position> Positions { get; set; } = new ObservableCollection<Position>();
 
 
         private ManagerEntities _database = new ManagerEntities();
@@ -41,7 +42,7 @@ namespace ITManager.ViewModels
 
         private async void Init()
         {
-            Positions = await _database.Positions.ToListAsync();
+            Positions.AddRange(await _database.Positions.ToListAsync());
         }
 
         private async void RegisterMethod()

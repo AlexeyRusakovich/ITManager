@@ -105,7 +105,7 @@ namespace ITManager.ViewModels
             var _user = await _database.Users.Where(u => u.Id == user.UserId).FirstOrDefaultAsync();
             if(_user != null)
             {
-                var salt = PasswordHasher.GenerateSalt();
+                var salt = Convert.FromBase64String(_user.Salt);
                 var password = RandomStringGenerator.GenerateRandomString(20, false);
                 var hashedPassword = PasswordHasher.ComputeHash(password, salt);
                 _user.DefaultPassword = password;

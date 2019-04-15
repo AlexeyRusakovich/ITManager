@@ -18,13 +18,14 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <!--<Image Width="100" Margin="20"  Grid.Row="0" Source="/ITManager;component/Images/Logo.png"/>-->
         <StackPanel Grid.Row="1">
             <Button Content="My page" 
                     Style="{StaticResource MenuButtonStyle}"
                     a:UserRolesAttachedProperties.RequiredRoles="2,3">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseDown">
-                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.LoginView}"/>
+                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.MyPersonalPageView}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
@@ -33,7 +34,7 @@
                     a:UserRolesAttachedProperties.RequiredRoles="2,3">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseDown">
-                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.LoginView}"/>
+                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.SearchView}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
@@ -42,7 +43,7 @@
                     a:UserRolesAttachedProperties.RequiredRoles="2">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseDown">
-                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.LoginView}"/>
+                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.QueriesView}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>

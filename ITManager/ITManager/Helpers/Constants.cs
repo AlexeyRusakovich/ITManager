@@ -29,11 +29,11 @@ namespace ITManager.Helpers
         public static string LoginView => "LoginView";
         public static string MainView => "MainView";
         public static string QueriesView => "QueriesView";
-        public static string MyPageView => "MyPageView";
         public static string RolesManagementView => "RolesManagementView";
-         public static string AccountsManagementView => "AccountsManagementView";
+        public static string AccountsManagementView => "AccountsManagementView";
+        public static string ChangePasswordView => "ChangePasswordView";
         public static string SearchView => "SearchView";
-
+        public static string MyPersonalPageView => "MyPersonalPageView";
 
 
         public static string MenuView => "MenuView";

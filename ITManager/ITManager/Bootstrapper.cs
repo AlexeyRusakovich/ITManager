@@ -39,7 +39,11 @@ namespace ITManager
             Container.RegisterTypeForNavigation<LoginView>(Constants.LoginView);
             Container.RegisterTypeForNavigation<RegisterView>(Constants.RegisterView);
             Container.RegisterTypeForNavigation<RolesManagementView>(Constants.RolesManagementView);
-             Container.RegisterTypeForNavigation<AccountsManagementView>(Constants.AccountsManagementView);
+            Container.RegisterTypeForNavigation<AccountsManagementView>(Constants.AccountsManagementView);
+            Container.RegisterTypeForNavigation<ChangePasswordView>(Constants.ChangePasswordView);
+            Container.RegisterTypeForNavigation<MyPersonalPageView>(Constants.MyPersonalPageView);
+            Container.RegisterTypeForNavigation<QueriesView>(Constants.QueriesView);
+            Container.RegisterTypeForNavigation<SearchView>(Constants.SearchView);
         }
     }
 }

@@ -10,6 +10,7 @@ using Prism.Commands;
 using ITManager.Helpers;
 using Prism.Events;
 using ITManager.Events;
+using Prism.Regions;
 
 namespace ITManager.ViewModels
 {
@@ -28,9 +29,12 @@ namespace ITManager.ViewModels
 
         private void NavigateToView(string viewName)
         {
-            if(viewName == Constants.LoginView)
+            if (viewName == Constants.LoginView)
                 _eventAggregator.GetEvent<CloseMenuEvent>().Publish(true);
-            _navigationService.NavigateTo(viewName);
+
+            var navigationParameters = new NavigationParameters();
+            navigationParameters.Add("IsLogout", true);
+            _navigationService.NavigateToWithParameters(viewName, navigationParameters: navigationParameters);
         }
     }
 }

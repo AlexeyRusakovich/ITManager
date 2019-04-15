@@ -17,9 +17,8 @@ using Prism.Regions;
 
 namespace ITManager.ViewModels
 {
-    public class LoginViewModel : BaseViewModel
+    public class LoginViewModel : BaseViewModel, INavigationAware
     {
-        private ManagerEntities _database = new ManagerEntities();
         private readonly INavigationService _navigationService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
@@ -38,42 +37,76 @@ namespace ITManager.ViewModels
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _eventAggregator.GetEvent<CloseMenuEvent>().Publish(true);
-            ShellViewModel.CurrentUser = null;
         }
 
         private async void LoginApplicationMethod()
         {
-            var user = await _database.Users.Where(u => u.Login == Login).FirstOrDefaultAsync();
-            if (user == null)
-                return; // TODO return validation error;
+            using (var _database = new ManagerEntities())
+            { 
+                var user = await _database.Users.Where(u => u.Login == Login).FirstOrDefaultAsync();
+                if (user == null)
+                    return; // TODO return validation error;
 
-            var salt = user.Salt;
-            if (PasswordHasher.VerifyPassword(Password, Convert.FromBase64String(salt),
-                Convert.FromBase64String(user.Password)))
-            {
-                ShellViewModel.CurrentUser = user;
+                var salt = user.Salt;
+                if (PasswordHasher.VerifyPassword(Password, Convert.FromBase64String(salt), Convert.FromBase64String(user.Password)))
+                {
+                    ShellViewModel.CurrentUser = user;
+                    _regionManager.RegisterViewWithRegion(Helpers.Constants.MenuRegion, typeof(MenuView));
 
-                if (user.UserRoles.Any(r => r.RoleId == Constants.AdministratorRole))
-                {
-                    _navigationService.NavigateTo(Constants.RolesManagementView);
-                }
-                else if (user.UserRoles.Any(r => r.RoleId == Constants.ManagerRole))
-                {
-                    _navigationService.NavigateTo(Constants.SearchView);
-                }
-                else if(user.UserRoles.Any(r => r.RoleId == Constants.UserRole))
-                {
-                    _navigationService.NavigateTo(Constants.MyPageView);
-                }
+                    if (user.IsInitial)
+                    {
+                        _navigationService.NavigateTo(Constants.ChangePasswordView);
+                        return;
+                    }
 
-                _regionManager.RegisterViewWithRegion(Helpers.Constants.MenuRegion, typeof(MenuView));
-                _eventAggregator.GetEvent<CloseMenuEvent>().Publish(false);
+                    if (user.UserRoles.Any(r => r.RoleId == Constants.AdministratorRole))
+                    {
+                        _navigationService.NavigateTo(Constants.RolesManagementView);
+                    }
+                    else if (user.UserRoles.Any(r => r.RoleId == Constants.ManagerRole))
+                    {
+                        _navigationService.NavigateTo(Constants.SearchView);
+                    }
+                    else if(user.UserRoles.Any(r => r.RoleId == Constants.UserRole))
+                    {
+                        _navigationService.NavigateTo(Constants.MyPersonalPageView);
+                    }
+
+                    _eventAggregator.GetEvent<CloseMenuEvent>().Publish(false);
+                }
             }
         }
+
+        #region Navigation
 
         private void GoToRegisterPageMethod()
         {
             _navigationService.NavigateTo(Constants.RegisterView);
         }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            var parameters = navigationContext.Parameters;
+            if (parameters["IsLogout"] != null || parameters["IsFromChangingPassword"] != null)  
+            {
+                var view = _regionManager.Regions[Constants.MenuRegion].ActiveViews.FirstOrDefault();
+                _regionManager.Regions[Constants.MenuRegion].Remove(view);
+            }
+
+            ShellViewModel.CurrentUser = null;
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            return;
+        }
+
+        #endregion
+       
     }
 }

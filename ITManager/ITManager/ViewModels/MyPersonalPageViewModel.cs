@@ -15,6 +15,12 @@ namespace ITManager.ViewModels
         public User User { get; set; }
         private readonly ManagerEntities _database = new ManagerEntities();
 
+        #region Properties
+
+        public string ProfessionalInfo { get; set; }
+
+        #endregion
+
         public MyPersonalPageViewModel() : base("My page")
         {
         }

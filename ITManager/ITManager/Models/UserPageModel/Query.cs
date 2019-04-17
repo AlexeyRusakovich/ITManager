@@ -11,8 +11,7 @@ namespace ITManager.Models.UserPageModel
         public int UserId { get; set; }
         public string QueryString { get; set; }
         public string Description { get; set; }
-    
-        public virtual User User { get; set; }
+   
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

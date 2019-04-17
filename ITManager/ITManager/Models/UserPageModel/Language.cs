@@ -10,9 +10,6 @@ namespace ITManager.Models.UserPageModel
         public int UserId { get; set; }
         public string Name { get; set; }
         public int LanguageLevelId { get; set; }
-    
-        public virtual LanguageLevel LanguageLevel { get; set; }
-        public virtual User User { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

@@ -12,8 +12,7 @@ namespace ITManager.Models.UserPageModel
         public string University { get; set; }
         public string Faculty { get; set; }
         public string Speciality { get; set; }
-    
-        public virtual User User { get; set; }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

@@ -8,13 +8,11 @@ namespace ITManager.Models.UserPageModel
     {
         public TechnicalGroup()
         {
-            this.ProfessionalSkills = new HashSet<ProfessionalSkill>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
     
-        public virtual ICollection<ProfessionalSkill> ProfessionalSkills { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

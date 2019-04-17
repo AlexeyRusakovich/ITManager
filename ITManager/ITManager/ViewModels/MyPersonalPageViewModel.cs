@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ITManager.Database;
 using Prism.Regions;
 using System.Data.Entity;
+using System.Collections.ObjectModel;
 
 namespace ITManager.ViewModels
 {
@@ -15,9 +16,23 @@ namespace ITManager.ViewModels
         public User User { get; set; }
         private readonly ManagerEntities _database = new ManagerEntities();
 
-        #region Properties
+        #region User properties
 
-        public string ProfessionalInfo { get; set; }
+        public string UserName { get; set; }
+
+        public Position Position { get; set; }
+
+        public ProfessionalSummary ProfessionalSummary { get; set; }
+
+        public ObservableCollection<UserSkill> Skills { get; set; }
+
+        public ObservableCollection<Project> Projects { get; set; }
+
+        public ObservableCollection<Education> Educations { get; set; }
+
+        public ObservableCollection<Sertificate> Sertificates { get; set; }
+
+        public ObservableCollection<Language> Languages { get; set; }
 
         #endregion
 

@@ -17,7 +17,22 @@ namespace ITManager.ViewModels
 {
     public class ShellViewModel : BaseViewModel
     {
-        public static User CurrentUser { get; set; }
+        private static User currentUser { get; set; }
+
+        public static User CurrentUser
+        {
+            get
+            {
+                return currentUser;
+            }
+            set
+            {
+                currentUser = value;
+                CurrentUserId = currentUser.Id;
+            }
+        }
+
+        public static int CurrentUserId { get; set; }
         public Visibility MenuVisibility { get; set;} 
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;

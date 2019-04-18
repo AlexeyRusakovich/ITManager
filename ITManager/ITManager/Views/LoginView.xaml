@@ -34,7 +34,7 @@
                     <Behaviors:PasswordBehavior Password="{Binding Password, Mode=TwoWay}" />
                 </i:Interaction.Behaviors>
             </PasswordBox>
-            <Button Content="Log in" 
+            <Button Content="Log in"
                     Command="{Binding LoginCommand}"
                     Style="{StaticResource DefaultButtonStyle}"/>
             <TextBlock Margin="0 10 0 0">

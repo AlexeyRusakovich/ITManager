@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using ControlzEx.Native;
 
 namespace ITManager.AttachedProperties
 {
     public static class UserRolesAttachedProperties
     {
-
-
         public static string GetRequiredRoles(DependencyObject obj)
         {
             return (string)obj.GetValue(RequiredRolesProperty);
@@ -32,11 +32,11 @@ namespace ITManager.AttachedProperties
             {
                 if(((string)e.NewValue).Split(',').ToList().Contains(ShellViewModel.CurrentUser.UserRoles.FirstOrDefault().RoleId.ToString()))
                 {
-                    ((Button)d).Visibility = Visibility.Visible;
+                    ((Control)d).Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    ((Button)d).Visibility = Visibility.Collapsed;
+                    ((Control)d).Visibility = Visibility.Collapsed;
                 }
             }
         }

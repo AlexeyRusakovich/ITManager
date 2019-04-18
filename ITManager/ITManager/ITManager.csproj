@@ -158,6 +158,7 @@
     <Compile Include="AttachedProperties\UserRolesAttachedProperties.cs" />
     <Compile Include="Behaviors\PasswordBehavior.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Converters\DatesToDateRangeConverter.cs" />
     <Compile Include="Database\Education.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>

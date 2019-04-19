@@ -7,11 +7,14 @@
              xmlns:c="clr-namespace:ITManager.Converters"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="800">
     <UserControl.Resources>
         <c:DatesToDateRangeConverter x:Key="DatesToDateRangeConverter" />
+        <c:LaguageLevelIdToNameConverter x:Key="LaguageLevelIdToNameConverter" />
+        <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+        <CollectionViewSource x:Key="LanguageLevels" Source="{Binding LanguageLevels}"/>
     </UserControl.Resources>
-    <ScrollViewer Margin="40 40 0 0" 
+    <ScrollViewer Margin="40 20 0 20" 
                   HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto">
         <Grid>
@@ -97,7 +100,7 @@
                                 <Label Grid.Row="2" Grid.Column="1" Content="{Binding Description}"/>
 
                                 <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
-                                <Label Grid.Row="3" Grid.Column="1" Content="{Binding Name}"/>
+                                <Label Grid.Row="3" Grid.Column="1" Content="{Binding PositionId}"/>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -110,8 +113,47 @@
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
                                   IsEnabled="{Binding CanUserChangeData}"
+                                  Name="EducationsEditToggleButton"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
+                <ListBox ItemsSource="{Binding Educations, UpdateSourceTrigger=PropertyChanged}" 
+                         IsEnabled="{Binding IsChecked, ElementName=EducationsEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0" Content="Duration: "/>
+                                <Label Grid.Row="0" Grid.Column="1">
+                                    <Label.Content>
+                                        <MultiBinding Converter="{StaticResource DatesToDateRangeConverter}">
+                                            <Binding Path="StartDate"/>
+                                            <Binding Path="EndDate"/>
+                                        </MultiBinding>
+                                    </Label.Content>
+                                </Label>
+
+                                <Label Grid.Row="1" Grid.Column="0" Content="University: "/>
+                                <Label Grid.Row="1" Grid.Column="1" Content="{Binding University}"/>
+
+                                <Label Grid.Row="2" Grid.Column="0" Content="Faculty: "/>
+                                <Label Grid.Row="2" Grid.Column="1" Content="{Binding Faculty}"/>
+
+                                <Label Grid.Row="3" Grid.Column="0" Content="Speciality: "/>
+                                <Label Grid.Row="3" Grid.Column="1" Content="{Binding Speciality}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
             <StackPanel Grid.Row="5" Margin="0 20 0 0" >
                 <StackPanel Orientation="Horizontal">
@@ -119,9 +161,33 @@
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
+                                  Name="SertificatesEditToggleButton"
                                   IsEnabled="{Binding CanUserChangeData}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
+                <ListBox ItemsSource="{Binding Sertificates, UpdateSourceTrigger=PropertyChanged}" 
+                         IsEnabled="{Binding IsChecked, ElementName=SertificatesEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0" Content="Sertificated: "/>
+                                <Label Grid.Row="0" Grid.Column="1" Content="{Binding Date}" />
+
+                                <Label Grid.Row="1" Grid.Column="0" Content="Area: "/>
+                                <Label Grid.Row="1" Grid.Column="1" Content="{Binding Name}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
             <StackPanel Grid.Row="6" Margin="0 20 0 0" >
                 <StackPanel Orientation="Horizontal">
@@ -129,16 +195,117 @@
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
+                                  Name="LanguagesEditToggleButton"
                                   IsEnabled="{Binding CanUserChangeData}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
+                <ListBox ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}" 
+                         BorderThickness="0"
+                         IsEnabled="{Binding IsChecked, ElementName=LanguagesEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=LanguagesEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Language: "/>
+                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Name}" />
+
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="Level: "/>
+                                                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding LanguageLevelId, Converter={StaticResource LaguageLevelIdToNameConverter}, ConverterParameter={StaticResource LanguageLevels}}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=LanguagesEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Language: "/>
+                                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" />
+
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="Level: "/>
+                                                    <ComboBox Grid.Row="1" Grid.Column="1"
+                                                              IsSynchronizedWithCurrentItem="False"
+                                                              ItemsSource="{Binding Source={StaticResource LanguageLevels}}"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValue="{Binding LanguageLevelId, UpdateSourceTrigger=PropertyChanged}"
+                                                              SelectedValuePath="Id"/>
+
+                                                    <Button Margin="20 0 0 0"
+                                                            Grid.Column="2"
+                                                            FontSize="20"
+                                                            FontWeight="Bold"
+                                                            Width="35"
+                                                            Style="{StaticResource DefaultButtonStyle}" 
+                                                            Command="{Binding DataContext.RemoveLanguage, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding .}">
+                                                        <Image Width="16" Height="16" Source="/ITManager;component/Images/remove.ico"></Image>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsTabStop" Value="False"/>
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+                <StackPanel Visibility="{Binding IsChecked, ElementName=LanguagesEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
+                            Margin="0 20 0 0"
+                            Orientation="Horizontal">
+                    <Button Margin="0"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            DockPanel.Dock="Right"
+                            Width="35"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding AddLanguage}">
+                        <Image Width="16" Height="16" Source="/ITManager;component/Images/add.ico"/>
+                    </Button>
+                    <Button Content="Reset"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding ResetLanguages}"/>
+                    <Button Content="Save"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding SaveLanguages}"/>
+                </StackPanel>
             </StackPanel>
-            <Button Grid.Row="7"
-                    Margin="0 20 50 0"
-                    HorizontalAlignment="Right"
-                    Style="{StaticResource DefaultButtonStyle}"
-                    Width="200" 
-                    Content="Save user" />
         </Grid>
     </ScrollViewer>
 </UserControl>

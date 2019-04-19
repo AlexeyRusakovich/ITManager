@@ -159,6 +159,7 @@
     <Compile Include="Behaviors\PasswordBehavior.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Converters\DatesToDateRangeConverter.cs" />
+    <Compile Include="Converters\LaguageLevelIdToNameConverter.cs" />
     <Compile Include="Database\Education.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
@@ -339,8 +340,9 @@
     <Content Include="Database\Scripts\Positions.sql" />
     <Content Include="Database\Scripts\Roles.sql" />
     <Content Include="Database\Scripts\Tables.sql" />
+    <Resource Include="Images\add.ico" />
+    <Resource Include="Images\remove.ico" />
     <Resource Include="FodyWeavers.xml" />
-    <Resource Include="Images\Logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.4.2.1\build\Fody.targets')" />

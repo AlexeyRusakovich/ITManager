@@ -8,14 +8,55 @@ using ITManager.Database;
 using Prism.Regions;
 using System.Data.Entity;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using AutoMapper;
+using Prism.Commands;
 
 namespace ITManager.ViewModels
 {
     public class MyPersonalPageViewModel : BaseViewModel, INavigationAware
     {
         public User User { get; set; }
-        private readonly ManagerEntities _database = new ManagerEntities();
+
+        #region Commands
+
+        public ICommand SaveProfessionalSummary { get; set; }
+        public ICommand ResetProfessionalSummary { get; set; }
+
+        public ICommand SaveSkills { get; set; }
+        public ICommand ResetSkills { get; set; }
+        public ICommand AddSkill { get; set; }
+        public ICommand RemoveSkill { get; set; }
+
+        public ICommand SaveProjects { get; set; }
+        public ICommand ResetProjects { get; set; }
+        public ICommand AddProject { get; set; }
+        public ICommand RemoveProject{ get; set; }
+        
+        public ICommand SaveEducations { get; set; }
+        public ICommand ResetEducations { get; set; }
+        public ICommand AddEducation { get; set; }
+        public ICommand RemoveEducation { get; set; }
+
+        public ICommand SaveSertificates { get; set; }
+        public ICommand ResetSertificates { get; set; }
+        public ICommand AddSertificate { get; set; }
+        public ICommand RemoveSertificate { get; set; }
+
+        public ICommand SaveLanguages { get; set; }
+        public ICommand ResetLanguages { get; set; }
+        public ICommand AddLanguage { get; set; }
+        public ICommand RemoveLanguage { get; set; }
+
+        #endregion
+
+        #region Constants collections
+
+        public IList<LanguageLevel> LanguageLevels { get; set; }
+        public IList<SkillLevel> SkillLevels { get; set; }
+        public IList<Position> Positions { get; set; }
+
+        #endregion
 
         #region User properties
 
@@ -51,34 +92,118 @@ namespace ITManager.ViewModels
                 cfg.CreateMap<Sertificate, Models.UserPageModel.Sertificate>();
                 cfg.CreateMap<Language, Models.UserPageModel.Language>();
             });
+
+            ResetEducations = new DelegateCommand(MapEducations);
+
+            ResetLanguages = new DelegateCommand(MapLanguages);
+            SaveLanguages = new DelegateCommand(SaveLanguagesMethod);
+            AddLanguage = new DelegateCommand(AddLanguageMethod);
+            RemoveLanguage = new DelegateCommand<Models.UserPageModel.Language>(RemoveLanguageMethod);
+
+            ResetProfessionalSummary = new DelegateCommand(MapProfessionalSummary);
+            ResetProjects = new DelegateCommand(MapProjects);
+            ResetSertificates = new DelegateCommand(MapSertificates);
+            ResetSkills = new DelegateCommand(MapSkills);
         }
+
+        #region User saving
+
+        private async void SaveLanguagesMethod()
+        {
+            using (var _database = new ManagerEntities())
+            {
+                var userLanguages = (await _database.Users.Where(u => u.Id == User.Id)
+                    .Include(u => u.Languages)
+                    .FirstOrDefaultAsync()).Languages;
+
+                // Removing and changing languages
+                foreach (var userLanguage in userLanguages)
+                {
+                    var _userLanguage = Languages.FirstOrDefault(l => l.Id == userLanguage.Id);
+                    // If exists in local collection, change data
+                    if (_userLanguage != null)
+                    {
+                        _userLanguage.Name = userLanguage.Name;
+                        _userLanguage.LanguageLevelId = userLanguage.LanguageLevelId;
+                    }
+                    // If not exists in local collection - remove.
+                    else
+                    {
+                        userLanguages.Remove(userLanguage);
+                    }
+                }
+
+                // Adding new languages
+                foreach (var newLanguage in Languages.Where(l => l.Id == 0))
+                {
+                    userLanguages.Add(new Language
+                    {
+                        Name = newLanguage.Name,
+                        LanguageLevelId = newLanguage.LanguageLevelId
+                    });
+                }
+            }
+        }
+        private void AddLanguageMethod()
+        {
+            Languages.Add(new Models.UserPageModel.Language
+            {
+                Id = 0,
+                LanguageLevelId = 0,
+                Name = null,
+                UserId =  User.Id
+            });
+        }
+        private void RemoveLanguageMethod(Models.UserPageModel.Language language)
+        {
+            Languages.Remove(language);
+        }
+
+        #endregion
+
+        #region Navigation management
 
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            var parameters = navigationContext.Parameters;
-            if (parameters["UserId"] != null)
+            using (var _database = new ManagerEntities())
             {
-                var user = await _database.Users.Where(u => u.Id == (int)parameters["UserId"]).FirstOrDefaultAsync();
-                if (user != null)
+                LanguageLevels = await _database.LanguageLevels.ToListAsync();
+                SkillLevels = await _database.SkillLevels.ToListAsync();
+                Positions = await _database.Positions.ToListAsync();
+
+                var parameters = navigationContext.Parameters;
+                if (parameters["UserId"] != null)
                 {
-                    User = user;
-                    if (User.UserRoles.FirstOrDefault().RoleId == Helpers.Constants.ManagerRole)
+                    var user = await _database.Users.Where(u => u.Id == (int)parameters["UserId"])
+                        .Include(u => u.Position)
+                        .Include(u => u.ProfessionalSummaries)
+                        .Include(u => u.UserSkills)
+                        .Include(u => u.Projects)
+                        .Include(u => u.Educations)
+                        .Include(u => u.Sertificates)
+                        .Include(u => u.Languages)
+                        .FirstOrDefaultAsync();
+                    if (user != null)
                     {
-                        CanUserChangeData = true;
-                    }
-                    else
-                    {
-                        CanUserChangeData = false;
+                        User = user;
+                        if (User.UserRoles.FirstOrDefault().RoleId == Helpers.Constants.ManagerRole)
+                        {
+                            CanUserChangeData = true;
+                        }
+                        else
+                        {
+                            CanUserChangeData = false;
+                        }
                     }
                 }
-            }
-            else
-            {
-                User = ShellViewModel.CurrentUser;
-                CanUserChangeData = true;
-            }
+                else
+                {
+                    User = ShellViewModel.CurrentUser;
+                    CanUserChangeData = true;
+                }
 
-            MapUser(User);
+                MapUser();
+            }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -91,16 +216,54 @@ namespace ITManager.ViewModels
             return;
         }
 
-        private void MapUser(User user)
+        #endregion
+
+        #region User mapping
+
+        private void MapUser()
         {
-            UserName = $"{user.Name} {user.Surname}";
-            Position = Mapper.Map<Position, Models.UserPageModel.Position>(user.Position);
-            ProfessionalSummary = Mapper.Map<ProfessionalSummary, Models.UserPageModel.ProfessionalSummary>(user.ProfessionalSummaries.FirstOrDefault() ?? new ProfessionalSummary() { UserId = user.Id});
-            Skills = Mapper.Map<ICollection<UserSkill>, ObservableCollection<Models.UserPageModel.UserSkill>>(user.UserSkills);
-            Projects = Mapper.Map<ICollection<Project>, ObservableCollection<Models.UserPageModel.Project>>(user.Projects);
-            Educations = Mapper.Map<ICollection<Education>, ObservableCollection<Models.UserPageModel.Education>>(user.Educations);
-            Sertificates = Mapper.Map<ICollection<Sertificate>, ObservableCollection<Models.UserPageModel.Sertificate>>(user.Sertificates);
-            Languages = Mapper.Map<ICollection<Language>, ObservableCollection<Models.UserPageModel.Language>>(user.Languages);
+            MapUserName();
+            MapPosition();
+            MapProfessionalSummary();
+            MapSkills();
+            MapProjects();
+            MapEducations();
+            MapSertificates();
+            MapLanguages();
         }
+        private void MapUserName()
+        {
+            UserName = $"{User.Name} {User.Surname}";
+        }
+        private void MapPosition()
+        {
+            Position = Mapper.Map<Position, Models.UserPageModel.Position>(User.Position);
+        }
+        private void MapProfessionalSummary()
+        {
+            ProfessionalSummary = Mapper.Map<ProfessionalSummary, Models.UserPageModel.ProfessionalSummary>(User.ProfessionalSummaries.FirstOrDefault() ?? new ProfessionalSummary() { UserId = User.Id});
+        }
+        private void MapSkills()
+        {
+            Skills = Mapper.Map<ICollection<UserSkill>, ObservableCollection<Models.UserPageModel.UserSkill>>(User.UserSkills);
+        }
+        private void MapProjects()
+        {
+            Projects = Mapper.Map<ICollection<Project>, ObservableCollection<Models.UserPageModel.Project>>(User.Projects);
+        }
+        private void MapEducations()
+        {
+            Educations = Mapper.Map<ICollection<Education>, ObservableCollection<Models.UserPageModel.Education>>(User.Educations);
+        }
+        private void MapSertificates()
+        {
+            Sertificates = Mapper.Map<ICollection<Sertificate>, ObservableCollection<Models.UserPageModel.Sertificate>>(User.Sertificates);
+        }
+        private void MapLanguages()
+        {
+            Languages = Mapper.Map<ICollection<Language>, ObservableCollection<Models.UserPageModel.Language>>(User.Languages);
+        }
+
+        #endregion
     }
 }

@@ -43,7 +43,15 @@ namespace ITManager.ViewModels
         {
             using (var _database = new ManagerEntities())
             { 
-                var user = await _database.Users.Where(u => u.Login == Login).FirstOrDefaultAsync();
+                var user = await _database.Users.Where(u => u.Login == Login)
+                    .Include(u => u.Position)
+                    .Include(u => u.ProfessionalSummaries)
+                    .Include(u => u.UserSkills)
+                    .Include(u => u.Projects)
+                    .Include(u => u.Educations)
+                    .Include(u => u.Sertificates)
+                    .Include(u => u.Languages)
+                    .FirstOrDefaultAsync();
                 if (user == null)
                     return; // TODO return validation error;
 

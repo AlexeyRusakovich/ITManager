@@ -12,9 +12,10 @@
         <c:DatesToDateRangeConverter x:Key="DatesToDateRangeConverter" />
         <c:LaguageLevelIdToNameConverter x:Key="LaguageLevelIdToNameConverter" />
         <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+        <c:ReverseBooleanToVisibilityConverter x:Key="VisibleIfFalseConverter" />
         <CollectionViewSource x:Key="LanguageLevels" Source="{Binding LanguageLevels}"/>
     </UserControl.Resources>
-    <ScrollViewer Margin="40 20 0 20" 
+    <ScrollViewer Margin="40 20 0 20"
                   HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto">
         <Grid>
@@ -28,6 +29,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+
+            <!-- NAME -->
             <StackPanel Grid.Row="0">
                 <Label HorizontalAlignment="Center"
                            Content="{Binding UserName}" 
@@ -36,6 +39,9 @@
                        FontSize="16"
                        Content="{Binding Position.Name}"/>
             </StackPanel>
+            <!-- NAME ENDED -->
+            
+            <!-- PROFESSIONAL SUMMARY -->
             <StackPanel Grid.Row="1" Margin="0 30 0 0">
                 <StackPanel Orientation="Horizontal">
                     <Label  Content="Professional Summary"
@@ -43,21 +49,27 @@
                             Style="{StaticResource SectionTitleStyle}" 
                             Margin="0"/>
                     <ToggleButton Content="✎"
-                                  IsEnabled="{Binding CanUserChangeData}"
+                                  Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
                 <TextBlock Text="{Binding ProfessionalSummary.ProfessionalSummary1}"/>
             </StackPanel>
+            <!-- PROFESSIONAL SUMMARY ENDED -->
+            
+            <!-- SKILLS -->
             <StackPanel Grid.Row="2" Margin="0 20 0 0">
                 <StackPanel Orientation="Horizontal">
                     <Label  Content="Skills"
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
-                                  IsEnabled="{Binding CanUserChangeData}"
+                                  Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
             </StackPanel>
+            <!-- SKILLS ENDED -->
+            
+            <!-- PROJECTS -->
             <StackPanel Grid.Row="3" Margin="0 20 0 0">
                 <StackPanel Orientation="Horizontal">
                     <Label  Content="Projects"
@@ -65,96 +77,288 @@
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
                                   Name="ProjectsEditToggleButton"
-                                  IsEnabled="{Binding CanUserChangeData}"
+                                  Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
                 <ListBox ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" 
+                         BorderThickness="0"
                          IsEnabled="{Binding IsChecked, ElementName=ProjectsEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" Content="Project name: "/>
-                                <Label Grid.Row="0" Grid.Column="1" Content="{Binding Name}"/>
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=ProjectsEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Project name: "/>
+                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Name}"/>
 
-                                <Label Grid.Row="1" Grid.Column="0" Content="Duration: "/>
-                                <Label Grid.Row="1" Grid.Column="1">
-                                    <Label.Content>
-                                        <MultiBinding Converter="{StaticResource DatesToDateRangeConverter}">
-                                            <Binding Path="StartDate"/>
-                                            <Binding Path="EndDate"/>
-                                        </MultiBinding>
-                                    </Label.Content>
-                                </Label>
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="Duration: "/>
+                                                    <Label Grid.Row="1" Grid.Column="1">
+                                                        <Label.Content>
+                                                            <MultiBinding Converter="{StaticResource DatesToDateRangeConverter}">
+                                                                <Binding Path="StartDate"/>
+                                                                <Binding Path="EndDate"/>
+                                                            </MultiBinding>
+                                                        </Label.Content>
+                                                    </Label>
 
-                                <Label Grid.Row="2" Grid.Column="0" Content="Description: "/>
-                                <Label Grid.Row="2" Grid.Column="1" Content="{Binding Description}"/>
+                                                    <Label Grid.Row="2" Grid.Column="0" Content="Description: "/>
+                                                    <Label Grid.Row="2" Grid.Column="1" Content="{Binding Description}"/>
 
-                                <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
-                                <Label Grid.Row="3" Grid.Column="1" Content="{Binding PositionId}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
+                                                    <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
+                                                    <Label Grid.Row="3" Grid.Column="1" Content="{Binding PositionId}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=ProjectsEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Project name: "/>
+                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Name}"/>
+
+                                                    
+                                                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                                        <Label Content="Start date: "/>
+                                                        <DatePicker Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        <CheckBox Content="StillGoes"
+                                                                  Margin="20 0 20 0"
+                                                                  Name="ProjectStillGoesCheckBox"/>
+                                                        <Label Content="End date: "
+                                                               Visibility="{Binding IsChecked, ElementName=ProjectStillGoesCheckBox, Converter={StaticResource VisibleIfFalseConverter}}"/>
+                                                        <DatePicker Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}" 
+                                                                    Visibility="{Binding IsChecked, ElementName=ProjectStillGoesCheckBox, Converter={StaticResource VisibleIfFalseConverter}}"/>
+                                                    </StackPanel>
+
+                                                    <Label Grid.Row="2" Grid.Column="0" Content="Description: "/>
+                                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Description}" Width="300" TextWrapping="Wrap"/>
+
+                                                    <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
+                                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PositionId}" Width="300" TextWrapping="Wrap"/>
+
+                                                    <Button Margin="20 0 0 0"
+                                                            Grid.Column="2"
+                                                            FontSize="20"
+                                                            FontWeight="Bold"
+                                                            Width="35"
+                                                            Style="{StaticResource DefaultButtonStyle}" 
+                                                            Command="{Binding DataContext.RemoveProject, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding .}">
+                                                        <Image Width="16" Height="16" Source="/ITManager;component/Images/remove.ico"></Image>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsTabStop" Value="False"/>
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
+                <StackPanel Visibility="{Binding IsChecked, ElementName=ProjectsEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
+                            Margin="0 20 0 0"
+                            Orientation="Horizontal">
+                    <Button Margin="0"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            DockPanel.Dock="Right"
+                            Width="35"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding AddProject}">
+                        <Image Width="16" Height="16" Source="/ITManager;component/Images/add.ico"/>
+                    </Button>
+                    <Button Content="Reset"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding ResetProjects}"/>
+                    <Button Content="Save"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding SaveProjects}"/>
+                </StackPanel>
             </StackPanel>
+            <!-- PROJECTS ENDED -->
+            
+            <!-- EDUCATIONS -->
             <StackPanel Grid.Row="4" Margin="0 20 0 0" >
                 <StackPanel Orientation="Horizontal">
                     <Label  Content="Educations"
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
-                                  IsEnabled="{Binding CanUserChangeData}"
+                                  Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Name="EducationsEditToggleButton"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
                 <ListBox ItemsSource="{Binding Educations, UpdateSourceTrigger=PropertyChanged}" 
+                         BorderThickness="0"
                          IsEnabled="{Binding IsChecked, ElementName=EducationsEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=EducationsEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
 
-                                <Label Grid.Row="0" Grid.Column="0" Content="Duration: "/>
-                                <Label Grid.Row="0" Grid.Column="1">
-                                    <Label.Content>
-                                        <MultiBinding Converter="{StaticResource DatesToDateRangeConverter}">
-                                            <Binding Path="StartDate"/>
-                                            <Binding Path="EndDate"/>
-                                        </MultiBinding>
-                                    </Label.Content>
-                                </Label>
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Duration: "/>
+                                                    <Label Grid.Row="0" Grid.Column="1">
+                                                        <Label.Content>
+                                                            <MultiBinding Converter="{StaticResource DatesToDateRangeConverter}">
+                                                                <Binding Path="StartDate"/>
+                                                                <Binding Path="EndDate"/>
+                                                            </MultiBinding>
+                                                        </Label.Content>
+                                                    </Label>
 
-                                <Label Grid.Row="1" Grid.Column="0" Content="University: "/>
-                                <Label Grid.Row="1" Grid.Column="1" Content="{Binding University}"/>
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="University: "/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding University}" Width="300" TextWrapping="Wrap"/>
 
-                                <Label Grid.Row="2" Grid.Column="0" Content="Faculty: "/>
-                                <Label Grid.Row="2" Grid.Column="1" Content="{Binding Faculty}"/>
+                                                    <Label Grid.Row="2" Grid.Column="0" Content="Faculty: "/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Faculty}"  Width="300" TextWrapping="Wrap" />
 
-                                <Label Grid.Row="3" Grid.Column="0" Content="Speciality: "/>
-                                <Label Grid.Row="3" Grid.Column="1" Content="{Binding Speciality}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
+                                                    <Label Grid.Row="3" Grid.Column="0" Content="Speciality: "/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Speciality}"  Width="300" TextWrapping="Wrap" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=EducationsEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" MaxWidth="800"/>
+                                                        <ColumnDefinition Width="Auto" MaxWidth="800"/>
+                                                        <ColumnDefinition Width="Auto" MaxWidth="800"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    
+                                                    <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                                        <Label Content="Start date: "/>
+                                                        <DatePicker Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        <Label Margin="20 0 0 0" Content="End date: "/>
+                                                        <DatePicker  Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                                    </StackPanel>
+
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="University: "/>
+                                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding University}" Width="300" TextWrapping="Wrap"/>
+
+                                                    <Label Grid.Row="2" Grid.Column="0" Content="Faculty: "/>
+                                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Faculty}"  Width="300" TextWrapping="Wrap" />
+
+                                                    <Label Grid.Row="3" Grid.Column="0" Content="Speciality: "/>
+                                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Speciality}"  Width="300" TextWrapping="Wrap" />
+
+                                                    <Button Margin="20 0 0 0"
+                                                            Grid.Column="2"
+                                                            FontSize="20"
+                                                            FontWeight="Bold"
+                                                            Width="35"
+                                                            Style="{StaticResource DefaultButtonStyle}" 
+                                                            Command="{Binding DataContext.RemoveEducation, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding .}">
+                                                        <Image Width="16" Height="16" Source="/ITManager;component/Images/remove.ico"></Image>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsTabStop" Value="False"/>
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
+                <StackPanel Visibility="{Binding IsChecked, ElementName=EducationsEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
+                            Margin="0 20 0 0"
+                            Orientation="Horizontal">
+                    <Button Margin="0"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            DockPanel.Dock="Right"
+                            Width="35"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding AddEducation}">
+                        <Image Width="16" Height="16" Source="/ITManager;component/Images/add.ico"/>
+                    </Button>
+                    <Button Content="Reset"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding ResetEducations}"/>
+                    <Button Content="Save"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding SaveEducations}"/>
+                </StackPanel>
             </StackPanel>
+            <!-- EDUCATIONS ENDED -->
+            
+            <!-- SERTIFICATES -->
             <StackPanel Grid.Row="5" Margin="0 20 0 0" >
                 <StackPanel Orientation="Horizontal">
                     <Label  Content="Sertificates"
@@ -162,33 +366,119 @@
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
                                   Name="SertificatesEditToggleButton"
-                                  IsEnabled="{Binding CanUserChangeData}"
+                                  Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
                 <ListBox ItemsSource="{Binding Sertificates, UpdateSourceTrigger=PropertyChanged}" 
+                         BorderThickness="0"
                          IsEnabled="{Binding IsChecked, ElementName=SertificatesEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=SertificatesEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
 
-                                <Label Grid.Row="0" Grid.Column="0" Content="Sertificated: "/>
-                                <Label Grid.Row="0" Grid.Column="1" Content="{Binding Date}" />
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
 
-                                <Label Grid.Row="1" Grid.Column="0" Content="Area: "/>
-                                <Label Grid.Row="1" Grid.Column="1" Content="{Binding Name}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Sertificated: "/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Date}" Width="300" TextWrapping="Wrap"/>
+
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="Area: "/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Name}" Width="300" TextWrapping="Wrap"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=SertificatesEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" MaxWidth="800"/>
+                                                        <ColumnDefinition Width="Auto" MaxWidth="800"/>
+                                                        <ColumnDefinition Width="Auto" MaxWidth="800"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Sertificated: "/>
+                                                    <DatePicker Grid.Row="0" Grid.Column="1" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}" />
+
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="Area: "/>
+                                                    <TextBox Grid.Row="1"
+                                                            Grid.Column="1" 
+                                                            Width="300"
+                                                            Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                                                            TextWrapping="Wrap"/>
+
+                                                    <Button Margin="20 0 0 0"
+                                                            Grid.Column="2"
+                                                            FontSize="20"
+                                                            FontWeight="Bold"
+                                                            Width="35"
+                                                            Style="{StaticResource DefaultButtonStyle}" 
+                                                            Command="{Binding DataContext.RemoveSertificate, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding .}">
+                                                        <Image Width="16" Height="16" Source="/ITManager;component/Images/remove.ico"></Image>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsTabStop" Value="False"/>
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
+                <StackPanel Visibility="{Binding IsChecked, ElementName=SertificatesEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
+                            Margin="0 20 0 0"
+                            Orientation="Horizontal">
+                    <Button Margin="0"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            DockPanel.Dock="Right"
+                            Width="35"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding AddSertificate}">
+                        <Image Width="16" Height="16" Source="/ITManager;component/Images/add.ico"/>
+                    </Button>
+                    <Button Content="Reset"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding ResetSertificates}"/>
+                    <Button Content="Save"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding SaveSertificates}"/>
+                </StackPanel>
             </StackPanel>
+            <!-- SERTIFICATES ENDED -->
+            
+            <!-- LANGUAGES -->
             <StackPanel Grid.Row="6" Margin="0 20 0 0" >
                 <StackPanel Orientation="Horizontal">
                     <Label  Content="Languages"
@@ -196,7 +486,7 @@
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
                                   Name="LanguagesEditToggleButton"
-                                  IsEnabled="{Binding CanUserChangeData}"
+                                  Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
                 <ListBox ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}" 
@@ -219,11 +509,11 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Language: "/>
-                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Name}" />
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Language: " VerticalAlignment="Top"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" Width="300"  TextWrapping="Wrap"/>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="Level: "/>
-                                                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding LanguageLevelId, Converter={StaticResource LaguageLevelIdToNameConverter}, ConverterParameter={StaticResource LanguageLevels}}" />
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="Level: " VerticalAlignment="Top"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LanguageLevelId, Converter={StaticResource LaguageLevelIdToNameConverter}, ConverterParameter={StaticResource LanguageLevels}}" Width="300" TextWrapping="Wrap"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </Setter.Value>
@@ -244,10 +534,14 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Language: "/>
-                                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" />
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Language: " VerticalAlignment="Top"/>
+                                                    <TextBox Grid.Row="0" 
+                                                            Grid.Column="1" 
+                                                            Width="300"
+                                                            Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                                            TextWrapping="Wrap"/>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="Level: "/>
+                                                    <Label Grid.Row="1" Grid.Column="0" Content="Level: " VerticalAlignment="Top"/>
                                                     <ComboBox Grid.Row="1" Grid.Column="1"
                                                               IsSynchronizedWithCurrentItem="False"
                                                               ItemsSource="{Binding Source={StaticResource LanguageLevels}}"
@@ -306,6 +600,8 @@
                             Command="{Binding SaveLanguages}"/>
                 </StackPanel>
             </StackPanel>
+            <!-- LANGUAGES ENDED -->
+            
         </Grid>
     </ScrollViewer>
 </UserControl>

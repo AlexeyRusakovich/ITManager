@@ -159,6 +159,7 @@
     <Compile Include="Behaviors\PasswordBehavior.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Converters\DatesToDateRangeConverter.cs" />
+    <Compile Include="Converters\ReverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\LaguageLevelIdToNameConverter.cs" />
     <Compile Include="Database\Education.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>

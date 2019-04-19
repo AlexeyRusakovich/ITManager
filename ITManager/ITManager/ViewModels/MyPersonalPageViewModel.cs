@@ -16,6 +16,7 @@ namespace ITManager.ViewModels
 {
     public class MyPersonalPageViewModel : BaseViewModel, INavigationAware
     {
+        // Current user, taken from database
         public User User { get; set; }
 
         #region Commands
@@ -80,6 +81,8 @@ namespace ITManager.ViewModels
 
         #endregion
 
+        #region Ctor
+
         public MyPersonalPageViewModel() : base("My page")
         {
             Mapper.Initialize(cfg=>
@@ -94,20 +97,184 @@ namespace ITManager.ViewModels
             });
 
             ResetEducations = new DelegateCommand(MapEducations);
+            SaveEducations = new DelegateCommand(SaveEducationsMethod);
+            AddEducation = new DelegateCommand(AddEducationMethod);
+            RemoveEducation = new DelegateCommand<Models.UserPageModel.Education>(RemoveEducationMethod);
+
+            ResetSertificates = new DelegateCommand(MapSertificates);
+            SaveSertificates = new DelegateCommand(SaveSertificatesMethod);
+            AddSertificate = new DelegateCommand(AddSertificateMethod);
+            RemoveSertificate = new DelegateCommand<Models.UserPageModel.Sertificate>(RemoveSertificateMethod);
 
             ResetLanguages = new DelegateCommand(MapLanguages);
             SaveLanguages = new DelegateCommand(SaveLanguagesMethod);
             AddLanguage = new DelegateCommand(AddLanguageMethod);
             RemoveLanguage = new DelegateCommand<Models.UserPageModel.Language>(RemoveLanguageMethod);
 
-            ResetProfessionalSummary = new DelegateCommand(MapProfessionalSummary);
             ResetProjects = new DelegateCommand(MapProjects);
-            ResetSertificates = new DelegateCommand(MapSertificates);
+            SaveProjects = new DelegateCommand(SaveProjectsMethod);
+            AddProject = new DelegateCommand(AddProjectMethod);
+            RemoveProject = new DelegateCommand<Models.UserPageModel.Project>(RemoveProjectMethod);
+
+            ResetProfessionalSummary = new DelegateCommand(MapProfessionalSummary);            
+            
             ResetSkills = new DelegateCommand(MapSkills);
         }
 
+        #endregion
+
         #region User saving
 
+        private async void SaveProjectsMethod()
+        {
+            using (var _database = new ManagerEntities())
+            {
+                var userProjects = (await _database.Users.Where(u => u.Id == User.Id)
+                    .Include(u => u.Projects)
+                    .FirstOrDefaultAsync()).Projects;
+
+                // Removing and changing projects
+                foreach (var userProject in userProjects)
+                {
+                    var _userProject = Projects.FirstOrDefault(l => l.Id == userProject.Id);
+                    // If exists in local collection, change data
+                    if (_userProject != null)
+                    {
+                        _userProject.StartDate = userProject.StartDate;
+                        _userProject.EndDate = userProject.EndDate;
+                        _userProject.Description = userProject.Description;
+                        _userProject.PositionId = userProject.PositionId;
+                        _userProject.Name = userProject.Name;
+                    }
+                    // If not exists in local collection - remove.
+                    else
+                    {
+                        userProjects.Remove(userProject);
+                    }
+                }
+
+                // Adding new project
+                foreach (var newProject in Projects.Where(l => l.Id == 0))
+                {
+                    userProjects.Add(new Project
+                    {
+                        StartDate = newProject.StartDate,
+                        EndDate = newProject.EndDate,
+                        Description = newProject.Description,
+                        PositionId = newProject.PositionId,
+                        Name = newProject.Name,
+                        UserId = User.Id
+                    });
+                }
+            }
+        }
+        private void AddProjectMethod()
+        {
+            Projects.Add(new Models.UserPageModel.Project());
+        }
+        private void RemoveProjectMethod(Models.UserPageModel.Project project)
+        {
+            Projects.Remove(project);
+        }
+
+        private async void SaveEducationsMethod()
+        {
+            using (var _database = new ManagerEntities())
+            {
+                var userEducations = (await _database.Users.Where(u => u.Id == User.Id)
+                    .Include(u => u.Educations)
+                    .FirstOrDefaultAsync()).Educations;
+
+                // Removing and changing educations
+                foreach (var userEducation in userEducations)
+                {
+                    var _userEducation = Educations.FirstOrDefault(l => l.Id == userEducation.Id);
+                    // If exists in local collection, change data
+                    if (_userEducation != null)
+                    {
+                        _userEducation.StartDate = userEducation.StartDate;
+                        _userEducation.EndDate = userEducation.EndDate;
+                        _userEducation.Faculty = userEducation.Faculty;
+                        _userEducation.Speciality = userEducation.Speciality;
+                        _userEducation.University = userEducation.University;
+                    }
+                    // If not exists in local collection - remove.
+                    else
+                    {
+                        userEducations.Remove(userEducation);
+                    }
+                }
+
+                // Adding new education
+                foreach (var newEducation in Educations.Where(l => l.Id == 0))
+                {
+                    userEducations.Add(new Education
+                    {
+                        StartDate = newEducation.StartDate,
+                        EndDate = newEducation.EndDate,
+                        Faculty = newEducation.Faculty,
+                        Speciality = newEducation.Speciality,
+                        University = newEducation.University,
+                        UserId = User.Id
+                    });
+                }
+            }
+        }
+        private void AddEducationMethod()
+        {
+            Educations.Add(new Models.UserPageModel.Education());
+        }
+        private void RemoveEducationMethod(Models.UserPageModel.Education education)
+        {
+            Educations.Remove(education);
+        }
+
+        private async void SaveSertificatesMethod()
+        {
+            using (var _database = new ManagerEntities())
+            {
+                var userSertificates = (await _database.Users.Where(u => u.Id == User.Id)
+                    .Include(u => u.Sertificates)
+                    .FirstOrDefaultAsync()).Sertificates;
+
+                // Removing and changing sertificates
+                foreach (var userSertificate in userSertificates)
+                {
+                    var _userSertificate = Sertificates.FirstOrDefault(l => l.Id == userSertificate.Id);
+                    // If exists in local collection, change data
+                    if (_userSertificate != null)
+                    {
+                        _userSertificate.Name = userSertificate.Name;
+                        _userSertificate.Date = userSertificate.Date;
+                    }
+                    // If not exists in local collection - remove.
+                    else
+                    {
+                        userSertificates.Remove(userSertificate);
+                    }
+                }
+
+                // Adding new sertificates
+                foreach (var newSertificate in Sertificates.Where(l => l.Id == 0))
+                {
+                    userSertificates.Add(new Sertificate
+                    {
+                        Name = newSertificate.Name,
+                        Date = newSertificate.Date,
+                        UserId = User.Id
+                    });
+                }
+            }
+        }
+        private void AddSertificateMethod()
+        {
+            Sertificates.Add(new Models.UserPageModel.Sertificate());
+        }
+        private void RemoveSertificateMethod(Models.UserPageModel.Sertificate sertificate)
+        {
+            Sertificates.Remove(sertificate);
+        }
+        
         private async void SaveLanguagesMethod()
         {
             using (var _database = new ManagerEntities())
@@ -139,20 +306,15 @@ namespace ITManager.ViewModels
                     userLanguages.Add(new Language
                     {
                         Name = newLanguage.Name,
-                        LanguageLevelId = newLanguage.LanguageLevelId
+                        LanguageLevelId = newLanguage.LanguageLevelId,
+                        UserId = User.Id
                     });
                 }
             }
         }
         private void AddLanguageMethod()
         {
-            Languages.Add(new Models.UserPageModel.Language
-            {
-                Id = 0,
-                LanguageLevelId = 0,
-                Name = null,
-                UserId =  User.Id
-            });
+            Languages.Add(new Models.UserPageModel.Language());
         }
         private void RemoveLanguageMethod(Models.UserPageModel.Language language)
         {

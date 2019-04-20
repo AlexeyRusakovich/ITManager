@@ -19,7 +19,7 @@ namespace ITManager.ViewModels
         public ObservableCollection<UserRoleManagementModel> Users { get; set; } = new ObservableCollection<UserRoleManagementModel>();
         public ObservableCollection<Role> Roles { get; set; } = new ObservableCollection<Role>();
 
-        private ManagerEntities _database = new ManagerEntities();
+        private ITManagerEntities _database = new ITManagerEntities();
 
         public ICommand SaveUsers { get; set; }
         public ICommand GetUsers { get; set;}

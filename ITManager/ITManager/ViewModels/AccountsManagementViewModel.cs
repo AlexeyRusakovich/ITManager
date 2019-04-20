@@ -30,7 +30,7 @@ namespace ITManager.ViewModels
 
         public ObservableCollection<UserAccountManagementModel> Users { get; set; } = new ObservableCollection<UserAccountManagementModel>();
         public ObservableCollection<Role> Roles { get; set; } = new ObservableCollection<Role>();
-        private readonly ManagerEntities _database = new ManagerEntities();
+        private readonly ITManagerEntities _database = new ITManagerEntities();
 
         public AccountsManagementViewModel() : base("Accounts Management")
         {

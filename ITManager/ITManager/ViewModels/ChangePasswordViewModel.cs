@@ -38,7 +38,7 @@ namespace ITManager.ViewModels
 
         private async void ChangePasswordMethod()
         {
-            using (var _database = new ManagerEntities())
+            using (var _database = new ITManagerEntities())
             { 
                 var user = ShellViewModel.CurrentUser;
                 if (user != null)

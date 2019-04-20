@@ -159,8 +159,11 @@
     <Compile Include="Behaviors\PasswordBehavior.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Converters\DatesToDateRangeConverter.cs" />
+    <Compile Include="Converters\PositionIdToNameConverter.cs" />
+    <Compile Include="Converters\ProfessionalSkillIdToNameConverter.cs" />
     <Compile Include="Converters\ReverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\LaguageLevelIdToNameConverter.cs" />
+    <Compile Include="Converters\SkillLevelIdToNameConverter.cs" />
     <Compile Include="Database\Education.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
@@ -209,7 +212,7 @@
     <Compile Include="Database\SkillLevel.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\TechnicalGroup.cs">
+    <Compile Include="Database\sysdiagram.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\User.cs">

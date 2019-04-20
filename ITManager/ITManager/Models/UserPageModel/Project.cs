@@ -14,6 +14,19 @@ namespace ITManager.Models.UserPageModel
         public int PositionId { get; set; }
         public string Description { get; set; }
 
+        public bool StillGoes
+        {
+            get => EndDate == null;
+
+            set
+            {
+                if (value)
+                    EndDate = null;
+                else
+                    EndDate = new Nullable<DateTime>(new DateTime());
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

@@ -14,11 +14,16 @@ namespace ITManager.Database
     
     public partial class ProfessionalSkill
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ProfessionalSkill()
+        {
+            this.UserSkills = new HashSet<UserSkill>();
+        }
+    
         public int Id { get; set; }
-        public Nullable<int> ProfessionalGroupId { get; set; }
         public string Name { get; set; }
     
-        public virtual TechnicalGroup TechnicalGroup { get; set; }
-        public virtual UserSkill UserSkill { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserSkill> UserSkills { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace ITManager.ViewModels
         public ObservableCollection<Position> Positions { get; set; } = new ObservableCollection<Position>();
 
 
-        private ManagerEntities _database = new ManagerEntities();
+        private ITManagerEntities _database = new ITManagerEntities();
         private readonly INavigationService _navigationService;
 
         public RegisterViewModel(INavigationService navigationService) : base("Registration")

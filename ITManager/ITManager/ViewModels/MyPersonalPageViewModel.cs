@@ -56,6 +56,7 @@ namespace ITManager.ViewModels
         public IList<LanguageLevel> LanguageLevels { get; set; }
         public IList<SkillLevel> SkillLevels { get; set; }
         public IList<Position> Positions { get; set; }
+        public IList<ProfessionalSkill> ProfessionalSkills { get; set;}
 
         #endregion
 
@@ -78,6 +79,22 @@ namespace ITManager.ViewModels
         public ObservableCollection<Models.UserPageModel.Sertificate> Sertificates { get; set; }
 
         public ObservableCollection<Models.UserPageModel.Language> Languages { get; set; }
+
+        #endregion
+
+        #region Toggle buttons properties
+
+        public bool IsProfessionalSummaryChecked { get; set; }
+
+        public bool IsSkillsChecked { get; set; }
+
+        public bool IsProjectsChecked { get; set; }
+
+        public bool IsEducationsChecked { get; set; }
+
+        public bool IsSertificatesChecked { get; set; }
+
+        public bool IsLanguagesChecked { get; set; }
 
         #endregion
 
@@ -116,18 +133,92 @@ namespace ITManager.ViewModels
             AddProject = new DelegateCommand(AddProjectMethod);
             RemoveProject = new DelegateCommand<Models.UserPageModel.Project>(RemoveProjectMethod);
 
-            ResetProfessionalSummary = new DelegateCommand(MapProfessionalSummary);            
+            ResetProfessionalSummary = new DelegateCommand(MapProfessionalSummary);     
+            SaveProfessionalSummary = new DelegateCommand(SaveProfessionalSummaryMethod);
             
             ResetSkills = new DelegateCommand(MapSkills);
+            SaveSkills = new DelegateCommand(SaveSkillsMethod);
+            AddSkill = new DelegateCommand(AddSkillMethod);
+            RemoveSkill = new DelegateCommand<Models.UserPageModel.UserSkill>(RemoveSkillMethod);
         }
 
         #endregion
 
         #region User saving
 
+        private async void SaveSkillsMethod()
+        {
+            using (var _database = new ITManagerEntities())
+            {
+                var userSkills = (await _database.Users.Where(u => u.Id == User.Id)
+                    .Include(u => u.UserSkills)
+                    .FirstOrDefaultAsync()).UserSkills;
+
+                // Removing and changing skills
+                foreach (var userSkill in userSkills)
+                {
+                    var _userSkill = Skills.FirstOrDefault(l => l.Id == userSkill.Id);
+                    // If exists in local collection, change data
+                    if (_userSkill != null)
+                    {
+                        userSkill.SkillId = _userSkill.SkillId;
+                        userSkill.SkillLevelId = _userSkill.SkillLevelId;
+                        userSkill.UserId = User.Id;
+                    }
+                    // If not exists in local collection - remove.
+                    else
+                    {
+                        userSkills.Remove(userSkill);
+                    }
+                }
+
+                // Adding new skill
+                foreach (var newSkill in Skills.Where(l => l.Id == 0))
+                {
+                    userSkills.Add(new UserSkill
+                    {
+                        SkillId = newSkill.SkillId,
+                        SkillLevelId = newSkill.SkillLevelId,
+                        UserId = User.Id
+                    });
+                }
+
+                IsSkillsChecked = false;
+                User.UserSkills = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.UserSkills;
+
+                await _database.SaveChangesAsync();
+            }
+        }
+        private void AddSkillMethod()
+        {
+            Skills.Add(new Models.UserPageModel.UserSkill());
+        }
+        private void RemoveSkillMethod(Models.UserPageModel.UserSkill userSkill)
+        {
+            Skills.Remove(userSkill);
+        }
+
+
+        private async void SaveProfessionalSummaryMethod()
+        {
+            using (var _database = new ITManagerEntities())
+            {
+                var _professionalSummary =  (await _database.ProfessionalSummaries.Where(p => p.Id == ProfessionalSummary.Id).FirstOrDefaultAsync());
+                if (_professionalSummary != null)
+                {
+                    _professionalSummary.ProfessionalSummary1 = ProfessionalSummary.ProfessionalSummary1;
+                    User.ProfessionalSummaries = await _database.ProfessionalSummaries.Where(u => u.UserId == User.Id).ToListAsync();
+                }
+
+                IsProfessionalSummaryChecked = false;
+
+                await _database.SaveChangesAsync();
+            }
+        }
+
         private async void SaveProjectsMethod()
         {
-            using (var _database = new ManagerEntities())
+            using (var _database = new ITManagerEntities())
             {
                 var userProjects = (await _database.Users.Where(u => u.Id == User.Id)
                     .Include(u => u.Projects)
@@ -140,11 +231,11 @@ namespace ITManager.ViewModels
                     // If exists in local collection, change data
                     if (_userProject != null)
                     {
-                        _userProject.StartDate = userProject.StartDate;
-                        _userProject.EndDate = userProject.EndDate;
-                        _userProject.Description = userProject.Description;
-                        _userProject.PositionId = userProject.PositionId;
-                        _userProject.Name = userProject.Name;
+                        userProject.StartDate = _userProject.StartDate;
+                        userProject.EndDate = _userProject.EndDate;
+                        userProject.Description = _userProject.Description;
+                        userProject.PositionId = _userProject.PositionId;
+                        userProject.Name = _userProject.Name;
                     }
                     // If not exists in local collection - remove.
                     else
@@ -166,6 +257,11 @@ namespace ITManager.ViewModels
                         UserId = User.Id
                     });
                 }
+
+                IsProjectsChecked = false;
+                User.Projects = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Projects;
+
+                await _database.SaveChangesAsync();
             }
         }
         private void AddProjectMethod()
@@ -179,7 +275,7 @@ namespace ITManager.ViewModels
 
         private async void SaveEducationsMethod()
         {
-            using (var _database = new ManagerEntities())
+            using (var _database = new ITManagerEntities())
             {
                 var userEducations = (await _database.Users.Where(u => u.Id == User.Id)
                     .Include(u => u.Educations)
@@ -192,11 +288,11 @@ namespace ITManager.ViewModels
                     // If exists in local collection, change data
                     if (_userEducation != null)
                     {
-                        _userEducation.StartDate = userEducation.StartDate;
-                        _userEducation.EndDate = userEducation.EndDate;
-                        _userEducation.Faculty = userEducation.Faculty;
-                        _userEducation.Speciality = userEducation.Speciality;
-                        _userEducation.University = userEducation.University;
+                        userEducation.StartDate = _userEducation.StartDate;
+                        userEducation.EndDate = _userEducation.EndDate;
+                        userEducation.Faculty = _userEducation.Faculty;
+                        userEducation.Speciality = _userEducation.Speciality;
+                        userEducation.University = _userEducation.University;
                     }
                     // If not exists in local collection - remove.
                     else
@@ -218,6 +314,11 @@ namespace ITManager.ViewModels
                         UserId = User.Id
                     });
                 }
+
+                IsEducationsChecked = false;
+                User.Educations = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Educations;
+
+                await _database.SaveChangesAsync();
             }
         }
         private void AddEducationMethod()
@@ -231,7 +332,7 @@ namespace ITManager.ViewModels
 
         private async void SaveSertificatesMethod()
         {
-            using (var _database = new ManagerEntities())
+            using (var _database = new ITManagerEntities())
             {
                 var userSertificates = (await _database.Users.Where(u => u.Id == User.Id)
                     .Include(u => u.Sertificates)
@@ -264,6 +365,11 @@ namespace ITManager.ViewModels
                         UserId = User.Id
                     });
                 }
+
+                IsSertificatesChecked = false;
+                User.Sertificates = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Sertificates;
+
+                await _database.SaveChangesAsync();
             }
         }
         private void AddSertificateMethod()
@@ -277,7 +383,7 @@ namespace ITManager.ViewModels
         
         private async void SaveLanguagesMethod()
         {
-            using (var _database = new ManagerEntities())
+            using (var _database = new ITManagerEntities())
             {
                 var userLanguages = (await _database.Users.Where(u => u.Id == User.Id)
                     .Include(u => u.Languages)
@@ -310,6 +416,11 @@ namespace ITManager.ViewModels
                         UserId = User.Id
                     });
                 }
+
+                IsLanguagesChecked = false;
+                User.Languages = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Languages;
+
+                await _database.SaveChangesAsync();
             }
         }
         private void AddLanguageMethod()
@@ -327,11 +438,12 @@ namespace ITManager.ViewModels
 
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            using (var _database = new ManagerEntities())
+            using (var _database = new ITManagerEntities())
             {
                 LanguageLevels = await _database.LanguageLevels.ToListAsync();
                 SkillLevels = await _database.SkillLevels.ToListAsync();
                 Positions = await _database.Positions.ToListAsync();
+                ProfessionalSkills = await _database.ProfessionalSkills.ToListAsync();
 
                 var parameters = navigationContext.Parameters;
                 if (parameters["UserId"] != null)

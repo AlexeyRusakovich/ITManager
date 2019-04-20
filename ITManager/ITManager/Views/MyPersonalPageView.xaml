@@ -11,14 +11,26 @@
     <UserControl.Resources>
         <c:DatesToDateRangeConverter x:Key="DatesToDateRangeConverter" />
         <c:LaguageLevelIdToNameConverter x:Key="LaguageLevelIdToNameConverter" />
-        <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+        <c:PositionIdToNameConverter x:Key="PositionIdToNameConverter" />        
         <c:ReverseBooleanToVisibilityConverter x:Key="VisibleIfFalseConverter" />
+        <c:SkillLevelIdToNameConverter x:Key="SkillLevelIdToNameConverter"/>
+        <c:ProfessionalSkillIdToNameConverter x:Key="ProfessionalSkillIdToNameConverter"/>
+        <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+
         <CollectionViewSource x:Key="LanguageLevels" Source="{Binding LanguageLevels}"/>
+        <CollectionViewSource x:Key="Positions" Source="{Binding Positions}"/>
+        <CollectionViewSource x:Key="SkillLevels" Source="{Binding SkillLevels}"/>
+        <CollectionViewSource x:Key="ProfessionalSkills" Source="{Binding ProfessionalSkills}"/>
     </UserControl.Resources>
     <ScrollViewer Margin="40 20 0 20"
                   HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto">
         <Grid>
+            <Grid.Resources>
+                <Style TargetType="ComboBox">
+                    <Setter Property="Height" Value="20"/>
+                </Style>
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="Auto"/>
@@ -49,10 +61,37 @@
                             Style="{StaticResource SectionTitleStyle}" 
                             Margin="0"/>
                     <ToggleButton Content="✎"
+                                  Name="ProfessionalSummaryEditToggleButton"
+                                  IsChecked="{Binding IsProfessionalSummaryChecked, Mode=TwoWay}"
                                   Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
-                <TextBlock Text="{Binding ProfessionalSummary.ProfessionalSummary1}"/>
+                <TextBlock HorizontalAlignment="Left"
+                           Margin="10 0 0 0"
+                           Visibility="{Binding IsChecked, ElementName=ProfessionalSummaryEditToggleButton, Converter={StaticResource VisibleIfFalseConverter}}"
+                           Text="{Binding ProfessionalSummary.ProfessionalSummary1}" 
+                           Width="500" TextWrapping="Wrap"/>
+                <TextBox   HorizontalAlignment="Left"
+                           Margin="10 0 0 0"
+                           Visibility="{Binding IsChecked, ElementName=ProfessionalSummaryEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}"
+                           Text="{Binding ProfessionalSummary.ProfessionalSummary1}" 
+                           Width="500" TextWrapping="Wrap"/>
+                <StackPanel Visibility="{Binding IsChecked, ElementName=ProfessionalSummaryEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
+                            Margin="0 20 0 0"
+                            Orientation="Horizontal">
+                    <Button Content="Reset"
+                            Margin="0"
+                            DockPanel.Dock="Right"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding ResetProfessionalSummary}"/>
+                    <Button Content="Save"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding SaveProfessionalSummary}"/>
+                </StackPanel>
             </StackPanel>
             <!-- PROFESSIONAL SUMMARY ENDED -->
             
@@ -63,8 +102,112 @@
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
+                                  Name="SkillsEditToggleButton"
+                                  IsChecked="{Binding IsSkillsChecked, Mode=TwoWay}"
                                   Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
+                </StackPanel>
+                <ListBox ItemsSource="{Binding Skills, UpdateSourceTrigger=PropertyChanged}" 
+                         BorderThickness="0"
+                         IsEnabled="{Binding IsChecked, ElementName=SkillsEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=SkillsEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="{Binding SkillId, Converter={StaticResource ProfessionalSkillIdToNameConverter}, ConverterParameter={StaticResource ProfessionalSkills}}"/>
+                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding SkillLevelId, Converter={StaticResource SkillLevelIdToNameConverter}, ConverterParameter={StaticResource SkillLevels}}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=SkillsEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="ItemTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ComboBox Grid.Row="0" Grid.Column="0"  Width="100"
+                                                              IsSynchronizedWithCurrentItem="False"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValue="{Binding SkillId, UpdateSourceTrigger=PropertyChanged}"
+                                                              SelectedValuePath="Id"
+                                                              ItemsSource="{Binding Source={StaticResource ProfessionalSkills}}"/>
+                                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="100" Margin="20 0 0 0"
+                                                              IsSynchronizedWithCurrentItem="False"
+                                                              DisplayMemberPath="Level"
+                                                              SelectedValue="{Binding SkillLevelId, UpdateSourceTrigger=PropertyChanged}"
+                                                              SelectedValuePath="Id"
+                                                              ItemsSource="{Binding Source={StaticResource SkillLevels}}"/>
+
+
+                                                    <Button Margin="20 0 0 0"
+                                                            Grid.Column="2"
+                                                            FontSize="20"
+                                                            FontWeight="Bold"
+                                                            Width="35"
+                                                            Style="{StaticResource DefaultButtonStyle}" 
+                                                            Command="{Binding DataContext.RemoveSkill, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding .}">
+                                                        <Image Width="16" Height="16" Source="/ITManager;component/Images/remove.ico"></Image>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsTabStop" Value="False"/>
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+                <StackPanel Visibility="{Binding IsChecked, ElementName=SkillsEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
+                            Margin="0 20 0 0"
+                            Orientation="Horizontal">
+                    <Button Margin="0"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            DockPanel.Dock="Right"
+                            Width="35"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding AddSkill}">
+                        <Image Width="16" Height="16" Source="/ITManager;component/Images/add.ico"/>
+                    </Button>
+                    <Button Content="Reset"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding ResetSkills}"/>
+                    <Button Content="Save"
+                            DockPanel.Dock="Right"
+                            Margin="20 0 0 0"
+                            Width="150"
+                            Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding SaveSkills}"/>
                 </StackPanel>
             </StackPanel>
             <!-- SKILLS ENDED -->
@@ -76,6 +219,7 @@
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
+                                  IsChecked="{Binding IsProjectsChecked, Mode=TwoWay}"
                                   Name="ProjectsEditToggleButton"
                                   Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
@@ -118,7 +262,7 @@
                                                     <Label Grid.Row="2" Grid.Column="1" Content="{Binding Description}"/>
 
                                                     <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
-                                                    <Label Grid.Row="3" Grid.Column="1" Content="{Binding PositionId}"/>
+                                                    <Label Grid.Row="3" Grid.Column="1" Content="{Binding PositionId, Converter={StaticResource PositionIdToNameConverter}, ConverterParameter={StaticResource Positions}}"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </Setter.Value>
@@ -141,13 +285,15 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
                                                     <Label Grid.Row="0" Grid.Column="0" Content="Project name: "/>
-                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Name}"/>
+                                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" 
+                                                             Width="300" TextWrapping="Wrap"/>
 
                                                     
                                                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                                                         <Label Content="Start date: "/>
                                                         <DatePicker Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"/>
                                                         <CheckBox Content="StillGoes"
+                                                                  IsChecked="{Binding StillGoes}"
                                                                   Margin="20 0 20 0"
                                                                   Name="ProjectStillGoesCheckBox"/>
                                                         <Label Content="End date: "
@@ -160,7 +306,13 @@
                                                     <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Description}" Width="300" TextWrapping="Wrap"/>
 
                                                     <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
-                                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PositionId}" Width="300" TextWrapping="Wrap"/>
+                                                    <ComboBox Grid.Row="3" Grid.Column="1"
+                                                              IsSynchronizedWithCurrentItem="False"
+                                                              ItemsSource="{Binding Source={StaticResource Positions}}"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValue="{Binding PositionId, UpdateSourceTrigger=PropertyChanged}"
+                                                              SelectedValuePath="Id"
+                                                              Width="300"/>
 
                                                     <Button Margin="20 0 0 0"
                                                             Grid.Column="2"
@@ -222,6 +374,7 @@
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
+                                  IsChecked="{Binding IsEducationsChecked, Mode=TwoWay}"
                                   Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Name="EducationsEditToggleButton"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
@@ -365,6 +518,7 @@
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
+                                  IsChecked="{Binding IsSertificatesChecked, Mode=TwoWay}"
                                   Name="SertificatesEditToggleButton"
                                   Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
@@ -486,6 +640,7 @@
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"
                                   Name="LanguagesEditToggleButton"
+                                  IsChecked="{Binding IsLanguagesChecked, Mode=TwoWay}"
                                   Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>

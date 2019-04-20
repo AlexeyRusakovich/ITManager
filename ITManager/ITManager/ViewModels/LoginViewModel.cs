@@ -41,7 +41,7 @@ namespace ITManager.ViewModels
 
         private async void LoginApplicationMethod()
         {
-            using (var _database = new ManagerEntities())
+            using (var _database = new ITManagerEntities())
             { 
                 var user = await _database.Users.Where(u => u.Login == Login)
                     .Include(u => u.Position)

@@ -13,10 +13,10 @@ namespace ITManager.Database
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class ManagerEntities : DbContext
+    public partial class ITManagerEntities : DbContext
     {
-        public ManagerEntities()
-            : base("name=ManagerEntities")
+        public ITManagerEntities()
+            : base("name=ITManagerEntities")
         {
         }
     
@@ -36,7 +36,7 @@ namespace ITManager.Database
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Sertificate> Sertificates { get; set; }
         public virtual DbSet<SkillLevel> SkillLevels { get; set; }
-        public virtual DbSet<TechnicalGroup> TechnicalGroups { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<UserSkill> UserSkills { get; set; }

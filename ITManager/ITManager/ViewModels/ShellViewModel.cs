@@ -28,7 +28,7 @@ namespace ITManager.ViewModels
             set
             {
                 currentUser = value;
-                CurrentUserId = currentUser.Id;
+                CurrentUserId = currentUser == null ? -1 : currentUser.Id;
             }
         }
 

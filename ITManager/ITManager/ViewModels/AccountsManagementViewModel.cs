@@ -1,8 +1,10 @@
 ﻿using ITManager.Database;
+using ITManager.Events;
 using ITManager.Helpers;
 using ITManager.Models;
 using ITManager.ViewModels.Base;
 using Prism.Commands;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,13 +33,15 @@ namespace ITManager.ViewModels
         public ObservableCollection<UserAccountManagementModel> Users { get; set; } = new ObservableCollection<UserAccountManagementModel>();
         public ObservableCollection<Role> Roles { get; set; } = new ObservableCollection<Role>();
         private readonly ITManagerEntities _database = new ITManagerEntities();
+        private readonly EventAggregator _eventAggregator;
 
-        public AccountsManagementViewModel() : base("Accounts Management")
+        public AccountsManagementViewModel(EventAggregator eventAggregator) : base("Accounts Management")
         {
             Init();
             RegisterCommand = new DelegateCommand(RegisterMethod);
             ResetPassword = new DelegateCommand<UserAccountManagementModel>(ResetPasswordMethod);
             CopyToClipboard = new DelegateCommand<UserAccountManagementModel>(CopyToClipboardMethod);
+            _eventAggregator = eventAggregator;
         }
 
         private void CopyToClipboardMethod(UserAccountManagementModel user)
@@ -98,6 +102,8 @@ namespace ITManager.ViewModels
                 
                 await _database.SaveChangesAsync();
             }
+            await GetUsersMethod();
+            _eventAggregator.GetEvent<UpdateUserEvent>().Publish();
         }
 
         private async void ResetPasswordMethod(UserAccountManagementModel user)

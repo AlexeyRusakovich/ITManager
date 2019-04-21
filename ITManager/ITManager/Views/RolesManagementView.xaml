@@ -20,8 +20,8 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Label Content="{Binding Title}" 
-               Style="{StaticResource PageTitleStyle}"
-               Margin="20 10 0 0"/>
+                   Margin="20 10 0 0"
+               Style="{StaticResource PageTitleStyle}"/>
         <StackPanel Grid.Column="0" Grid.Row="1" Margin="20">
             <DataGrid ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged}" 
                       AutoGenerateColumns="False"

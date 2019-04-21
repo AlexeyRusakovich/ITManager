@@ -1,8 +1,10 @@
 ﻿using ITManager.Database;
+using ITManager.Events;
 using ITManager.Helpers;
 using ITManager.Models;
 using ITManager.ViewModels.Base;
 using Prism.Commands;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,14 +22,17 @@ namespace ITManager.ViewModels
         public ObservableCollection<Role> Roles { get; set; } = new ObservableCollection<Role>();
 
         private ITManagerEntities _database = new ITManagerEntities();
+        private readonly EventAggregator _eventAggregator;
 
         public ICommand SaveUsers { get; set; }
         public ICommand GetUsers { get; set;}
-        public RolesManagementViewModel() : base("Roles Management")
+        public RolesManagementViewModel(EventAggregator eventAggregator) : base("Roles Management")
         {
             GetUsersMethod();
             SaveUsers = new DelegateCommand(SaveUsersMethod);
             GetUsers = new DelegateCommand(GetUsersMethod);
+            _eventAggregator = eventAggregator;
+            _eventAggregator.GetEvent<UpdateUserEvent>().Subscribe(GetUsersMethod);
         }
         
         private async void GetUsersMethod()

@@ -121,12 +121,14 @@
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
                                                     <Label Grid.Row="0" Grid.Column="0" Content="{Binding SkillId, Converter={StaticResource ProfessionalSkillIdToNameConverter}, ConverterParameter={StaticResource ProfessionalSkills}}"/>
-                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding SkillLevelId, Converter={StaticResource SkillLevelIdToNameConverter}, ConverterParameter={StaticResource SkillLevels}}"/>
+                                                    <Label Grid.Row="0" Grid.Column="1" Content="-"/>
+                                                    <Label Grid.Row="0" Grid.Column="2" Content="{Binding SkillLevelId, Converter={StaticResource SkillLevelIdToNameConverter}, ConverterParameter={StaticResource SkillLevels}}"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </Setter.Value>
@@ -570,7 +572,7 @@
                                                     </Grid.RowDefinitions>
 
                                                     <Label Grid.Row="0" Grid.Column="0" Content="Sertificated: "/>
-                                                    <DatePicker Grid.Row="0" Grid.Column="1" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <DatePicker Grid.Row="0" Grid.Column="1" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}" Height="20"/>
 
                                                     <Label Grid.Row="1" Grid.Column="0" Content="Area: "/>
                                                     <TextBox Grid.Row="1"

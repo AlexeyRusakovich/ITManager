@@ -8,8 +8,8 @@ namespace ITManager.Models.UserPageModel
     public partial class ProfessionalSkill : INotifyPropertyChanged
     {
         public int Id { get; set; }
-        public Nullable<int> ProfessionalGroupId { get; set; }
         public string Name { get; set; }
+        public bool IsChecked { get; set;}
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

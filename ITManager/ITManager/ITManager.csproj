@@ -225,12 +225,14 @@
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Events\CloseMenuEvent.cs" />
+    <Compile Include="Events\UpdateUserEvent.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\NavigationHelper.cs" />
     <Compile Include="Helpers\NavigationService.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
     <Compile Include="Helpers\RandomStringGenerator.cs" />
     <Compile Include="Interfaces\INavigationService.cs" />
+    <Compile Include="Models\SearchPageModels\SearchedUserModel.cs" />
     <Compile Include="Models\UserAccountManagementModel.cs" />
     <Compile Include="Models\UserPageModel\Education.cs" />
     <Compile Include="Models\UserPageModel\Language.cs" />

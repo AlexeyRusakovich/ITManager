@@ -111,6 +111,9 @@ namespace ITManager.ViewModels
                 cfg.CreateMap<Education, Models.UserPageModel.Education>();
                 cfg.CreateMap<Sertificate, Models.UserPageModel.Sertificate>();
                 cfg.CreateMap<Language, Models.UserPageModel.Language>();
+                cfg.CreateMap<ProfessionalSkill, Models.UserPageModel.ProfessionalSkill>()
+                .ForMember(vm => vm.Id, m => m.MapFrom(u => u.Id))
+                .ForMember(vm => vm.Name, m => m.MapFrom(u => u.Name ));
             });
 
             ResetEducations = new DelegateCommand(MapEducations);
@@ -448,7 +451,8 @@ namespace ITManager.ViewModels
                 var parameters = navigationContext.Parameters;
                 if (parameters["UserId"] != null)
                 {
-                    var user = await _database.Users.Where(u => u.Id == (int)parameters["UserId"])
+                    var userId = int.Parse(parameters["UserId"].ToString());
+                    var user = await _database.Users.Where(u => u.Id == userId)
                         .Include(u => u.Position)
                         .Include(u => u.ProfessionalSummaries)
                         .Include(u => u.UserSkills)
@@ -460,7 +464,8 @@ namespace ITManager.ViewModels
                     if (user != null)
                     {
                         User = user;
-                        if (User.UserRoles.FirstOrDefault().RoleId == Helpers.Constants.ManagerRole)
+                        if (User.UserRoles.FirstOrDefault().RoleId == Helpers.Constants.ManagerRole ||
+                            User.Id == ShellViewModel.CurrentUserId)
                         {
                             CanUserChangeData = true;
                         }

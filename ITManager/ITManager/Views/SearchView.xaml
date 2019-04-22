@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:a="clr-namespace:ITManager.AttachedProperties"
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -52,16 +53,30 @@
                        Margin="0 0 0 20"
                        Width="300"
                        TextWrapping="Wrap"/>
-                <ComboBox ItemsSource="{Binding Skills}"
-                          ItemTemplate="{StaticResource ComboBoxTemplate}"
-                          Width="300"/>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding Skills}"
+                              ItemTemplate="{StaticResource ComboBoxTemplate}"
+                              Width="300"/>
+                    <Button Content="Search"
+                            Style="{StaticResource DefaultButtonStyle}"
+                            Width="100" Height="30" Margin="20 0 0 0" 
+                            Command="{Binding SearchCommand}"
+                            VerticalAlignment="Bottom"/>
+                </StackPanel>
 
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Text="{Binding QueryDescription, UpdateSourceTrigger=PropertyChanged}"
+                             a:UserRolesAttachedProperties.RequiredRoles="2"
+                             Width="150" Height="30" Margin="150 20 0 0"
+                             VerticalAlignment="Bottom"/>
+                    <Button Content="Save search query"
+                            a:UserRolesAttachedProperties.RequiredRoles="2"
+                            Style="{StaticResource DefaultButtonStyle}"
+                            Width="150" Height="30" Margin="20 0 0 0" 
+                            Command="{Binding SaveQueryCommand}"
+                            VerticalAlignment="Bottom"/>
+                </StackPanel>
             </StackPanel>
-            <Button Content="Search"
-                    Style="{StaticResource DefaultButtonStyle}"
-                    Width="100" Height="30" Margin="20 0 0 0" 
-                    Command="{Binding SearchCommand}"
-                    VerticalAlignment="Bottom"/>
         </StackPanel>
         <ListBox ItemsSource="{Binding SearchedUsers}" 
                  Margin="20 20 0 0"

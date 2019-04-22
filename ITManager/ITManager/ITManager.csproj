@@ -225,8 +225,10 @@
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Events\CloseMenuEvent.cs" />
+    <Compile Include="Events\UpdateQueriesEvent.cs" />
     <Compile Include="Events\UpdateUserEvent.cs" />
     <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\MapperInitializer.cs" />
     <Compile Include="Helpers\NavigationHelper.cs" />
     <Compile Include="Helpers\NavigationService.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />

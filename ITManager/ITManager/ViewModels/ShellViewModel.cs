@@ -12,6 +12,7 @@ using ITManager.Database;
 using ITManager.Views;
 using ITManager.Events;
 using System.Windows;
+using ITManager.Helpers;
 
 namespace ITManager.ViewModels
 {
@@ -44,6 +45,8 @@ namespace ITManager.ViewModels
 
             _regionManager.RegisterViewWithRegion(Helpers.Constants.MainRegion, typeof(LoginView));
             _eventAggregator.GetEvent<CloseMenuEvent>().Subscribe(MenuStateChanged);
+
+            MapperInitializer.Initialize();
         }
 
         private void MenuStateChanged(bool value)

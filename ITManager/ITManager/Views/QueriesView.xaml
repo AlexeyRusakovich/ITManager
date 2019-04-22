@@ -8,6 +8,34 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+          <ListBox ItemsSource="{Binding Queries}">
+              <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Height="30">
+                        <Label Content="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
+                               Width="300"
+                               Height="30"/>
+                        <Button Style="{StaticResource DefaultButtonStyle}"
+                                Content="Execute query" Width="120"
+                                Height="30"
+                                Margin="20 0 0 0"
+                                Command="{Binding DataContext.GoToQuery, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding .}"/>
+                        <Button Style="{StaticResource DefaultButtonStyle}"
+                                Content="Remove query" Width="120"
+                                Margin="20 0 0 0"
+                                Height="30"
+                                Command="{Binding DataContext.RemoveQuery, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding .}"/>
+                    </StackPanel>
+                  </DataTemplate>
+              </ListBox.ItemTemplate>
+              <ListBox.ItemContainerStyle>
+                  <Style TargetType="ListBoxItem">
+                      <Setter Property="IsTabStop" Value="False"/>
+                      <Setter Property="Focusable" Value="False"/>
+                  </Style>
+              </ListBox.ItemContainerStyle>
+        </ListBox>
     </Grid>
 </UserControl>

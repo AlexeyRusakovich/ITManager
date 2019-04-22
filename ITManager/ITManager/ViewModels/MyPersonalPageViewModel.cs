@@ -102,20 +102,6 @@ namespace ITManager.ViewModels
 
         public MyPersonalPageViewModel() : base("My page")
         {
-            Mapper.Initialize(cfg=>
-            {
-                cfg.CreateMap<Position, Models.UserPageModel.Position>();
-                cfg.CreateMap<ProfessionalSummary, Models.UserPageModel.ProfessionalSummary>();
-                cfg.CreateMap<UserSkill, Models.UserPageModel.UserSkill>();
-                cfg.CreateMap<Project, Models.UserPageModel.Project>();
-                cfg.CreateMap<Education, Models.UserPageModel.Education>();
-                cfg.CreateMap<Sertificate, Models.UserPageModel.Sertificate>();
-                cfg.CreateMap<Language, Models.UserPageModel.Language>();
-                cfg.CreateMap<ProfessionalSkill, Models.UserPageModel.ProfessionalSkill>()
-                .ForMember(vm => vm.Id, m => m.MapFrom(u => u.Id))
-                .ForMember(vm => vm.Name, m => m.MapFrom(u => u.Name ));
-            });
-
             ResetEducations = new DelegateCommand(MapEducations);
             SaveEducations = new DelegateCommand(SaveEducationsMethod);
             AddEducation = new DelegateCommand(AddEducationMethod);
@@ -464,7 +450,7 @@ namespace ITManager.ViewModels
                     if (user != null)
                     {
                         User = user;
-                        if (User.UserRoles.FirstOrDefault().RoleId == Helpers.Constants.ManagerRole ||
+                        if (ShellViewModel.CurrentUser.UserRoles.FirstOrDefault().RoleId == Helpers.Constants.ManagerRole ||
                             User.Id == ShellViewModel.CurrentUserId)
                         {
                             CanUserChangeData = true;

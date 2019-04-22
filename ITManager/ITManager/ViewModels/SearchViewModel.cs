@@ -9,18 +9,21 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AutoMapper;
 using ITManager.Database;
+using ITManager.Events;
 using ITManager.Helpers;
 using ITManager.Interfaces;
 using ITManager.Models.SearchPageModels;
 using ITManager.ViewModels.Base;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Regions;
 
 namespace ITManager.ViewModels
 {
-    public class SearchViewModel : BaseViewModel
+    public class SearchViewModel : BaseViewModel, INavigationAware
     {
         private readonly INavigationService _navigationService;
+        private readonly IEventAggregator _eventAggregator;
 
         #region Properties
 
@@ -33,6 +36,8 @@ namespace ITManager.ViewModels
 
         public string SelectedItemsText { get; set; }
 
+        public string QueryDescription { get; set; }
+
         #endregion
 
         #region Commands
@@ -44,17 +49,41 @@ namespace ITManager.ViewModels
         public ICommand SearchCommand { get; set; }
 
         public ICommand NavigateToUserCommand { get; set; }
-        
+
+        public ICommand SaveQueryCommand { get; set; }
+
         #endregion
 
-        public SearchViewModel(INavigationService navigationService) : base("Search")
+        public SearchViewModel(INavigationService navigationService, IEventAggregator eventAggregator) : base("Search")
         {
             Init();
             CheckedCommand = new DelegateCommand<object>(CheckedMethod);
             UncheckedCommand = new DelegateCommand<object>(UncheckedMethod);
             SearchCommand = new DelegateCommand(SearchMethod);
             NavigateToUserCommand = new DelegateCommand<object>(NavigateToUserMethod);
+            SaveQueryCommand = new DelegateCommand(SaveQueryMethod);
             _navigationService = navigationService;
+            _eventAggregator = eventAggregator;
+        }
+
+        private async void SaveQueryMethod()
+        {
+            if (SelectedSkills.Count == 0)
+                return;
+
+            using (var _database = new ITManagerEntities())
+            {
+                var user = await _database.Users.Where(u => u.Id == ShellViewModel.CurrentUserId)
+                    .Include(u => u.Queries).FirstOrDefaultAsync();
+                user.Queries.Add(new Query()
+                {
+                    Description = QueryDescription,
+                    QueryString = string.Join(", ", SelectedSkills.Select(s => s.Id)),
+                    UserId = ShellViewModel.CurrentUserId
+                });
+                await _database.SaveChangesAsync();
+            }
+            _eventAggregator.GetEvent<UpdateQueriesEvent>().Publish();
         }
 
         private void NavigateToUserMethod(object user)
@@ -83,12 +112,17 @@ namespace ITManager.ViewModels
         private void CheckedMethod(object sender)
         {
             SelectedSkills.Add((Models.UserPageModel.ProfessionalSkill)sender);
-            SelectedItemsText =  string.Join(", ", SelectedSkills.Select(s => s.Name));
+            UpdateSelectedItemsText();
         }
 
         private void UncheckedMethod(object sender)
         {
             SelectedSkills.Remove((Models.UserPageModel.ProfessionalSkill)sender);
+            UpdateSelectedItemsText();
+        }
+
+        private void UpdateSelectedItemsText()
+        {
             SelectedItemsText =  string.Join(", ", SelectedSkills.Select(s => s.Name));
         }
 
@@ -100,6 +134,34 @@ namespace ITManager.ViewModels
                                                          u.UserRoles.FirstOrDefault().RoleId != Constants.ManagerRole).Include(u => u.UserSkills).ToListAsync();
                 Skills = Mapper.Map<IList<ProfessionalSkill>, IList<Models.UserPageModel.ProfessionalSkill>>(await _database.ProfessionalSkills.ToListAsync());
             }
+        }
+
+        public async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            var parameters = navigationContext.Parameters;
+            if (parameters["QueryId"] != null)
+            {
+                using (var _database = new ITManagerEntities())
+                {
+                    var queryId = int.Parse((string)parameters["QueryId"]);
+                    var query = await _database.Queries.Where(q => q.Id == queryId).FirstOrDefaultAsync();
+                    var queryIds = query.QueryString.Split(',').Select(q => int.Parse(q.Trim()));
+                    SelectedSkills = new ObservableCollection<Models.UserPageModel.ProfessionalSkill>(Skills.Where(s => queryIds.Contains(s.Id)));
+                    UpdateSelectedItemsText();
+                }
+
+                SearchMethod();
+            }
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            return;
         }
     }
 }

@@ -28,6 +28,7 @@ namespace ITManager.Database
         public virtual DbSet<Education> Educations { get; set; }
         public virtual DbSet<Language> Languages { get; set; }
         public virtual DbSet<LanguageLevel> LanguageLevels { get; set; }
+        public virtual DbSet<LanguagesList> LanguagesLists { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<ProfessionalSkill> ProfessionalSkills { get; set; }
         public virtual DbSet<ProfessionalSummary> ProfessionalSummaries { get; set; }
@@ -38,6 +39,7 @@ namespace ITManager.Database
         public virtual DbSet<SkillLevel> SkillLevels { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserProject> UserProjects { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<UserSkill> UserSkills { get; set; }
     }

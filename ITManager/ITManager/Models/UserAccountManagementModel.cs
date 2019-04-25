@@ -44,5 +44,7 @@ namespace ITManager.Models
                Set(ref _isInitial, value);
             }
         }
+
+        public bool IsActive { get; set;}
     }
 }

@@ -27,6 +27,8 @@ namespace ITManager.ViewModels
         public ICommand RegisterCommand { get; set; }
         public ICommand ResetPassword  { get; set; }
         public ICommand CopyToClipboard { get; set; }
+        public ICommand BlockUser { get; set;}
+        public ICommand UnblockUser { get; set;}
 
         public Role Role { get; set;}
 
@@ -41,7 +43,35 @@ namespace ITManager.ViewModels
             RegisterCommand = new DelegateCommand(RegisterMethod);
             ResetPassword = new DelegateCommand<UserAccountManagementModel>(ResetPasswordMethod);
             CopyToClipboard = new DelegateCommand<UserAccountManagementModel>(CopyToClipboardMethod);
+            BlockUser = new DelegateCommand<UserAccountManagementModel>(BlockUserMethod);
+            UnblockUser = new DelegateCommand<UserAccountManagementModel>(UnblockUserMethod);
             _eventAggregator = eventAggregator;
+        }
+
+        private async void BlockUserMethod(UserAccountManagementModel user)
+        {
+            using (var _database = new ITManagerEntities())
+            {
+                var _user = await _database.Users.Where(u => u.Id == user.UserId).FirstOrDefaultAsync();
+                if(_user == null)
+                    return;
+                user.IsActive = false;
+                _user.IsActive = false;
+                await _database.SaveChangesAsync();
+            }
+        }
+
+        private async void UnblockUserMethod(UserAccountManagementModel user)
+        {
+            using (var _database = new ITManagerEntities())
+            {
+                var _user = await _database.Users.Where(u => u.Id == user.UserId).FirstOrDefaultAsync();
+                if(_user == null)
+                    return;
+                user.IsActive = true;
+                _user.IsActive = true;
+                await _database.SaveChangesAsync();
+            }
         }
 
         private void CopyToClipboardMethod(UserAccountManagementModel user)
@@ -89,7 +119,8 @@ namespace ITManager.ViewModels
                     Birthday = DateTime.Parse(Birthday),
                     PositionId = Position.Id,
                     IsInitial = true,
-                    DefaultPassword = password
+                    DefaultPassword = password,
+                    IsActive = true
                 });
 
                 await _database.SaveChangesAsync();

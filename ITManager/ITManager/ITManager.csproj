@@ -173,6 +173,9 @@
     <Compile Include="Database\LanguageLevel.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\LanguagesList.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\ManagerDatabase.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -216,6 +219,9 @@
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\User.cs">
+      <DependentUpon>ManagerDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\UserProject.cs">
       <DependentUpon>ManagerDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\UserRole.cs">

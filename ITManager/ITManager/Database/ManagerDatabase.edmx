@@ -23,10 +23,17 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LanguageId" Type="int" Nullable="false" />
           <Property Name="LanguageLevelId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="LanguageLevel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LanguagesList">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -60,11 +67,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="StartDate" Type="date" Nullable="false" />
           <Property Name="EndDate" Type="date" />
-          <Property Name="PositionId" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="Query">
@@ -123,6 +128,17 @@
           <Property Name="Salt" Type="nvarchar" MaxLength="56" Nullable="false" />
           <Property Name="IsInitial" Type="bit" Nullable="false" />
           <Property Name="DefaultPassword" Type="nvarchar" MaxLength="32" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserProjects">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjectId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PositionId" Type="int" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="UserRoles">
           <Key>
@@ -165,6 +181,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Language_LanguagesList">
+          <End Role="LanguagesList" Type="Self.LanguagesList" Multiplicity="1" />
+          <End Role="Language" Type="Self.Language" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LanguagesList">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Language">
+              <PropertyRef Name="LanguageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Language_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Language" Type="Self.Language" Multiplicity="*" />
@@ -185,30 +213,6 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="ProfessionalSummary">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Project_Position">
-          <End Role="Position" Type="Self.Position" Multiplicity="1" />
-          <End Role="Project" Type="Self.Project" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Position">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Project">
-              <PropertyRef Name="PositionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Project_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
-          <End Role="Project" Type="Self.Project" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Project">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -246,6 +250,30 @@
             </Principal>
             <Dependent Role="User">
               <PropertyRef Name="PositionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserProjects_Project">
+          <End Role="Project" Type="Self.Project" Multiplicity="1" />
+          <End Role="UserProjects" Type="Self.UserProjects" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProjects">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserProjects_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserProjects" Type="Self.UserProjects" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProjects">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -313,6 +341,7 @@
           <EntitySet Name="Education" EntityType="Self.Education" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Language" EntityType="Self.Language" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LanguageLevel" EntityType="Self.LanguageLevel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LanguagesList" EntityType="Self.LanguagesList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Position" EntityType="Self.Position" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProfessionalSkill" EntityType="Self.ProfessionalSkill" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProfessionalSummary" EntityType="Self.ProfessionalSummary" Schema="dbo" store:Type="Tables" />
@@ -323,6 +352,7 @@
           <EntitySet Name="SkillLevel" EntityType="Self.SkillLevel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserProjects" EntityType="Self.UserProjects" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSkills" EntityType="Self.UserSkills" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Education_User" Association="Self.FK_Education_User">
@@ -333,6 +363,10 @@
             <End Role="LanguageLevel" EntitySet="LanguageLevel" />
             <End Role="Language" EntitySet="Language" />
           </AssociationSet>
+          <AssociationSet Name="FK_Language_LanguagesList" Association="Self.FK_Language_LanguagesList">
+            <End Role="LanguagesList" EntitySet="LanguagesList" />
+            <End Role="Language" EntitySet="Language" />
+          </AssociationSet>
           <AssociationSet Name="FK_Language_User" Association="Self.FK_Language_User">
             <End Role="User" EntitySet="User" />
             <End Role="Language" EntitySet="Language" />
@@ -340,14 +374,6 @@
           <AssociationSet Name="FK_ProfessionalSummary_User" Association="Self.FK_ProfessionalSummary_User">
             <End Role="User" EntitySet="User" />
             <End Role="ProfessionalSummary" EntitySet="ProfessionalSummary" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Project_Position" Association="Self.FK_Project_Position">
-            <End Role="Position" EntitySet="Position" />
-            <End Role="Project" EntitySet="Project" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Project_User" Association="Self.FK_Project_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="Project" EntitySet="Project" />
           </AssociationSet>
           <AssociationSet Name="FK_Query_User" Association="Self.FK_Query_User">
             <End Role="User" EntitySet="User" />
@@ -360,6 +386,14 @@
           <AssociationSet Name="FK_User_Position" Association="Self.FK_User_Position">
             <End Role="Position" EntitySet="Position" />
             <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProjects_Project" Association="Self.FK_UserProjects_Project">
+            <End Role="Project" EntitySet="Project" />
+            <End Role="UserProjects" EntitySet="UserProjects" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProjects_User" Association="Self.FK_UserProjects_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserProjects" EntitySet="UserProjects" />
           </AssociationSet>
           <AssociationSet Name="FK_UserRoles_Role" Association="Self.FK_UserRoles_Role">
             <End Role="Role" EntitySet="Role" />
@@ -406,9 +440,10 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LanguageId" Type="Int32" Nullable="false" />
           <Property Name="LanguageLevelId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="LanguageLevel" Relationship="Self.FK_Language_LanguageLevel" FromRole="Language" ToRole="LanguageLevel" />
+          <NavigationProperty Name="LanguagesList" Relationship="Self.FK_Language_LanguagesList" FromRole="Language" ToRole="LanguagesList" />
           <NavigationProperty Name="User" Relationship="Self.FK_Language_User" FromRole="Language" ToRole="User" />
         </EntityType>
         <EntityType Name="LanguageLevel">
@@ -419,13 +454,20 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Languages" Relationship="Self.FK_Language_LanguageLevel" FromRole="LanguageLevel" ToRole="Language" />
         </EntityType>
+        <EntityType Name="LanguagesList">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Languages" Relationship="Self.FK_Language_LanguagesList" FromRole="LanguagesList" ToRole="Language" />
+        </EntityType>
         <EntityType Name="Position">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Projects" Relationship="Self.FK_Project_Position" FromRole="Position" ToRole="Project" />
           <NavigationProperty Name="Users" Relationship="Self.FK_User_Position" FromRole="Position" ToRole="User" />
         </EntityType>
         <EntityType Name="ProfessionalSkill">
@@ -450,14 +492,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="EndDate" Type="DateTime" Precision="0" />
-          <Property Name="PositionId" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Position" Relationship="Self.FK_Project_Position" FromRole="Project" ToRole="Position" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Project_User" FromRole="Project" ToRole="User" />
+          <NavigationProperty Name="UserProjects" Relationship="Self.FK_UserProjects_Project" FromRole="Project" ToRole="UserProjects" />
         </EntityType>
         <EntityType Name="Query">
           <Key>
@@ -519,15 +558,28 @@
           <Property Name="Salt" Type="String" MaxLength="56" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IsInitial" Type="Boolean" Nullable="false" />
           <Property Name="DefaultPassword" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Educations" Relationship="Self.FK_Education_User" FromRole="User" ToRole="Education" />
           <NavigationProperty Name="Languages" Relationship="Self.FK_Language_User" FromRole="User" ToRole="Language" />
           <NavigationProperty Name="Position" Relationship="Self.FK_User_Position" FromRole="User" ToRole="Position" />
           <NavigationProperty Name="ProfessionalSummaries" Relationship="Self.FK_ProfessionalSummary_User" FromRole="User" ToRole="ProfessionalSummary" />
-          <NavigationProperty Name="Projects" Relationship="Self.FK_Project_User" FromRole="User" ToRole="Project" />
           <NavigationProperty Name="Queries" Relationship="Self.FK_Query_User" FromRole="User" ToRole="Query" />
           <NavigationProperty Name="Sertificates" Relationship="Self.FK_Sertificate_User" FromRole="User" ToRole="Sertificate" />
+          <NavigationProperty Name="UserProjects" Relationship="Self.FK_UserProjects_User" FromRole="User" ToRole="UserProjects" />
           <NavigationProperty Name="UserRoles" Relationship="Self.FK_UserRoles_User" FromRole="User" ToRole="UserRoles" />
           <NavigationProperty Name="UserSkills" Relationship="Self.FK_UserSkills_User" FromRole="User" ToRole="UserSkills" />
+        </EntityType>
+        <EntityType Name="UserProject">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PositionId" Type="Int32" Nullable="false" />
+          <Property Name="Comment" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Project" Relationship="Self.FK_UserProjects_Project" FromRole="UserProjects" ToRole="Project" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserProjects_User" FromRole="UserProjects" ToRole="User" />
         </EntityType>
         <EntityType Name="UserRole">
           <Key>
@@ -575,6 +627,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Language_LanguagesList">
+          <End Role="LanguagesList" Type="Self.LanguagesList" Multiplicity="1" />
+          <End Role="Language" Type="Self.Language" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LanguagesList">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Language">
+              <PropertyRef Name="LanguageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Language_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Language" Type="Self.Language" Multiplicity="*" />
@@ -584,18 +648,6 @@
             </Principal>
             <Dependent Role="Language">
               <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Project_Position">
-          <End Role="Position" Type="Self.Position" Multiplicity="1" />
-          <End Role="Project" Type="Self.Project" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Position">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Project">
-              <PropertyRef Name="PositionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -635,15 +687,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Project_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
-          <End Role="Project" Type="Self.Project" Multiplicity="*" />
+        <Association Name="FK_UserProjects_Project">
+          <End Role="Project" Type="Self.Project" Multiplicity="1" />
+          <End Role="UserProjects" Type="Self.UserProject" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User">
+            <Principal Role="Project">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Project">
-              <PropertyRef Name="UserId" />
+            <Dependent Role="UserProjects">
+              <PropertyRef Name="ProjectId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -695,6 +747,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserProjects_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserProjects" Type="Self.UserProject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProjects">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserRoles_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="UserRoles" Type="Self.UserRole" Multiplicity="*" />
@@ -723,6 +787,7 @@
           <EntitySet Name="Educations" EntityType="Self.Education" />
           <EntitySet Name="Languages" EntityType="Self.Language" />
           <EntitySet Name="LanguageLevels" EntityType="Self.LanguageLevel" />
+          <EntitySet Name="LanguagesLists" EntityType="Self.LanguagesList" />
           <EntitySet Name="Positions" EntityType="Self.Position" />
           <EntitySet Name="ProfessionalSkills" EntityType="Self.ProfessionalSkill" />
           <EntitySet Name="ProfessionalSummaries" EntityType="Self.ProfessionalSummary" />
@@ -733,6 +798,7 @@
           <EntitySet Name="SkillLevels" EntityType="Self.SkillLevel" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="UserProjects" EntityType="Self.UserProject" />
           <EntitySet Name="UserRoles" EntityType="Self.UserRole" />
           <EntitySet Name="UserSkills" EntityType="Self.UserSkill" />
           <AssociationSet Name="FK_Education_User" Association="Self.FK_Education_User">
@@ -743,13 +809,13 @@
             <End Role="LanguageLevel" EntitySet="LanguageLevels" />
             <End Role="Language" EntitySet="Languages" />
           </AssociationSet>
+          <AssociationSet Name="FK_Language_LanguagesList" Association="Self.FK_Language_LanguagesList">
+            <End Role="LanguagesList" EntitySet="LanguagesLists" />
+            <End Role="Language" EntitySet="Languages" />
+          </AssociationSet>
           <AssociationSet Name="FK_Language_User" Association="Self.FK_Language_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Language" EntitySet="Languages" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Project_Position" Association="Self.FK_Project_Position">
-            <End Role="Position" EntitySet="Positions" />
-            <End Role="Project" EntitySet="Projects" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Position" Association="Self.FK_User_Position">
             <End Role="Position" EntitySet="Positions" />
@@ -763,9 +829,9 @@
             <End Role="User" EntitySet="Users" />
             <End Role="ProfessionalSummary" EntitySet="ProfessionalSummaries" />
           </AssociationSet>
-          <AssociationSet Name="FK_Project_User" Association="Self.FK_Project_User">
-            <End Role="User" EntitySet="Users" />
+          <AssociationSet Name="FK_UserProjects_Project" Association="Self.FK_UserProjects_Project">
             <End Role="Project" EntitySet="Projects" />
+            <End Role="UserProjects" EntitySet="UserProjects" />
           </AssociationSet>
           <AssociationSet Name="FK_Query_User" Association="Self.FK_Query_User">
             <End Role="User" EntitySet="Users" />
@@ -782,6 +848,10 @@
           <AssociationSet Name="FK_UserSkills_SkillLevel" Association="Self.FK_UserSkills_SkillLevel">
             <End Role="SkillLevel" EntitySet="SkillLevels" />
             <End Role="UserSkills" EntitySet="UserSkills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProjects_User" Association="Self.FK_UserProjects_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserProjects" EntitySet="UserProjects" />
           </AssociationSet>
           <AssociationSet Name="FK_UserRoles_User" Association="Self.FK_UserRoles_User">
             <End Role="User" EntitySet="Users" />
@@ -816,7 +886,7 @@
               <MappingFragment StoreEntitySet="Language">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="LanguageId" ColumnName="LanguageId" />
                 <ScalarProperty Name="LanguageLevelId" ColumnName="LanguageLevelId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -824,6 +894,14 @@
           <EntitySetMapping Name="LanguageLevels">
             <EntityTypeMapping TypeName="ITManagerModel.LanguageLevel">
               <MappingFragment StoreEntitySet="LanguageLevel">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LanguagesLists">
+            <EntityTypeMapping TypeName="ITManagerModel.LanguagesList">
+              <MappingFragment StoreEntitySet="LanguagesList">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
@@ -858,11 +936,9 @@
             <EntityTypeMapping TypeName="ITManagerModel.Project">
               <MappingFragment StoreEntitySet="Project">
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -927,6 +1003,18 @@
                 <ScalarProperty Name="Salt" ColumnName="Salt" />
                 <ScalarProperty Name="IsInitial" ColumnName="IsInitial" />
                 <ScalarProperty Name="DefaultPassword" ColumnName="DefaultPassword" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProjects">
+            <EntityTypeMapping TypeName="ITManagerModel.UserProject">
+              <MappingFragment StoreEntitySet="UserProjects">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

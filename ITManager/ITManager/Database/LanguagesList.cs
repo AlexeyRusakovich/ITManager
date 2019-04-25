@@ -12,15 +12,18 @@ namespace ITManager.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class Language
+    public partial class LanguagesList
     {
-        public int Id { get; set; }
-        public int UserId { get; set; }
-        public int LanguageId { get; set; }
-        public int LanguageLevelId { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public LanguagesList()
+        {
+            this.Languages = new HashSet<Language>();
+        }
     
-        public virtual LanguageLevel LanguageLevel { get; set; }
-        public virtual LanguagesList LanguagesList { get; set; }
-        public virtual User User { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Language> Languages { get; set; }
     }
 }

@@ -64,6 +64,32 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="1*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Margin="3"
+                                        CommandParameter="{Binding .}">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                    <Setter Property="Content" Value="Block"/>
+                                                    <Setter Property="Command" Value="{Binding DataContext.BlockUser, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                    <Setter Property="Background" Value="#FFD14F4F"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                    <Setter Property="Content" Value="Unblock"/>
+                                                    <Setter Property="Command" Value="{Binding DataContext.UnblockUser, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                    <Setter Property="Background" Value="#FF1FB03B"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
             <GroupBox Margin="0 20 0 0" 

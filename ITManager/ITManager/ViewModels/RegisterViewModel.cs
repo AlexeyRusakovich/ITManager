@@ -60,7 +60,8 @@ namespace ITManager.ViewModels
                     Name = FirstName,
                     Surname = LastName,
                     Birthday = DateTime.Parse(Birthday),
-                    PositionId = Position.Id
+                    PositionId = Position.Id,
+                    IsActive = true
                 });
 
                 await _database.SaveChangesAsync();

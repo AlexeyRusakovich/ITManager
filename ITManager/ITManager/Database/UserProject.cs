@@ -12,15 +12,15 @@ namespace ITManager.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class Language
+    public partial class UserProject
     {
         public int Id { get; set; }
+        public int ProjectId { get; set; }
         public int UserId { get; set; }
-        public int LanguageId { get; set; }
-        public int LanguageLevelId { get; set; }
+        public int PositionId { get; set; }
+        public string Comment { get; set; }
     
-        public virtual LanguageLevel LanguageLevel { get; set; }
-        public virtual LanguagesList LanguagesList { get; set; }
+        public virtual Project Project { get; set; }
         public virtual User User { get; set; }
     }
 }

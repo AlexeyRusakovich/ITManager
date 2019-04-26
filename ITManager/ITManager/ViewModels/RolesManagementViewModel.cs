@@ -52,9 +52,22 @@ namespace ITManager.ViewModels
             Roles.AddRange(await _database.Roles.ToListAsync());
         }
 
-        private void SaveUsersMethod()
+        private async void SaveUsersMethod()
         {
-            Console.WriteLine("i'm in ass");
+            using (var _database = new ITManagerEntities())
+            {
+                var users = await _database.Users.ToListAsync();
+                foreach (var user in users)
+                {
+                    var _user = Users.Where(u => u.UserId == user.Id).FirstOrDefault();
+                    if(_user == null)
+                        continue;
+                    user.UserRoles.FirstOrDefault().RoleId = _user.RoleId;
+                }
+                
+                await _database.SaveChangesAsync();
+                GetUsersMethod();
+            }
         }
     }
 }

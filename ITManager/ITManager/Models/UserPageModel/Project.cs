@@ -7,26 +7,12 @@ namespace ITManager.Models.UserPageModel
     public partial class Project : INotifyPropertyChanged
     {
         public int Id { get; set; }
+        public int ProjectId { get; set; }
         public int UserId { get; set; }
-        public string Name { get; set; }
-        public System.DateTime StartDate { get; set; }
-        public Nullable<System.DateTime> EndDate { get; set; }
         public int PositionId { get; set; }
-        public string Description { get; set; }
+        public string Comment { get; set; }
 
-        public bool StillGoes
-        {
-            get => EndDate == null;
-
-            set
-            {
-                if (value)
-                    EndDate = null;
-                else
-                    EndDate = new Nullable<DateTime>(new DateTime());
-            }
-        }
-
+        public ITManager.Database.Project RelatedProject { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

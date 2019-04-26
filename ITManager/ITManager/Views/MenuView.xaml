@@ -47,6 +47,24 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
+            <Button Content="Skills management"
+                    Style="{StaticResource MenuButtonStyle}"
+                    a:UserRolesAttachedProperties.RequiredRoles="2">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseDown">
+                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.SkillsManagementView}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+            <Button Content="Projects management"
+                    Style="{StaticResource MenuButtonStyle}"
+                    a:UserRolesAttachedProperties.RequiredRoles="2">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseDown">
+                        <i:InvokeCommandAction Command="{Binding NavigateTo}" CommandParameter="{x:Static c:Constants.ProjectsManagementView}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
             <Button Content="Roles management"
                     Style="{StaticResource MenuButtonStyle}"
                     a:UserRolesAttachedProperties.RequiredRoles="1">

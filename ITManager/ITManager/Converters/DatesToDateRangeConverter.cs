@@ -12,10 +12,13 @@ namespace ITManager.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var startDate = (DateTime)values.FirstOrDefault();
+            var startDate = values.FirstOrDefault();
             var endDate = values.LastOrDefault();
-            var endDateStringValue = endDate == null ? "Present" : ((DateTime)endDate).ToShortDateString();
-            return $"{startDate.ToShortDateString()} - {endDateStringValue}";
+            if(startDate == null || startDate.GetType() != typeof(DateTime))
+                return null;
+            var endDateStringValue = endDate == null ? "Present" : 
+                endDate.GetType() == typeof(DateTime) ? ((DateTime)endDate).ToShortDateString() : "";
+            return $"{((DateTime)startDate).ToShortDateString()} - {endDateStringValue}";
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

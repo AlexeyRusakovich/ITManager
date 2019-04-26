@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="ITManager.Views.SkillsManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ITManager.Converters"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Margin="20" Grid.Row="0" Style="{StaticResource PageTitleStyle}" Content="{Binding Title}"/>
+        <DataGrid Margin="20" 
+                Grid.Row="1" 
+                ItemsSource="{Binding Skills, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False">  
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn Header="Name"  Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Width="Auto"/>
+                <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Width="25" Height="25" Margin="3"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource DefaultButtonStyle}"
+                                    Background="#FFD14F4F"
+                                    Command="{Binding DataContext.RemoveSkill, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding .}">
+                                <Image Width="16" Height="16" Source="/ITManager;component/Images/remove.ico"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="2" Margin="20"
+                    Height="30"
+                    Orientation="Horizontal">
+            <TextBox Name="SkillTextBox" 
+                     Width="300"
+                     Height="30"/>
+            <Button Content="Add new skill"
+                    Width="150"
+                    Margin="20 0 0 0"
+                    Style="{StaticResource DefaultButtonStyle}"
+                    Command="{Binding AddSkill}" 
+                    CommandParameter="{Binding Text, ElementName=SkillTextBox}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Margin="20 0 0 40" Orientation="Horizontal">
+            <Button Content="Reset skills"  Width="150"
+                    Command="{Binding ResetSkills}"
+                    Style="{StaticResource DefaultButtonStyle}"/>
+            <Button Content="Save skills" Width="150"
+                    Margin="20 20 0 0"
+                    Command="{Binding SaveSkills}"
+                    Style="{StaticResource DefaultButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

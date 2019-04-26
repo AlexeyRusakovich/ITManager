@@ -47,7 +47,7 @@ namespace ITManager.ViewModels
                     .Include(u => u.Position)
                     .Include(u => u.ProfessionalSummaries)
                     .Include(u => u.UserSkills)
-                    .Include(u => u.Projects)
+                    .Include(u => u.UserProjects)
                     .Include(u => u.Educations)
                     .Include(u => u.Sertificates)
                     .Include(u => u.Languages)

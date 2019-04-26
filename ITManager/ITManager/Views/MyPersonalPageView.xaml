@@ -16,7 +16,10 @@
         <c:SkillLevelIdToNameConverter x:Key="SkillLevelIdToNameConverter"/>
         <c:ProfessionalSkillIdToNameConverter x:Key="ProfessionalSkillIdToNameConverter"/>
         <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+        <c:TrueIfNullConverter x:Key="TrueIfNullConverter"/>
 
+        <CollectionViewSource x:Key="LanguagesList" Source="{Binding LanguagesList}"/>
+        <CollectionViewSource x:Key="ProjectsList" Source="{Binding ProjectsList}"/>
         <CollectionViewSource x:Key="LanguageLevels" Source="{Binding LanguageLevels}"/>
         <CollectionViewSource x:Key="Positions" Source="{Binding Positions}"/>
         <CollectionViewSource x:Key="SkillLevels" Source="{Binding SkillLevels}"/>
@@ -248,20 +251,20 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
                                                     <Label Grid.Row="0" Grid.Column="0" Content="Project name: "/>
-                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Name}"/>
+                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding RelatedProject.Name}"/>
 
                                                     <Label Grid.Row="1" Grid.Column="0" Content="Duration: "/>
                                                     <Label Grid.Row="1" Grid.Column="1">
                                                         <Label.Content>
                                                             <MultiBinding Converter="{StaticResource DatesToDateRangeConverter}">
-                                                                <Binding Path="StartDate"/>
-                                                                <Binding Path="EndDate"/>
+                                                                <Binding Path="RelatedProject.StartDate"/>
+                                                                <Binding Path="RelatedProject.EndDate"/>
                                                             </MultiBinding>
                                                         </Label.Content>
                                                     </Label>
 
                                                     <Label Grid.Row="2" Grid.Column="0" Content="Description: "/>
-                                                    <Label Grid.Row="2" Grid.Column="1" Content="{Binding Description}"/>
+                                                    <Label Grid.Row="2" Grid.Column="1" Content="{Binding RelatedProject.Description}"/>
 
                                                     <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
                                                     <Label Grid.Row="3" Grid.Column="1" Content="{Binding PositionId, Converter={StaticResource PositionIdToNameConverter}, ConverterParameter={StaticResource Positions}}"/>
@@ -286,26 +289,33 @@
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Project name: "/>
-                                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" 
-                                                             Width="300" TextWrapping="Wrap"/>
-
+                                                    <Label Grid.Row="0" Grid.Column="0" Content="Project: "/>
+                                                    <ComboBox Grid.Row="0" Grid.Column="1"
+                                                              IsSynchronizedWithCurrentItem="False"
+                                                              ItemsSource="{Binding Source={StaticResource ProjectsList}}"
+                                                              DisplayMemberPath="Name"
+                                                              Name="SelectedProject"
+                                                              SelectedValue="{Binding ProjectId, UpdateSourceTrigger=PropertyChanged}"
+                                                              SelectedValuePath="Id"
+                                                              Width="300"/>
                                                     
                                                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                                                         <Label Content="Start date: "/>
-                                                        <DatePicker Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        <DatePicker Text="{Binding SelectedItem.StartDate, ElementName=SelectedProject, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
                                                         <CheckBox Content="StillGoes"
-                                                                  IsChecked="{Binding StillGoes}"
+                                                                  IsEnabled="False"
+                                                                  IsChecked="{Binding SelectedItem.EndDate, ElementName=SelectedProject, Converter={StaticResource TrueIfNullConverter}}"
                                                                   Margin="20 0 20 0"
                                                                   Name="ProjectStillGoesCheckBox"/>
                                                         <Label Content="End date: "
                                                                Visibility="{Binding IsChecked, ElementName=ProjectStillGoesCheckBox, Converter={StaticResource VisibleIfFalseConverter}}"/>
-                                                        <DatePicker Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}" 
+                                                        <DatePicker Text="{Binding SelectedItem.EndDate, ElementName=SelectedProject, UpdateSourceTrigger=PropertyChanged}" 
+                                                                    IsEnabled="False"
                                                                     Visibility="{Binding IsChecked, ElementName=ProjectStillGoesCheckBox, Converter={StaticResource VisibleIfFalseConverter}}"/>
                                                     </StackPanel>
 
                                                     <Label Grid.Row="2" Grid.Column="0" Content="Description: "/>
-                                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Description}" Width="300" TextWrapping="Wrap"/>
+                                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedItem.Description, ElementName=SelectedProject}" Width="300" TextWrapping="Wrap" IsEnabled="False"/>
 
                                                     <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
                                                     <ComboBox Grid.Row="3" Grid.Column="1"
@@ -667,7 +677,7 @@
                                                     </Grid.RowDefinitions>
 
                                                     <Label Grid.Row="0" Grid.Column="0" Content="Language: " VerticalAlignment="Top"/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" Width="300"  TextWrapping="Wrap"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="1" IsEnabled="False" Text="{Binding RelatedLanguage.Name}" Width="300"  TextWrapping="Wrap"/>
 
                                                     <Label Grid.Row="1" Grid.Column="0" Content="Level: " VerticalAlignment="Top"/>
                                                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LanguageLevelId, Converter={StaticResource LaguageLevelIdToNameConverter}, ConverterParameter={StaticResource LanguageLevels}}" Width="300" TextWrapping="Wrap"/>
@@ -692,11 +702,14 @@
                                                     </Grid.RowDefinitions>
 
                                                     <Label Grid.Row="0" Grid.Column="0" Content="Language: " VerticalAlignment="Top"/>
-                                                    <TextBox Grid.Row="0" 
+                                                    <ComboBox Grid.Row="0" 
                                                             Grid.Column="1" 
                                                             Width="300"
                                                             Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                                                            TextWrapping="Wrap"/>
+                                                            DisplayMemberPath="Name"
+                                                            SelectedValue="{Binding LanguageId, UpdateSourceTrigger=PropertyChanged}"
+                                                            SelectedValuePath="Id"
+                                                            ItemsSource="{Binding Source={StaticResource LanguagesList}}"/>
 
                                                     <Label Grid.Row="1" Grid.Column="0" Content="Level: " VerticalAlignment="Top"/>
                                                     <ComboBox Grid.Row="1" Grid.Column="1"

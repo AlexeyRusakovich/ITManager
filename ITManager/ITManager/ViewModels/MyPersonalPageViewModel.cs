@@ -53,6 +53,8 @@ namespace ITManager.ViewModels
 
         #region Constants collections
 
+        public IList<Project> ProjectsList {get; set; }
+        public IList<LanguagesList> LanguagesList { get; set;}
         public IList<LanguageLevel> LanguageLevels { get; set; }
         public IList<SkillLevel> SkillLevels { get; set; }
         public IList<Position> Positions { get; set; }
@@ -210,8 +212,8 @@ namespace ITManager.ViewModels
             using (var _database = new ITManagerEntities())
             {
                 var userProjects = (await _database.Users.Where(u => u.Id == User.Id)
-                    .Include(u => u.Projects)
-                    .FirstOrDefaultAsync()).Projects;
+                    .Include(u => u.UserProjects)
+                    .FirstOrDefaultAsync()).UserProjects;
 
                 // Removing and changing projects
                 foreach (var userProject in userProjects)
@@ -220,11 +222,9 @@ namespace ITManager.ViewModels
                     // If exists in local collection, change data
                     if (_userProject != null)
                     {
-                        userProject.StartDate = _userProject.StartDate;
-                        userProject.EndDate = _userProject.EndDate;
-                        userProject.Description = _userProject.Description;
+                        userProject.ProjectId = _userProject.ProjectId;
+                        userProject.Comment = _userProject.Comment;
                         userProject.PositionId = _userProject.PositionId;
-                        userProject.Name = _userProject.Name;
                     }
                     // If not exists in local collection - remove.
                     else
@@ -236,19 +236,18 @@ namespace ITManager.ViewModels
                 // Adding new project
                 foreach (var newProject in Projects.Where(l => l.Id == 0))
                 {
-                    userProjects.Add(new Project
+                    userProjects.Add(new UserProject
                     {
-                        StartDate = newProject.StartDate,
-                        EndDate = newProject.EndDate,
-                        Description = newProject.Description,
+                        ProjectId = newProject.ProjectId,
+                        Comment = newProject.Comment,
                         PositionId = newProject.PositionId,
-                        Name = newProject.Name,
                         UserId = User.Id
                     });
                 }
 
                 IsProjectsChecked = false;
-                User.Projects = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Projects;
+                User.UserProjects = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.UserProjects;
+                MapProjects();
 
                 await _database.SaveChangesAsync();
             }
@@ -385,8 +384,8 @@ namespace ITManager.ViewModels
                     // If exists in local collection, change data
                     if (_userLanguage != null)
                     {
-                        _userLanguage.Name = userLanguage.Name;
-                        _userLanguage.LanguageLevelId = userLanguage.LanguageLevelId;
+                        userLanguage.LanguageId = _userLanguage.LanguageId;
+                        userLanguage.LanguageLevelId = _userLanguage.LanguageLevelId;
                     }
                     // If not exists in local collection - remove.
                     else
@@ -400,7 +399,7 @@ namespace ITManager.ViewModels
                 {
                     userLanguages.Add(new Language
                     {
-                        Name = newLanguage.Name,
+                        LanguageId = newLanguage.LanguageId,
                         LanguageLevelId = newLanguage.LanguageLevelId,
                         UserId = User.Id
                     });
@@ -408,6 +407,7 @@ namespace ITManager.ViewModels
 
                 IsLanguagesChecked = false;
                 User.Languages = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Languages;
+                MapLanguages();
 
                 await _database.SaveChangesAsync();
             }
@@ -433,6 +433,8 @@ namespace ITManager.ViewModels
                 SkillLevels = await _database.SkillLevels.ToListAsync();
                 Positions = await _database.Positions.ToListAsync();
                 ProfessionalSkills = await _database.ProfessionalSkills.ToListAsync();
+                LanguagesList = await _database.LanguagesLists.ToListAsync();
+                ProjectsList = await _database.Projects.ToListAsync();
 
                 var parameters = navigationContext.Parameters;
                 if (parameters["UserId"] != null)
@@ -442,7 +444,7 @@ namespace ITManager.ViewModels
                         .Include(u => u.Position)
                         .Include(u => u.ProfessionalSummaries)
                         .Include(u => u.UserSkills)
-                        .Include(u => u.Projects)
+                        .Include(u => u.UserProjects)
                         .Include(u => u.Educations)
                         .Include(u => u.Sertificates)
                         .Include(u => u.Languages)
@@ -512,9 +514,16 @@ namespace ITManager.ViewModels
         {
             Skills = Mapper.Map<ICollection<UserSkill>, ObservableCollection<Models.UserPageModel.UserSkill>>(User.UserSkills);
         }
-        private void MapProjects()
+        private async void MapProjects()
         {
-            Projects = Mapper.Map<ICollection<Project>, ObservableCollection<Models.UserPageModel.Project>>(User.Projects);
+            Projects = Mapper.Map<ICollection<UserProject>, ObservableCollection<Models.UserPageModel.Project>>(User.UserProjects);
+            using (var _database = new ITManagerEntities())
+            {
+                foreach (var project in Projects)
+                {
+                    project.RelatedProject = await _database.Projects.Where(p => p.Id == project.ProjectId).FirstOrDefaultAsync();
+                }
+            }
         }
         private void MapEducations()
         {
@@ -524,9 +533,16 @@ namespace ITManager.ViewModels
         {
             Sertificates = Mapper.Map<ICollection<Sertificate>, ObservableCollection<Models.UserPageModel.Sertificate>>(User.Sertificates);
         }
-        private void MapLanguages()
+        private async void MapLanguages()
         {
             Languages = Mapper.Map<ICollection<Language>, ObservableCollection<Models.UserPageModel.Language>>(User.Languages);
+            using (var _database = new ITManagerEntities())
+            {
+                foreach (var language in Languages)
+                {
+                    language.RelatedLanguage = await _database.LanguagesLists.Where(l => l.Id == language.LanguageId).FirstOrDefaultAsync();
+                }
+            }
         }
 
         #endregion

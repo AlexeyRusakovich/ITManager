@@ -34,6 +34,8 @@ namespace ITManager.Helpers
         public static string ChangePasswordView => "ChangePasswordView";
         public static string SearchView => "SearchView";
         public static string MyPersonalPageView => "MyPersonalPageView";
+        public static string SkillsManagementView => "SkillsManagementView";
+        public static string ProjectsManagementView => "ProjectsManagementView";
 
 
         public static string MenuView => "MenuView";

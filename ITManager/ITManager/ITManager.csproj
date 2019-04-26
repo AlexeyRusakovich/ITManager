@@ -107,6 +107,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\TrueIfNullConverter.cs" />
+    <Compile Include="Models\ProjectsManagementPageModels\Project.cs" />
+    <Compile Include="ViewModels\ProjectsManagementViewModel.cs" />
+    <Compile Include="ViewModels\SkillsManagementViewModel.cs" />
+    <Compile Include="Views\ProjectsManagementView.xaml.cs">
+      <DependentUpon>ProjectsManagementView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SkillsManagementView.xaml.cs">
+      <DependentUpon>SkillsManagementView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Styles\LightStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -128,6 +138,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MyPersonalPageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProjectsManagementView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -300,6 +314,10 @@
       <DependentUpon>ShellView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\SkillsManagementView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

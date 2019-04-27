@@ -77,6 +77,10 @@
     <Reference Include="PropertyChanged, Version=2.6.1.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.2.6.1\lib\net452\PropertyChanged.dll</HintPath>
     </Reference>
+    <Reference Include="Syncfusion.Shared.WPF, Version=17.1460.0.38, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\Syncfusion.Shared.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -101,6 +105,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsInput, Version=1.0.4.0, Culture=neutral, PublicKeyToken=9b287f7dc5073cad, processorArchitecture=MSIL">
+      <HintPath>..\packages\InputSimulator.1.0.4.0\lib\net20\WindowsInput.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -109,6 +116,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\TrueIfNullConverter.cs" />
     <Compile Include="Models\ProjectsManagementPageModels\Project.cs" />
+    <Compile Include="Models\UserPageModel\LanguagesList.cs" />
     <Compile Include="ViewModels\ProjectsManagementViewModel.cs" />
     <Compile Include="ViewModels\SkillsManagementViewModel.cs" />
     <Compile Include="Views\ProjectsManagementView.xaml.cs">
@@ -372,6 +380,8 @@
     <Content Include="Database\Scripts\Positions.sql" />
     <Content Include="Database\Scripts\Roles.sql" />
     <Content Include="Database\Scripts\Tables.sql" />
+    <Content Include="Libraries\Syncfusion.Shared.WPF.dll" />
+    <Content Include="Libraries\Syncfusion.Shared.WPF.resources.dll" />
     <Resource Include="Images\add.ico" />
     <Resource Include="Images\remove.ico" />
     <Resource Include="FodyWeavers.xml" />

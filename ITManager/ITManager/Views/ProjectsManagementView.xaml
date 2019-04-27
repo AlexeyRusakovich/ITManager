@@ -3,12 +3,107 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ITManager.Views"
+             xmlns:c="clr-namespace:ITManager.Converters"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid ItemsSource="{Binding Projects}"/>
+        <Grid.Resources>
+            <c:ReverseBooleanToVisibilityConverter x:Key="VisibleIfFalseConverter" />
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Margin="20" 
+               Grid.Row="0" 
+               Style="{StaticResource PageTitleStyle}" 
+               Content="{Binding Title}"/>
+        <DataGrid Margin="20" 
+                  Grid.Row="1"
+                  ItemsSource="{Binding Projects}"
+                  CanUserAddRows="False"
+                  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" IsReadOnly="True" Binding="{Binding Id}" Width="*"/>
+                <DataGridTextColumn Header="Name"  Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Start date"  Binding="{Binding StartDate}" Width="*"/>
+                <DataGridTextColumn Header="End date"  Binding="{Binding EndDate}" Width="*"/>
+                <DataGridTextColumn Header="Description"  Binding="{Binding Description}" Width="*"/>
+                <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource DefaultButtonStyle}"
+                                    Width="25" Height="25" Margin="3"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Background="#FFD14F4F"
+                                    Command="{Binding DataContext.RemoveProject, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding .}">
+                                <Image Width="16" Height="16"
+                                       Source="/ITManager;component/Images/remove.ico"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid> 
+        <Grid  Grid.Row="2" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Margin="0 0 0 10"
+                   FontSize="15" FontWeight="Bold"
+                   Foreground="#1988D3" Content="Add new project"/>
+
+            <Label Grid.Row="1" Content="Project name:"/>
+            <TextBox Grid.Row="1" Grid.Column="1"
+                     Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                     Width="300" 
+                     HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="2" Content="Start date:"/>
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                <DatePicker Width="150" Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <CheckBox Margin="20 0 20 0" Name="IsProjectStillGoes" Content="Still goes" IsChecked="{Binding StillGoes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <DatePicker Width="150" 
+                            Visibility="{Binding IsChecked, ElementName=IsProjectStillGoes, Converter={StaticResource VisibleIfFalseConverter}}"
+                            Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            </StackPanel>
+
+            <Label Grid.Row="3" Content="Description"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Width="300"
+                     Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                     HorizontalAlignment="Left"
+                         MaxHeight="200"
+                     TextWrapping="Wrap"/>
+
+            <Button Grid.Row="4" Grid.Column="1" 
+                    HorizontalAlignment="Left"
+                    Width="150" 
+                    Content="Add project" 
+                    Command="{Binding AddNewPorjectCommand}"
+                    Style="{StaticResource DefaultButtonStyle}"/>
+        </Grid>
+        <StackPanel Grid.Row="3" Margin="20 0 0 40" Orientation="Horizontal">
+            <Button Content="Reset projects"  Width="150"
+                    Command="{Binding ResetProjects}"
+                    Style="{StaticResource DefaultButtonStyle}"/>
+            <Button Content="Save projects" Width="150"
+                    Margin="20 20 0 0"
+                    Command="{Binding SaveProjects}"
+                    Style="{StaticResource DefaultButtonStyle}"/>
+        </StackPanel>
     </Grid>
 </UserControl>

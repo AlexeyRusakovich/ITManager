@@ -17,6 +17,7 @@ using ITManager.ViewModels.Base;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
+using WindowsInput;
 
 namespace ITManager.ViewModels
 {
@@ -27,8 +28,17 @@ namespace ITManager.ViewModels
 
         #region Properties
 
+        public bool Options1Open { get; set; }
+        public bool Options2Open { get; set; }
+
         public IList<Models.UserPageModel.ProfessionalSkill> Skills { get; set; }
         public ObservableCollection<Models.UserPageModel.ProfessionalSkill> SelectedSkills { get; set; } = new ObservableCollection<Models.UserPageModel.ProfessionalSkill>();
+
+        public IList<Models.ProjectsManagementPageModels.Project> Projects { get; set; }
+        public ObservableCollection<Models.ProjectsManagementPageModels.Project> SelectedProjects { get; set; } = new ObservableCollection<Models.ProjectsManagementPageModels.Project>();
+
+        public IList<Models.UserPageModel.LanguagesList> Languages { get; set; }
+        public ObservableCollection<Models.UserPageModel.LanguagesList> SelectedLanguages { get; set; } = new ObservableCollection<Models.UserPageModel.LanguagesList>();
 
         public List<User> Users { get; set;}
 
@@ -52,6 +62,10 @@ namespace ITManager.ViewModels
 
         public ICommand SaveQueryCommand { get; set; }
 
+        public ICommand OpenCloseOptions1 { get; set; }
+
+        public ICommand OpenCloseOptions2 { get; set; }
+
         #endregion
 
         public SearchViewModel(INavigationService navigationService, IEventAggregator eventAggregator) : base("Search")
@@ -62,8 +76,27 @@ namespace ITManager.ViewModels
             SearchCommand = new DelegateCommand(SearchMethod);
             NavigateToUserCommand = new DelegateCommand<object>(NavigateToUserMethod);
             SaveQueryCommand = new DelegateCommand(SaveQueryMethod);
+            OpenCloseOptions1 = new DelegateCommand(OpenCloseOptions1Method);
+            OpenCloseOptions2 = new DelegateCommand(OpenCloseOptions2Method);
             _navigationService = navigationService;
             _eventAggregator = eventAggregator;
+            (new InputSimulator()).Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.RETURN);
+            SelectedSkills.CollectionChanged += SelectedSkills_CollectionChanged;
+        }
+
+        private void SelectedSkills_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            return;
+        }
+
+        private void OpenCloseOptions1Method()
+        {
+            Options1Open  = Options1Open ? false : true;
+        }
+
+        private void OpenCloseOptions2Method()
+        {
+            Options2Open  = Options2Open ? false : true;
         }
 
         private async void SaveQueryMethod()
@@ -133,6 +166,8 @@ namespace ITManager.ViewModels
                 Users = await _database.Users.Where(u => u.UserRoles.FirstOrDefault().RoleId != Constants.AdministratorRole && 
                                                          u.UserRoles.FirstOrDefault().RoleId != Constants.ManagerRole).Include(u => u.UserSkills).ToListAsync();
                 Skills = Mapper.Map<IList<ProfessionalSkill>, IList<Models.UserPageModel.ProfessionalSkill>>(await _database.ProfessionalSkills.ToListAsync());
+                Projects = Mapper.Map<IList<Project>, IList<Models.ProjectsManagementPageModels.Project>>(await _database.Projects.ToListAsync());
+                Languages = Mapper.Map<IList<LanguagesList>, IList<Models.UserPageModel.LanguagesList>>(await _database.LanguagesLists.ToListAsync());
             }
         }
 

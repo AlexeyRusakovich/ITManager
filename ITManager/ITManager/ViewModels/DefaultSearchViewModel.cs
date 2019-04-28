@@ -67,7 +67,9 @@ namespace ITManager.ViewModels
         {
             using (var _database = new ITManagerEntities())
             {
-                Users = new ObservableCollection<User>(await _database.Users.ToListAsync());
+                Users = new ObservableCollection<User>(_database.Users.Where(u =>    u.UserRoles.FirstOrDefault().RoleId != Constants.AdministratorRole && 
+                                                        u.UserRoles.FirstOrDefault().RoleId != Constants.ManagerRole &&
+                                                        u.IsActive));
             }
         }
 

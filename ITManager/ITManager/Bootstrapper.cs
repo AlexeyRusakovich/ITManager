@@ -46,6 +46,7 @@ namespace ITManager
             Container.RegisterTypeForNavigation<SearchView>(Constants.SearchView);
             Container.RegisterTypeForNavigation<SkillsManagementView>(Constants.SkillsManagementView);
             Container.RegisterTypeForNavigation<ProjectsManagementView>(Constants.ProjectsManagementView);
+            Container.RegisterTypeForNavigation<DefaultSearchView>(Constants.DefaultSearchView);
         }
     }
 }

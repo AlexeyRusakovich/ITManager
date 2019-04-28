@@ -9,9 +9,12 @@
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.Resources>
+            <CollectionViewSource x:Key="LanguageLevels" Source="{Binding LanguageLevels}"/>
+            <CollectionViewSource x:Key="SkillLevels" Source="{Binding SkillLevels}"/>
             <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
             <DataTemplate x:Key="DropDownItemTemplate" DataType="wpfApplication1:ItemSourceModel">
                 <CheckBox Content="{Binding Name}"
@@ -45,7 +48,7 @@
             </DataTemplate>
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" MaxHeight="800"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
@@ -57,13 +60,19 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
                         <syncfusion:ComboBoxAdv ItemsSource="{Binding Skills}"
-                                            SelectedItems="{Binding SelectedSkills}"
+                                            SelectedItems="{Binding SelectedSkills, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Background="White"
                                             DisplayMemberPath="Name"
                                             AllowMultiSelect="True"
                                             DefaultText="..Choose skills.."
                                             SelectedValueDelimiter=", "
-                                            Width="300"/>
+                                            Width="300">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <prism:InvokeCommandAction Command="{Binding SkillsSelectionChanged}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </syncfusion:ComboBoxAdv>
                         <Label      Width="130" 
                                     HorizontalAlignment="Left"
                                     Content="Advanced options" Foreground="Blue">
@@ -73,16 +82,52 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Label>
-                        <ListBox Visibility="{Binding Options1Open, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VisibleIfTrueConverter}}"/>
+                        <ListBox    ItemsSource="{Binding SkillsConditions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding Options1Open, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VisibleIfTrueConverter}}"
+                                    Height="Auto"
+                                    MaxHeight="200">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Content="{Binding Skill.Name}"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Label Content="From"/>
+                                            <ComboBox Width="100" 
+                                                      ItemsSource="{Binding Source={StaticResource SkillLevels}}"
+                                                      DisplayMemberPath="Level"
+                                                      SelectedValue="{Binding From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      IsSynchronizedWithCurrentItem="False"/>
+                                            <Label Content="To"/>
+                                            <ComboBox Width="100" 
+                                                      ItemsSource="{Binding Source={StaticResource SkillLevels}}"
+                                                      DisplayMemberPath="Level"
+                                                      SelectedValue="{Binding To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      IsSynchronizedWithCurrentItem="False"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                         <syncfusion:ComboBoxAdv ItemsSource="{Binding Languages}"
-                                            SelectedItems="{Binding SelectedLanguages}"
+                                            SelectedItems="{Binding SelectedLanguages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Background="White"
                                             DisplayMemberPath="Name"
                                             AllowMultiSelect="True"
                                             DefaultText="..Choose languages.."
                                             SelectedValueDelimiter=", "
-                                                Margin="0 20 0 0"
-                                            Width="300"/>
+                                            Margin="0 20 0 0"
+                                            Width="300">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding LanguagesSelectionChanged}" 
+                                                           CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ComboBox, Mode=FindAncestor}}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </syncfusion:ComboBoxAdv>
                         <Label Content="Advanced options" Foreground="Blue">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
@@ -90,10 +135,39 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Label>
-                        <ListBox Visibility="{Binding Options2Open, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VisibleIfTrueConverter}}"/>
-                        
+                        <ListBox    ItemsSource="{Binding LanguagesConditions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding Options2Open, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VisibleIfTrueConverter}}"
+                                    Height="Auto"
+                                    MaxHeight="200">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Content="{Binding Language.Name}"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Label Content="From"/>
+                                            <ComboBox Width="100" 
+                                                      ItemsSource="{Binding Source={StaticResource LanguageLevels}}"
+                                                      DisplayMemberPath="Name"
+                                                      SelectedValue="{Binding From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      IsSynchronizedWithCurrentItem="False"/>
+                                            <Label Content="To"/>
+                                            <ComboBox Width="100" 
+                                                      ItemsSource="{Binding Source={StaticResource LanguageLevels}}"
+                                                      DisplayMemberPath="Name"
+                                                      SelectedValue="{Binding To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      IsSynchronizedWithCurrentItem="False"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
                         <syncfusion:ComboBoxAdv ItemsSource="{Binding Projects}"
-                                            SelectedItems="{Binding SelectedProjects}"
+                                            SelectedItems="{Binding SelectedProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Background="White"
                                             DisplayMemberPath="Name"
                                             AllowMultiSelect="True"
@@ -125,35 +199,122 @@
                 </StackPanel>
             </StackPanel>
         </StackPanel>
-        <ListBox ItemsSource="{Binding SearchedUsers}" 
-                 Margin="20 20 0 0"
+        <ScrollViewer Margin="20 20 0 0"
                  Grid.Row="1">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <i:InvokeCommandAction Command="{Binding DataContext.NavigateToUserCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                                       CommandParameter="{Binding .}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                        <Label>
-                            <Label.Content>
-                                <TextBlock FontSize="16" Foreground="{StaticResource DefaultAppColor}">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} {1}">
-                                            <Binding Path="Name"/>
-                                            <Binding Path="Surname"/>
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </Label.Content>
-                        </Label>
-                        <Label Content="{Binding Persent, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FontSize="16"/>
-                        <Label Content="%" FontSize="16"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            <ListBox ItemsSource="{Binding SearchedUsers}" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Label VerticalAlignment="Center">
+                                    <Label.Content>
+                                        <TextBlock FontSize="16" Foreground="{StaticResource DefaultAppColor}">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                    <Binding Path="Name"/>
+                                                    <Binding Path="Surname"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </Label.Content>
+                                </Label>
+                                <Label VerticalAlignment="Center" Content="{Binding Persent, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FontSize="16"/>
+                                <Label VerticalAlignment="Center" Content="%" FontSize="16"/>
+                                <ToggleButton VerticalAlignment="Center" Margin="20 0 20 0" Content="View details" Name="userSearchDetailsToggleButton" />
+                                <Button VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}"
+                                    Content="View user"
+                                    Margin="0"
+                                    Width="150"
+                                    Command="{Binding DataContext.NavigateToUserCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                    CommandParameter="{Binding .}"/>
+                            </StackPanel>
+                            <Grid Grid.Row="1" MaxHeight="500" Visibility="{Binding IsChecked, ElementName=userSearchDetailsToggleButton, Converter={StaticResource VisibleIfTrueConverter}}">
+                                <Grid.Resources>
+                                    <Style x:Key="TrueFalsePictureStyle" TargetType="Image">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Value}" Value="True">
+                                                <Setter Property="Source" Value="/Images/true.png"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Value}" Value="False">
+                                                <Setter Property="Source" Value="/Images/false.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Content="Skills conditions" FontSize="16"/>
+                                <ListBox Grid.Row="1" Margin="20 0 0 0" ItemsSource="{Binding SkillsConditions}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Content="{Binding Key.Skill.Name}"/>
+                                                <Image Style="{StaticResource TrueFalsePictureStyle}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="IsTabStop" Value="False"/>
+                                            <Setter Property="Focusable" Value="False"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                                <Label Grid.Row="2" Content="Languages conditions" FontSize="16"/>
+                                <ListBox Grid.Row="3" Margin="20 0 0 0" ItemsSource="{Binding LanguagesConditions}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Content="{Binding Key.Language.Name}"/>
+                                                <Image Style="{StaticResource TrueFalsePictureStyle}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="IsTabStop" Value="False"/>
+                                            <Setter Property="Focusable" Value="False"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                                <Label Grid.Row="4" Content="Projects conditions" FontSize="16"/>
+                                <ListBox Grid.Row="5" Margin="20 0 0 0" ItemsSource="{Binding ProjectsConditions}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Content="{Binding Key.Name}"/>
+                                                <Image Style="{StaticResource TrueFalsePictureStyle}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="IsTabStop" Value="False"/>
+                                            <Setter Property="Focusable" Value="False"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="IsTabStop" Value="False"/>
+                        <Setter Property="Focusable" Value="False"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </ScrollViewer>
     </Grid>
 </UserControl>

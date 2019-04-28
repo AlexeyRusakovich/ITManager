@@ -14,6 +14,10 @@ namespace ITManager.Models.SearchPageModels
         public string Surname { get; set; }
         public int Persent { get; set; }
 
+        public IDictionary<SkillCondition, bool> SkillsConditions { get; set; }
+        public IDictionary<LanguageCondition, bool> LanguagesConditions { get; set; }
+        public IDictionary<Models.ProjectsManagementPageModels.Project, bool> ProjectsConditions { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

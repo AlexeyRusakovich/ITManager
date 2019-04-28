@@ -36,6 +36,7 @@ namespace ITManager.Helpers
         public static string MyPersonalPageView => "MyPersonalPageView";
         public static string SkillsManagementView => "SkillsManagementView";
         public static string ProjectsManagementView => "ProjectsManagementView";
+        public static string DefaultSearchView => "DefaultSearchView";
 
 
         public static string MenuView => "MenuView";

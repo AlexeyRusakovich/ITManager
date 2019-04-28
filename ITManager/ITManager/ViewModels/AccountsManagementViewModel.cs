@@ -97,7 +97,8 @@ namespace ITManager.ViewModels
                 UserId = u.Id,
                 UserName = u.Name + " " + u.Surname,
                 DefaultPassword = u.DefaultPassword,
-                IsInitial = u.IsInitial
+                IsInitial = u.IsInitial,
+                IsActive = u.IsActive
             }).ToListAsync());
         }
 

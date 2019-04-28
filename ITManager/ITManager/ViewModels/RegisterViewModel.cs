@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using ITManager.Database;
 using ITManager.Helpers;
@@ -50,6 +51,10 @@ namespace ITManager.ViewModels
             // validate
             var salt = PasswordHasher.GenerateSalt();
             var hashedPassword = PasswordHasher.ComputeHash(Password, salt);
+
+            if(Password != ConfirmPassword)
+                MessageBox.Show("Password and Confirm password fields must match!", "Error");
+
             if (!_database.Users.Any(u => u.Login == Login))
             {
                 var user = _database.Users.Add(new User
@@ -75,6 +80,8 @@ namespace ITManager.ViewModels
                 await _database.SaveChangesAsync();
                 GoToLoginPageMethod();
             }
+            else
+                MessageBox.Show("User with same login is already exists!", "Register error");
         }
 
         private void GoToLoginPageMethod()

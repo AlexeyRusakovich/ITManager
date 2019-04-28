@@ -200,6 +200,14 @@ namespace ITManager.ViewModels
                     _professionalSummary.ProfessionalSummary1 = ProfessionalSummary.ProfessionalSummary1;
                     User.ProfessionalSummaries = await _database.ProfessionalSummaries.Where(u => u.UserId == User.Id).ToListAsync();
                 }
+                else
+                {
+                    _database.ProfessionalSummaries.Add(new ProfessionalSummary
+                    {
+                        UserId = User.Id,
+                        ProfessionalSummary1 = ProfessionalSummary.ProfessionalSummary1
+                    });
+                }
 
                 IsProfessionalSummaryChecked = false;
 
@@ -333,8 +341,8 @@ namespace ITManager.ViewModels
                     // If exists in local collection, change data
                     if (_userSertificate != null)
                     {
-                        _userSertificate.Name = userSertificate.Name;
-                        _userSertificate.Date = userSertificate.Date;
+                         userSertificate.Name = _userSertificate.Name;
+                        userSertificate.Date = _userSertificate.Date;
                     }
                     // If not exists in local collection - remove.
                     else
@@ -378,7 +386,7 @@ namespace ITManager.ViewModels
                     .FirstOrDefaultAsync()).Languages;
 
                 // Removing and changing languages
-                foreach (var userLanguage in userLanguages)
+                foreach (var userLanguage in userLanguages.ToList())
                 {
                     var _userLanguage = Languages.FirstOrDefault(l => l.Id == userLanguage.Id);
                     // If exists in local collection, change data
@@ -390,14 +398,14 @@ namespace ITManager.ViewModels
                     // If not exists in local collection - remove.
                     else
                     {
-                        userLanguages.Remove(userLanguage);
+                        _database.Languages.Remove(userLanguage);
                     }
                 }
 
                 // Adding new languages
                 foreach (var newLanguage in Languages.Where(l => l.Id == 0))
                 {
-                    userLanguages.Add(new Language
+                    _database.Languages.Add(new Language
                     {
                         LanguageId = newLanguage.LanguageId,
                         LanguageLevelId = newLanguage.LanguageLevelId,

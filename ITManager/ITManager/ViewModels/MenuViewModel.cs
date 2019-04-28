@@ -34,6 +34,11 @@ namespace ITManager.ViewModels
 
             var navigationParameters = new NavigationParameters();
             navigationParameters.Add("IsLogout", true);
+            if(viewName == Constants.SearchView && ShellViewModel.CurrentUser.UserRoles.Any(r => r.RoleId == Constants.UserRole))
+            {
+                _navigationService.NavigateToWithParameters(Constants.DefaultSearchView, navigationParameters: navigationParameters);
+                return;
+            }
             _navigationService.NavigateToWithParameters(viewName, navigationParameters: navigationParameters);
         }
     }

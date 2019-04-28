@@ -456,9 +456,9 @@
                                                     
                                                     <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                                                         <Label Content="Start date: "/>
-                                                        <DatePicker Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        <DatePicker Text="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                         <Label Margin="20 0 0 0" Content="End date: "/>
-                                                        <DatePicker  Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        <DatePicker  Text="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                     </StackPanel>
 
                                                     <Label Grid.Row="1" Grid.Column="0" Content="University: "/>
@@ -582,7 +582,7 @@
                                                     </Grid.RowDefinitions>
 
                                                     <Label Grid.Row="0" Grid.Column="0" Content="Sertificated: "/>
-                                                    <DatePicker Grid.Row="0" Grid.Column="1" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}" Height="20"/>
+                                                    <DatePicker Grid.Row="0" Grid.Column="1" Text="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="20"/>
 
                                                     <Label Grid.Row="1" Grid.Column="0" Content="Area: "/>
                                                     <TextBox Grid.Row="1"

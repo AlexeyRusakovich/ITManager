@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using ITManager.Database;
 using ITManager.Events;
@@ -61,6 +62,12 @@ namespace ITManager.ViewModels
                     ShellViewModel.CurrentUser = user;
                     _regionManager.RegisterViewWithRegion(Helpers.Constants.MenuRegion, typeof(MenuView));
 
+                    if(!user.IsActive)
+                    {
+                        MessageBox.Show("Sorry, but your account has been deactivated!", "Error");
+                        return;
+                    }
+
                     if (user.IsInitial)
                     {
                         _navigationService.NavigateTo(Constants.ChangePasswordView);
@@ -82,6 +89,8 @@ namespace ITManager.ViewModels
 
                     _eventAggregator.GetEvent<CloseMenuEvent>().Publish(false);
                 }
+                else
+                    MessageBox.Show("Invalid login or password!", "Error");
             }
         }
 

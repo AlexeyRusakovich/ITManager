@@ -43,5 +43,15 @@ namespace ITManager.Helpers
         public static string ShellView => "ShellView";
 
         #endregion
+
+        #region Validation messages
+
+        public const string DateMustBeCorrectMessage = "Date must be correct.";
+
+        public const string FieldMustBeFilledMessageFormat = "'{0}' field is required.";
+
+        public const string LengthErrorMessageFormat= "The length of '{0}' must be from {1} to {2}.";
+
+        #endregion
     }
 }

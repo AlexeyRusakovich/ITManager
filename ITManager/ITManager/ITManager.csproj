@@ -127,6 +127,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\TrueIfNullConverter.cs" />
     <Compile Include="Helpers\BetweenExtensionHelper.cs" />
+    <Compile Include="Helpers\ValidationHelper.cs" />
     <Compile Include="Models\ProjectsManagementPageModels\Project.cs" />
     <Compile Include="Models\SearchPageModels\LanguageCondition.cs" />
     <Compile Include="Models\SearchPageModels\SkillCondition.cs" />

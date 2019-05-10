@@ -16,7 +16,7 @@ using Prism.Commands;
 
 namespace ITManager.ViewModels
 {
-    public class RegisterViewModel : BaseViewModel, IDataErrorInfo
+    public class RegisterViewModel : BaseViewModel
     {
         public string Login { get; set; }
         public string FirstName { get; set; }
@@ -49,40 +49,51 @@ namespace ITManager.ViewModels
 
         private async void RegisterMethod()
         {
-            // validate
-            var salt = PasswordHasher.GenerateSalt();
-            var hashedPassword = PasswordHasher.ComputeHash(Password, salt);
-
-            if(Password != ConfirmPassword)
-                MessageBox.Show("Password and Confirm password fields must match!", "Error");
-
-            if (!_database.Users.Any(u => u.Login == Login))
+            string errors = null;
+            if (IsValid(ValidatesProperties, out errors))
             {
-                var user = _database.Users.Add(new User
-                {
-                    Login = Login,
-                    Password = Convert.ToBase64String(hashedPassword),
-                    Salt = Convert.ToBase64String(salt),
-                    Name = FirstName,
-                    Surname = LastName,
-                    Birthday = DateTime.Parse(Birthday),
-                    PositionId = Position.Id,
-                    IsActive = true
-                });
+                Errors = errors;
+                var salt = PasswordHasher.GenerateSalt();
+                var hashedPassword = PasswordHasher.ComputeHash(Password, salt);
 
-                await _database.SaveChangesAsync();
-
-                user.UserRoles.Add(new UserRole
+                if (Password != ConfirmPassword)
                 {
-                    RoleId = Constants.UserRole,
-                    UserId = user.Id
-                });
+                    Errors += "Password and Confirm password fields must match.\r\n";
+                    return;
+                }
+
+                if (!_database.Users.Any(u => u.Login == Login))
+                {
+                    var user = _database.Users.Add(new User
+                    {
+                        Login = Login,
+                        Password = Convert.ToBase64String(hashedPassword),
+                        Salt = Convert.ToBase64String(salt),
+                        Name = FirstName,
+                        Surname = LastName,
+                        Birthday = DateTime.Parse(Birthday),
+                        PositionId = Position.Id,
+                        IsActive = true
+                    });
+
+                    await _database.SaveChangesAsync();
+
+                    user.UserRoles.Add(new UserRole
+                    {
+                        RoleId = Constants.UserRole,
+                        UserId = user.Id
+                    });
                 
-                await _database.SaveChangesAsync();
-                GoToLoginPageMethod();
+                    await _database.SaveChangesAsync();
+                    GoToLoginPageMethod();
+                }
+                else
+                    Errors += "User with same login is already exists.\r\n";
             }
             else
-                MessageBox.Show("User with same login is already exists!", "Register error");
+            {
+                Errors = errors;
+            }
         }
 
         private void GoToLoginPageMethod()
@@ -91,16 +102,25 @@ namespace ITManager.ViewModels
         }
 
         #region Data validation
-        
 
-        private string Validate(string propertyName)
+        public readonly string[] ValidatesProperties =
+        {
+            nameof(Login),
+            nameof(FirstName),
+            nameof(LastName),
+            nameof(Birthday),
+            nameof(Position),
+            nameof(Password),
+            nameof(ConfirmPassword)
+        };
+
+        public override string Validate(string propertyName)
         {
             if(!DoValidation)
                 return null;
 
             switch (propertyName)
             {
-
                 case nameof(Login):
                     if(Login.IsNullOrWhiteSpace())
                         return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Login));
@@ -144,41 +164,13 @@ namespace ITManager.ViewModels
                 case nameof(Birthday):
                     if(Birthday.IsNullOrWhiteSpace())
                         return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Birthday));
-                    else if(DateTime.Parse(Birthday) < new DateTime(1900, 1, 1) && DateTime.Parse(Birthday) > new DateTime(2005, 1, 1))
+                    else if(DateTime.Parse(Birthday) < new DateTime(1900, 1, 1) || DateTime.Parse(Birthday) > new DateTime(2005, 1, 1))
                         return Constants.DateMustBeCorrectMessage;
                     break;
             }
             return null;
         }
-
-        private bool IsValid(string[] validatingStrings, out string Error)
-        {
-            Error = null;
-            foreach (var str in validatingStrings)
-                Error += Validate(str);
-            return Error.Equals("");
-        }
-
-        string IDataErrorInfo.Error
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-
-        public string this[string columnName]
-        {
-            get
-            {
-                string error = null;
-                return error = Validate(columnName);
-            }
-        }
-
-            
-
+        
         #endregion
     }
 }

@@ -54,7 +54,10 @@ namespace ITManager.ViewModels
                     .Include(u => u.Languages)
                     .FirstOrDefaultAsync();
                 if (user == null)
-                    return; // TODO return validation error;
+                {
+                    Errors += "Invalid login.\n";
+                    return;
+                }
 
                 var salt = user.Salt;
                 if (PasswordHasher.VerifyPassword(Password, Convert.FromBase64String(salt), Convert.FromBase64String(user.Password)))
@@ -64,7 +67,7 @@ namespace ITManager.ViewModels
 
                     if(!user.IsActive)
                     {
-                        MessageBox.Show("Sorry, but your account has been deactivated!", "Error");
+                        Errors += "Sorry, but your account has been deactivated.\r\n";
                         return;
                     }
 
@@ -90,7 +93,7 @@ namespace ITManager.ViewModels
                     _eventAggregator.GetEvent<CloseMenuEvent>().Publish(false);
                 }
                 else
-                    MessageBox.Show("Invalid login or password!", "Error");
+                    Errors += "Invalid password.\r\n";
             }
         }
 
@@ -124,6 +127,33 @@ namespace ITManager.ViewModels
         }
 
         #endregion
-       
+
+        #region Data validation
+
+        public override string Validate(string propertyName)
+        {
+            if(!DoValidation)
+                return null;
+
+            switch (propertyName)
+            {
+                case nameof(Login):
+                    if(Login.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Login));
+                    else if(!Login.IsLengthBetween(3, 20))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(Login), 3, 20);
+                    break;
+                case nameof(Password):
+                    if(Password.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Password));
+                    else if(!Password.IsLengthBetween(8, 32))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(Password), 8, 32);
+                    break;
+            }
+            return null;
+        }
+
+        #endregion
+
     }
 }

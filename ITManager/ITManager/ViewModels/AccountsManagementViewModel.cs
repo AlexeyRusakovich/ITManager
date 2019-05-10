@@ -104,38 +104,53 @@ namespace ITManager.ViewModels
 
         private async void RegisterMethod()
         {
-            // validate
-            var salt = PasswordHasher.GenerateSalt();
-            var password = RandomStringGenerator.GenerateRandomString(20, false);
-            var hashedPassword = PasswordHasher.ComputeHash(password, salt);
-            if (!_database.Users.Any(u => u.Login == Login))
+            string errors = null;
+            if(IsValid(ValidatesProperties, out errors))
             {
-                var user = _database.Users.Add(new User
+                Errors = errors;
+                var salt = PasswordHasher.GenerateSalt();
+                var password = RandomStringGenerator.GenerateRandomString(20, false);
+                var hashedPassword = PasswordHasher.ComputeHash(password, salt);
+                if (!_database.Users.Any(u => u.Login == Login))
                 {
-                    Login = Login,
-                    Password = Convert.ToBase64String(hashedPassword),
-                    Salt = Convert.ToBase64String(salt),
-                    Name = FirstName,
-                    Surname = LastName,
-                    Birthday = DateTime.Parse(Birthday),
-                    PositionId = Position.Id,
-                    IsInitial = true,
-                    DefaultPassword = password,
-                    IsActive = true
-                });
+                    var user = _database.Users.Add(new User
+                    {
+                        Login = Login,
+                        Password = Convert.ToBase64String(hashedPassword),
+                        Salt = Convert.ToBase64String(salt),
+                        Name = FirstName,
+                        Surname = LastName,
+                        Birthday = DateTime.Parse(Birthday),
+                        PositionId = Position.Id,
+                        IsInitial = true,
+                        DefaultPassword = password,
+                        IsActive = true
+                    });
 
-                await _database.SaveChangesAsync();
+                    await _database.SaveChangesAsync();
 
-                user.UserRoles.Add(new UserRole
-                {
-                    RoleId = Role.Id,
-                    UserId = user.Id
-                });
+                    user.UserRoles.Add(new UserRole
+                    {
+                        RoleId = Role.Id,
+                        UserId = user.Id
+                    });
                 
-                await _database.SaveChangesAsync();
+                    await _database.SaveChangesAsync();
+                }
+                else
+                {
+                    Errors = "User with same login is already exists.\r\n";
+                }
+
+                await GetUsersMethod();
+                _eventAggregator.GetEvent<UpdateUserEvent>().Publish();
             }
-            await GetUsersMethod();
-            _eventAggregator.GetEvent<UpdateUserEvent>().Publish();
+            else
+            {
+                Errors = errors;
+            }
+
+            Errors = Errors?.Trim();
         }
 
         private async void ResetPasswordMethod(UserAccountManagementModel user)
@@ -155,5 +170,61 @@ namespace ITManager.ViewModels
                 user.IsInitial = true;
             } 
         }
+
+        #region Data validation
+
+        public readonly string[] ValidatesProperties =
+        {
+            nameof(Login),
+            nameof(FirstName),
+            nameof(LastName),
+            nameof(Birthday),
+            nameof(Position),
+        };
+
+        public override string Validate(string propertyName)
+        {
+            if(!DoValidation)
+                return null;
+
+            switch (propertyName)
+            {
+                case nameof(Login):
+                    if(Login.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Login));
+                    else if(!Login.IsLengthBetween(3, 20))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(Login), 3, 20);
+                    break;
+
+                case nameof(FirstName):
+                    if(FirstName.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(FirstName));
+                    else if(!FirstName.IsLengthBetween(3, 20))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(FirstName), 3, 20);
+                    break;
+
+                case nameof(LastName):
+                    if(LastName.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(LastName));
+                    else if(!LastName.IsLengthBetween(3, 20))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(LastName), 3, 20);
+                    break;
+
+                case nameof(Position):
+                    if(Position == null)
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Position));
+                    break;
+
+                case nameof(Birthday):
+                    if(Birthday.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Birthday));
+                    else if(DateTime.Parse(Birthday) < new DateTime(1900, 1, 1) || DateTime.Parse(Birthday) > new DateTime(2005, 1, 1))
+                        return Constants.DateMustBeCorrectMessage;
+                    break;
+            }
+            return null;
+        }
+        
+        #endregion
     }
 }

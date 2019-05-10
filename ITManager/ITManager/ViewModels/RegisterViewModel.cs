@@ -94,6 +94,8 @@ namespace ITManager.ViewModels
             {
                 Errors = errors;
             }
+
+            Errors = Errors?.Trim();
         }
 
         private void GoToLoginPageMethod()
@@ -131,15 +133,15 @@ namespace ITManager.ViewModels
                 case nameof(Password):
                     if(Password.IsNullOrWhiteSpace())
                         return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Password));
-                    else if(!Password.IsLengthBetween(8, 32))
-                        return string.Format(Constants.LengthErrorMessageFormat, nameof(Password), 8, 32);
+                    else if(!Password.IsLengthBetween(5, 32))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(Password), 5, 32);
                     break;
 
                 case nameof(ConfirmPassword):
                     if(ConfirmPassword.IsNullOrWhiteSpace())
                         return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(ConfirmPassword));
-                    else if(!ConfirmPassword.IsLengthBetween(8, 32))
-                        return string.Format(Constants.LengthErrorMessageFormat, nameof(ConfirmPassword), 8, 32);
+                    else if(!ConfirmPassword.IsLengthBetween(5, 32))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(ConfirmPassword), 5, 32);
                     break;
 
                 case nameof(FirstName):

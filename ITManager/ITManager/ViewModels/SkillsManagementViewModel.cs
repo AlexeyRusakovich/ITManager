@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ITManager.Database;
+using ITManager.Helpers;
 using ITManager.ViewModels.Base;
 using Prism.Commands;
 using Prism.Regions;
@@ -18,6 +19,7 @@ namespace ITManager.ViewModels
     {
         public ObservableCollection<Models.UserPageModel.ProfessionalSkill> Skills { get; set; }
 
+        public string SkillName { get; set; }
         public ICommand SaveSkills { get; set;}
         public ICommand ResetSkills { get; set;}
         public ICommand RemoveSkill { get; set; }
@@ -88,15 +90,61 @@ namespace ITManager.ViewModels
 
         private void AddSkillMethod(string skillName)
         {
-            Skills.Add(new Models.UserPageModel.ProfessionalSkill
+            string errors = null;
+            if(IsValid(ValidatesProperties, out errors))
             {
-                Name = skillName
-            });
+                Errors = errors;
+                using (var _database = new ITManagerEntities())
+                {
+                    if (!_database.ProfessionalSkills.Any(s => s.Name == SkillName))
+                    {
+                        Skills.Add(new Models.UserPageModel.ProfessionalSkill
+                        {
+                            Name = skillName
+                        });
+                    }
+                    else
+                        Errors = "This skill is already exists.";
+                }                    
+            }
+            else
+            {
+                Errors = errors;
+            }
+
+            Errors = Errors?.Trim();            
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             FillSkills();
-        }        
+        }     
+        
+        #region Data validation
+
+        public readonly string[] ValidatesProperties =
+        {
+            nameof(SkillName)
+        };
+
+        public override string Validate(string propertyName)
+        {
+            if(!DoValidation)
+                return null;
+
+            switch (propertyName)
+            {
+                case nameof(SkillName):
+                    if(SkillName.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(SkillName));
+                    else if(!SkillName.IsLengthBetween(2, 50))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(SkillName), 2, 50);
+                    break;
+            }
+
+            return null;
+        }
+        
+        #endregion
     }
 }

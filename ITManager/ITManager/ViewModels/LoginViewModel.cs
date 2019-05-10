@@ -42,59 +42,70 @@ namespace ITManager.ViewModels
 
         private async void LoginApplicationMethod()
         {
-            using (var _database = new ITManagerEntities())
-            { 
-                var user = await _database.Users.Where(u => u.Login == Login)
-                    .Include(u => u.Position)
-                    .Include(u => u.ProfessionalSummaries)
-                    .Include(u => u.UserSkills)
-                    .Include(u => u.UserProjects)
-                    .Include(u => u.Educations)
-                    .Include(u => u.Sertificates)
-                    .Include(u => u.Languages)
-                    .FirstOrDefaultAsync();
-                if (user == null)
-                {
-                    Errors += "Invalid login.\n";
-                    return;
-                }
+            string errors = null;
+            if(IsValid(ValidatesProperties, out errors))
+            {
+                using (var _database = new ITManagerEntities())
+                { 
+                    var user = await _database.Users.Where(u => u.Login == Login)
+                        .Include(u => u.Position)
+                        .Include(u => u.ProfessionalSummaries)
+                        .Include(u => u.UserSkills)
+                        .Include(u => u.UserProjects)
+                        .Include(u => u.Educations)
+                        .Include(u => u.Sertificates)
+                        .Include(u => u.Languages)
+                        .FirstOrDefaultAsync();
 
-                var salt = user.Salt;
-                if (PasswordHasher.VerifyPassword(Password, Convert.FromBase64String(salt), Convert.FromBase64String(user.Password)))
-                {
-                    ShellViewModel.CurrentUser = user;
-                    _regionManager.RegisterViewWithRegion(Helpers.Constants.MenuRegion, typeof(MenuView));
-
-                    if(!user.IsActive)
+                    if (user == null)
                     {
-                        Errors += "Sorry, but your account has been deactivated.\r\n";
+                        Errors = "Invalid login.\r\n";
                         return;
                     }
 
-                    if (user.IsInitial)
+                    var salt = user.Salt;
+                    if (PasswordHasher.VerifyPassword(Password, Convert.FromBase64String(salt), Convert.FromBase64String(user.Password)))
                     {
-                        _navigationService.NavigateTo(Constants.ChangePasswordView);
-                        return;
-                    }
+                        ShellViewModel.CurrentUser = user;
+                        _regionManager.RegisterViewWithRegion(Helpers.Constants.MenuRegion, typeof(MenuView));
 
-                    if (user.UserRoles.Any(r => r.RoleId == Constants.AdministratorRole))
-                    {
-                        _navigationService.NavigateTo(Constants.RolesManagementView);
-                    }
-                    else if (user.UserRoles.Any(r => r.RoleId == Constants.ManagerRole))
-                    {
-                        _navigationService.NavigateTo(Constants.SearchView);
-                    }
-                    else if(user.UserRoles.Any(r => r.RoleId == Constants.UserRole))
-                    {
-                        _navigationService.NavigateTo(Constants.MyPersonalPageView);
-                    }
+                        if(!user.IsActive)
+                        {
+                            Errors = "Sorry, but your account has been deactivated.\r\n";
+                            return;
+                        }
 
-                    _eventAggregator.GetEvent<CloseMenuEvent>().Publish(false);
+                        if (user.IsInitial)
+                        {
+                            _navigationService.NavigateTo(Constants.ChangePasswordView);
+                            return;
+                        }
+
+                        if (user.UserRoles.Any(r => r.RoleId == Constants.AdministratorRole))
+                        {
+                            _navigationService.NavigateTo(Constants.RolesManagementView);
+                        }
+                        else if (user.UserRoles.Any(r => r.RoleId == Constants.ManagerRole))
+                        {
+                            _navigationService.NavigateTo(Constants.SearchView);
+                        }
+                        else if(user.UserRoles.Any(r => r.RoleId == Constants.UserRole))
+                        {
+                            _navigationService.NavigateTo(Constants.MyPersonalPageView);
+                        }
+
+                        _eventAggregator.GetEvent<CloseMenuEvent>().Publish(false);
+                    }
+                    else
+                        Errors = "Invalid password.\r\n";
                 }
-                else
-                    Errors += "Invalid password.\r\n";
+            }    
+            else
+            {
+                Errors = errors;
             }
+
+            Errors = Errors?.Trim();
         }
 
         #region Navigation
@@ -130,6 +141,12 @@ namespace ITManager.ViewModels
 
         #region Data validation
 
+        public readonly string[] ValidatesProperties =
+        {
+            nameof(Login),
+            nameof(Password)
+        };
+
         public override string Validate(string propertyName)
         {
             if(!DoValidation)
@@ -146,8 +163,8 @@ namespace ITManager.ViewModels
                 case nameof(Password):
                     if(Password.IsNullOrWhiteSpace())
                         return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(Password));
-                    else if(!Password.IsLengthBetween(8, 32))
-                        return string.Format(Constants.LengthErrorMessageFormat, nameof(Password), 8, 32);
+                    else if(!Password.IsLengthBetween(5, 32))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(Password), 5, 32);
                     break;
             }
             return null;

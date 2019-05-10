@@ -10,7 +10,16 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.InputBindings>
+        <KeyBinding Key="Return"
+                Command="{Binding LoginCommand}" />
+    </UserControl.InputBindings>
     <Grid>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="250"/>
@@ -22,12 +31,14 @@
                     Style="{StaticResource DefaultLabelStyle}" 
                     HorizontalAlignment="Center"/>
             <TextBox Controls:TextBoxHelper.Watermark="Login"
-                     Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding Login, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                      Margin="0 20 0 0" Height="30" 
+                     MaxLength="20"
                      VerticalContentAlignment="Center"
                      Controls:TextBoxHelper.ClearTextButton="True"/>
             <PasswordBox Controls:TextBoxHelper.Watermark="Password"
                          Margin="0 20 0 0"
+                         MaxLength="32"
                          VerticalContentAlignment="Center"
                         Controls:TextBoxHelper.ClearTextButton="True">
                 <i:Interaction.Behaviors>

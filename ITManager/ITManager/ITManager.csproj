@@ -405,6 +405,7 @@
     <Content Include="Database\Scripts\Tables.sql" />
     <Resource Include="Images\false.png" />
     <Resource Include="Images\true.png" />
+    <Content Include="Database\Scripts\TablesWithData.sql" />
     <Content Include="Libraries\Syncfusion.Shared.WPF.dll" />
     <Content Include="Libraries\Syncfusion.Shared.WPF.resources.dll" />
     <Resource Include="Images\add.ico" />

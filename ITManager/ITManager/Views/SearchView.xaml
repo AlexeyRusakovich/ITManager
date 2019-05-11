@@ -188,6 +188,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBox Text="{Binding QueryDescription, UpdateSourceTrigger=PropertyChanged}"
                              a:UserRolesAttachedProperties.RequiredRoles="2"
+                             MaxLength="100"
                              Width="300" Height="30" Margin="0 20 0 0"
                              VerticalAlignment="Bottom"/>
                     <Button Content="Save search query"

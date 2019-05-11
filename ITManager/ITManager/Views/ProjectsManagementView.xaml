@@ -3,12 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:c="clr-namespace:ITManager.Converters"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
         <Grid.Resources>
             <c:ReverseBooleanToVisibilityConverter x:Key="VisibleIfFalseConverter" />
         </Grid.Resources>
@@ -62,6 +68,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Margin="0 0 0 10"
                    FontSize="15" FontWeight="Bold"
@@ -69,27 +76,37 @@
 
             <Label Grid.Row="1" Content="Project name:"/>
             <TextBox Grid.Row="1" Grid.Column="1"
-                     Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                     Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                     MaxLength="100"
                      Width="300" 
                      HorizontalAlignment="Left"/>
 
             <Label Grid.Row="2" Content="Start date:"/>
             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                <DatePicker Width="150" Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <DatePicker Width="150" Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
                 <CheckBox Margin="20 0 20 0" Name="IsProjectStillGoes" Content="Still goes" IsChecked="{Binding StillGoes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                 <DatePicker Width="150" 
                             Visibility="{Binding IsChecked, ElementName=IsProjectStillGoes, Converter={StaticResource VisibleIfFalseConverter}}"
-                            Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                            Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
             </StackPanel>
 
             <Label Grid.Row="3" Content="Description"/>
             <TextBox Grid.Row="3" Grid.Column="1" Width="300"
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                      HorizontalAlignment="Left"
-                         MaxHeight="200"
+                     MaxLength="500"
+                     MaxHeight="200"
                      TextWrapping="Wrap"/>
 
-            <Button Grid.Row="4" Grid.Column="1" 
+            <TextBlock TextWrapping="Wrap"
+                       Grid.Row="4"
+                       Grid.Column="1" 
+                       Margin="0 10 0 0"
+                       Visibility="{Binding ErrorsVisibility}"
+                       Text="{Binding Errors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="#FFFB6363"/>
+
+            <Button Grid.Row="5" Grid.Column="1" 
                     HorizontalAlignment="Left"
                     Width="150" 
                     Content="Add project" 

@@ -8,13 +8,23 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-          <ListBox ItemsSource="{Binding Queries}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Content="{Binding Title}" 
+               Grid.Row="0"
+               Margin="20 10 0 0"
+               Style="{StaticResource PageTitleStyle}"/>
+        <ListBox Margin="20 20 0 0" Grid.Row="1" ItemsSource="{Binding Queries}">
               <ListBox.ItemTemplate>
                   <DataTemplate>
                     <StackPanel Orientation="Horizontal" Height="30">
-                        <Label Content="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
-                               Width="300"
-                               Height="30"/>
+                        <TextBlock Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
+                                   TextWrapping="Wrap"
+                                   FontSize="15" FontWeight="Bold"
+                                   Width="300"
+                                   Height="30"/>
                         <Button Style="{StaticResource DefaultButtonStyle}"
                                 Content="Execute query" Width="120"
                                 Height="30"

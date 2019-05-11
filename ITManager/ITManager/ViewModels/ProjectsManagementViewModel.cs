@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ITManager.Helpers;
 
 namespace ITManager.ViewModels
 {
@@ -21,8 +22,8 @@ namespace ITManager.ViewModels
         #region New project properties
 
         public string ProjectName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; } = new DateTime();
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
         public string Description { get; set; }
 
         private bool stillGoes { get; set; } 
@@ -38,7 +39,7 @@ namespace ITManager.ViewModels
                 if(stillGoes == true)
                     EndDate = null;
                 else
-                    EndDate = new DateTime();
+                    EndDate = new DateTime().ToShortDateString();
             }
         }
 
@@ -118,13 +119,23 @@ namespace ITManager.ViewModels
 
         private void AddNewProjectMethod()
         {
-            Projects.Add(new Models.ProjectsManagementPageModels.Project
+            if (IsValid(ValidatesProperties, out var errors))
             {
-                Name = ProjectName,
-                StartDate =StartDate,
-                EndDate = EndDate,
-                Description = Description
-            });
+                Errors = errors;
+                Projects.Add(new Models.ProjectsManagementPageModels.Project
+                {
+                    Name = ProjectName,
+                    StartDate = DateTime.Parse(StartDate),
+                    EndDate = StillGoes ? null : new DateTime?(DateTime.Parse(EndDate)),
+                    Description = Description
+                });
+            }
+            else
+            {
+                Errors = errors;
+            }
+
+            Errors = Errors?.Trim();
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -141,5 +152,50 @@ namespace ITManager.ViewModels
         {
             return;
         }
+
+        #region Data validation
+
+        public readonly string[] ValidatesProperties =
+        {
+            nameof(ProjectName),
+            nameof(StartDate),
+            nameof(EndDate),
+        };
+
+        public override string Validate(string propertyName)
+        {
+            if(!DoValidation)
+                return null;
+
+            switch (propertyName)
+            {
+                case nameof(ProjectName):
+                    if(ProjectName.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(ProjectName));
+                    else if(!ProjectName.IsLengthBetween(3, 100))
+                        return string.Format(Constants.LengthErrorMessageFormat, nameof(ProjectName), 3, 100);
+                    break;
+
+                case nameof(StartDate):
+                    if(StartDate.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(StartDate));
+                    else if(DateTime.Parse(StartDate) < new DateTime(2000, 1, 1))
+                        return Constants.DateMustBeCorrectMessage;
+                    else if (!StillGoes && !EndDate.IsNullOrWhiteSpace() &&
+                             DateTime.Parse(StartDate) > DateTime.Parse(EndDate))
+                        return string.Format(Constants.FieldMustBeLessThan, nameof(StartDate), nameof(EndDate));
+                    break;
+
+                case nameof(EndDate):
+                    if(!StillGoes  && EndDate.IsNullOrWhiteSpace())
+                        return string.Format(Constants.FieldMustBeFilledMessageFormat, nameof(EndDate));
+                    else if(!StillGoes && DateTime.Parse(EndDate) < new DateTime(2000, 1, 1))
+                        return Constants.DateMustBeCorrectMessage;
+                    break;
+            }
+            return null;
+        }
+        
+        #endregion
     }
 }

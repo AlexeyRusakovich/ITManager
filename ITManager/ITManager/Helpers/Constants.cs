@@ -52,6 +52,10 @@ namespace ITManager.Helpers
 
         public const string LengthErrorMessageFormat= "The length of '{0}' must be from {1} to {2}.";
 
+        public const string FieldMustBeLessThan= "Field '{0}' must be less than {1}.";
+
+        public const string FieldMustBeGreaterThan= "Field '{0}' must be greater than {1}.";
+
         #endregion
     }
 }

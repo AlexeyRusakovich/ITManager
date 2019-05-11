@@ -48,10 +48,11 @@
             <!-- NAME -->
             <StackPanel Grid.Row="0">
                 <Label HorizontalAlignment="Center"
+                       FontSize="20"
                            Content="{Binding UserName}" 
                            Style="{StaticResource DefaultLabelStyle}" FontWeight="SemiBold"/>
                 <Label HorizontalAlignment="Center"
-                       FontSize="16"
+                       FontSize="18"
                        Content="{Binding Position.Name}"/>
             </StackPanel>
             <!-- NAME ENDED -->
@@ -71,13 +72,15 @@
                 </StackPanel>
                 <TextBlock HorizontalAlignment="Left"
                            Margin="10 0 0 0"
+                           FontSize="16"
                            Visibility="{Binding IsChecked, ElementName=ProfessionalSummaryEditToggleButton, Converter={StaticResource VisibleIfFalseConverter}}"
-                           Text="{Binding ProfessionalSummary.ProfessionalSummary1}" 
+                           Text="{Binding ProfessionalSummary.ProfessionalSummary1}"
                            Width="500" TextWrapping="Wrap"/>
                 <TextBox   HorizontalAlignment="Left"
                            Margin="10 0 0 0"
                            Visibility="{Binding IsChecked, ElementName=ProfessionalSummaryEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}"
                            Text="{Binding ProfessionalSummary.ProfessionalSummary1}" 
+                           MaxLength="1000"
                            Width="500" TextWrapping="Wrap"/>
                 <StackPanel Visibility="{Binding IsChecked, ElementName=ProfessionalSummaryEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
                             Margin="0 20 0 0"
@@ -110,9 +113,13 @@
                                   Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
-                <ListBox ItemsSource="{Binding Skills, UpdateSourceTrigger=PropertyChanged}" 
-                         BorderThickness="0"
-                         IsEnabled="{Binding IsChecked, ElementName=SkillsEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox HorizontalAlignment="Left"
+                         Grid.IsSharedSizeScope="True"
+                         MaxHeight="400" MaxWidth="500" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ItemsSource="{Binding Skills, UpdateSourceTrigger=PropertyChanged}" 
+                         BorderThickness="0">
                     <ListBox.Style>
                         <Style TargetType="ListBox">
                             <Style.Triggers>
@@ -122,16 +129,16 @@
                                             <DataTemplate>
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="FirstColumn"/>
+                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="SecondColumn"/>
+                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="ThirdColumn"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="{Binding SkillId, Converter={StaticResource ProfessionalSkillIdToNameConverter}, ConverterParameter={StaticResource ProfessionalSkills}}"/>
-                                                    <Label Grid.Row="0" Grid.Column="1" Content="-"/>
-                                                    <Label Grid.Row="0" Grid.Column="2" Content="{Binding SkillLevelId, Converter={StaticResource SkillLevelIdToNameConverter}, ConverterParameter={StaticResource SkillLevels}}"/>
+                                                    <Label Grid.Row="0" Grid.Column="0" FontSize="16" Content="{Binding SkillId, Converter={StaticResource ProfessionalSkillIdToNameConverter}, ConverterParameter={StaticResource ProfessionalSkills}}"/>
+                                                    <Label Grid.Row="0" Grid.Column="1" FontSize="16" FontWeight="Bold" Foreground="{StaticResource DefaultAppColor}" Content="-"/>
+                                                    <Label Grid.Row="0" Grid.Column="2" FontSize="16" Content="{Binding SkillLevelId, Converter={StaticResource SkillLevelIdToNameConverter}, ConverterParameter={StaticResource SkillLevels}}"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </Setter.Value>
@@ -143,20 +150,20 @@
                                             <DataTemplate>
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="FirstGroup"/>
+                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="SecondGroup"/>
+                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="ThirdGroup"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <ComboBox Grid.Row="0" Grid.Column="0"  Width="100"
+                                                    <ComboBox Grid.Row="0" Grid.Column="0"  Width="Auto"
                                                               IsSynchronizedWithCurrentItem="False"
                                                               DisplayMemberPath="Name"
                                                               SelectedValue="{Binding SkillId, UpdateSourceTrigger=PropertyChanged}"
                                                               SelectedValuePath="Id"
                                                               ItemsSource="{Binding Source={StaticResource ProfessionalSkills}}"/>
-                                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="100" Margin="20 0 0 0"
+                                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="Auto" Margin="20 0 0 0"
                                                               IsSynchronizedWithCurrentItem="False"
                                                               DisplayMemberPath="Level"
                                                               SelectedValue="{Binding SkillLevelId, UpdateSourceTrigger=PropertyChanged}"
@@ -189,6 +196,12 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
+                <TextBlock TextWrapping="Wrap"
+                       Margin="0 10 0 0"
+                       FontSize="14"
+                       Visibility="{Binding SkillsErrorsVisibility}"
+                       Text="{Binding SkillsErrors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="#FFFB6363"/>
                 <StackPanel Visibility="{Binding IsChecked, ElementName=SkillsEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
                             Margin="0 20 0 0"
                             Orientation="Horizontal">
@@ -229,9 +242,9 @@
                                   Visibility="{Binding CanUserChangeData, Converter={StaticResource VisibleIfTrueConverter}}"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
-                <ListBox ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" 
-                         BorderThickness="0"
-                         IsEnabled="{Binding IsChecked, ElementName=ProjectsEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox HorizontalAlignment="Left" ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}"
+                         MaxHeight="400" MaxWidth="500" 
+                         BorderThickness="0">
                     <ListBox.Style>
                         <Style TargetType="ListBox">
                             <Style.Triggers>
@@ -239,7 +252,7 @@
                                     <Setter Property="ItemTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="0 0 0 20">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
@@ -250,11 +263,11 @@
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Project name: "/>
-                                                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding RelatedProject.Name}"/>
+                                                    <Label Grid.Row="0" Grid.Column="0" FontSize="16" Content="Project name: "/>
+                                                    <Label Grid.Row="0" Grid.Column="1" FontSize="16" Foreground="{StaticResource DefaultAppColor}" Content="{Binding RelatedProject.Name}"/>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="Duration: "/>
-                                                    <Label Grid.Row="1" Grid.Column="1">
+                                                    <Label Grid.Row="1" Grid.Column="0" FontSize="16" Content="Duration: "/>
+                                                    <Label Grid.Row="1" Grid.Column="1" FontSize="16">
                                                         <Label.Content>
                                                             <MultiBinding Converter="{StaticResource DatesToDateRangeConverter}">
                                                                 <Binding Path="RelatedProject.StartDate"/>
@@ -263,11 +276,11 @@
                                                         </Label.Content>
                                                     </Label>
 
-                                                    <Label Grid.Row="2" Grid.Column="0" Content="Description: "/>
-                                                    <Label Grid.Row="2" Grid.Column="1" Content="{Binding RelatedProject.Description}"/>
+                                                    <Label Grid.Row="2" Grid.Column="0" FontSize="16" Content="Description: "/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding RelatedProject.Description}"/>
 
-                                                    <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
-                                                    <Label Grid.Row="3" Grid.Column="1" Content="{Binding PositionId, Converter={StaticResource PositionIdToNameConverter}, ConverterParameter={StaticResource Positions}}"/>
+                                                    <Label Grid.Row="3" Grid.Column="0" FontSize="16" Content="Position: "/>
+                                                    <Label Grid.Row="3" Grid.Column="1" FontSize="16" Content="{Binding PositionId, Converter={StaticResource PositionIdToNameConverter}, ConverterParameter={StaticResource Positions}}"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </Setter.Value>
@@ -277,7 +290,7 @@
                                     <Setter Property="ItemTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="0 0 0 20">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
@@ -289,42 +302,47 @@
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Project: "/>
-                                                    <ComboBox Grid.Row="0" Grid.Column="1"
+                                                    <Label Grid.Row="0" Grid.Column="0" FontSize="16" Content="Project: "/>
+                                                    <ComboBox Grid.Row="0" Grid.Column="1" FontSize="16"
                                                               IsSynchronizedWithCurrentItem="False"
                                                               ItemsSource="{Binding Source={StaticResource ProjectsList}}"
                                                               DisplayMemberPath="Name"
                                                               Name="SelectedProject"
+                                                              Height="Auto"
+                                                              Width="Auto"
                                                               SelectedValue="{Binding ProjectId, UpdateSourceTrigger=PropertyChanged}"
-                                                              SelectedValuePath="Id"
-                                                              Width="300"/>
-                                                    
-                                                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                                        <Label Content="Start date: "/>
-                                                        <DatePicker Text="{Binding SelectedItem.StartDate, ElementName=SelectedProject, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
-                                                        <CheckBox Content="StillGoes"
+                                                              SelectedValuePath="Id"/>
+
+                                                    <Label Content="Start date: " Grid.Row="1" Grid.Column="0" FontSize="16"/>
+                                                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                                                            <DatePicker FontSize="16" Text="{Binding SelectedItem.StartDate, ElementName=SelectedProject, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+                                                            <CheckBox Content="StillGoes"
+                                                                  FontSize="16"
                                                                   IsEnabled="False"
                                                                   IsChecked="{Binding SelectedItem.EndDate, ElementName=SelectedProject, Converter={StaticResource TrueIfNullConverter}}"
                                                                   Margin="20 0 20 0"
                                                                   Name="ProjectStillGoesCheckBox"/>
-                                                        <Label Content="End date: "
+                                                            <Label Content="End date: "
+                                                               FontSize="16"
                                                                Visibility="{Binding IsChecked, ElementName=ProjectStillGoesCheckBox, Converter={StaticResource VisibleIfFalseConverter}}"/>
-                                                        <DatePicker Text="{Binding SelectedItem.EndDate, ElementName=SelectedProject, UpdateSourceTrigger=PropertyChanged}" 
+                                                            <DatePicker Text="{Binding SelectedItem.EndDate, ElementName=SelectedProject, UpdateSourceTrigger=PropertyChanged}" 
                                                                     IsEnabled="False"
+                                                                    FontSize="16"
                                                                     Visibility="{Binding IsChecked, ElementName=ProjectStillGoesCheckBox, Converter={StaticResource VisibleIfFalseConverter}}"/>
-                                                    </StackPanel>
+                                                        </StackPanel>
 
-                                                    <Label Grid.Row="2" Grid.Column="0" Content="Description: "/>
-                                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedItem.Description, ElementName=SelectedProject}" Width="300" TextWrapping="Wrap" IsEnabled="False"/>
+                                                    <Label Grid.Row="2" FontSize="16" Grid.Column="0" Content="Description: "/>
+                                                    <TextBox Grid.Row="2" FontSize="16" Grid.Column="1" Text="{Binding SelectedItem.Description, ElementName=SelectedProject}" Width="300" TextWrapping="Wrap" IsEnabled="False"/>
 
-                                                    <Label Grid.Row="3" Grid.Column="0" Content="Position: "/>
-                                                    <ComboBox Grid.Row="3" Grid.Column="1"
+                                                    <Label Grid.Row="3" FontSize="16" Grid.Column="0" Content="Position: "/>
+                                                    <ComboBox Grid.Row="3" FontSize="16" Grid.Column="1"
                                                               IsSynchronizedWithCurrentItem="False"
                                                               ItemsSource="{Binding Source={StaticResource Positions}}"
                                                               DisplayMemberPath="Name"
                                                               SelectedValue="{Binding PositionId, UpdateSourceTrigger=PropertyChanged}"
                                                               SelectedValuePath="Id"
-                                                              Width="300"/>
+                                                              Height="Auto"
+                                                              Width="Auto"/>
 
                                                     <Button Margin="20 0 0 0"
                                                             Grid.Column="2"
@@ -351,6 +369,12 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
+                <TextBlock TextWrapping="Wrap"
+                       Margin="0 10 0 0"
+                       FontSize="14"
+                       Visibility="{Binding ProjectsErrorsVisibility}"
+                       Text="{Binding ProjectsErrors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="#FFFB6363"/>
                 <StackPanel Visibility="{Binding IsChecked, ElementName=ProjectsEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
                             Margin="0 20 0 0"
                             Orientation="Horizontal">
@@ -391,9 +415,10 @@
                                   Name="EducationsEditToggleButton"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
-                <ListBox ItemsSource="{Binding Educations, UpdateSourceTrigger=PropertyChanged}" 
-                         BorderThickness="0"
-                         IsEnabled="{Binding IsChecked, ElementName=EducationsEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox MaxHeight="400" MaxWidth="500" 
+                         HorizontalAlignment="Left"
+                         ItemsSource="{Binding Educations, UpdateSourceTrigger=PropertyChanged}" 
+                         BorderThickness="0">
                     <ListBox.Style>
                         <Style TargetType="ListBox">
                             <Style.Triggers>
@@ -401,7 +426,7 @@
                                     <Setter Property="ItemTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="0 0 0 20">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
@@ -413,8 +438,8 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Duration: "/>
-                                                    <Label Grid.Row="0" Grid.Column="1">
+                                                    <Label Grid.Row="0" FontSize="16" Grid.Column="0" Content="Duration: "/>
+                                                    <Label Grid.Row="0" FontSize="16" Grid.Column="1">
                                                         <Label.Content>
                                                             <MultiBinding Converter="{StaticResource DatesToDateRangeConverter}">
                                                                 <Binding Path="StartDate"/>
@@ -423,14 +448,14 @@
                                                         </Label.Content>
                                                     </Label>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="University: "/>
-                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding University}" Width="300" TextWrapping="Wrap"/>
+                                                    <Label Grid.Row="1" FontSize="16" Grid.Column="0" Content="University: "/>
+                                                    <TextBlock Grid.Row="1" FontSize="16" Foreground="{StaticResource DefaultAppColor}" VerticalAlignment="Center" Grid.Column="1" Text="{Binding University}" Width="300" TextWrapping="Wrap"/>
 
-                                                    <Label Grid.Row="2" Grid.Column="0" Content="Faculty: "/>
-                                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Faculty}"  Width="300" TextWrapping="Wrap" />
+                                                    <Label Grid.Row="2" Grid.Column="0" FontSize="16" Content="Faculty: "/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Center" Text="{Binding Faculty}"  Width="300" TextWrapping="Wrap" />
 
-                                                    <Label Grid.Row="3" Grid.Column="0" Content="Speciality: "/>
-                                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Speciality}"  Width="300" TextWrapping="Wrap" />
+                                                    <Label Grid.Row="3" Grid.Column="0" FontSize="16" Content="Speciality: "/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="1" FontSize="16" VerticalAlignment="Center" Text="{Binding Speciality}"  Width="300" TextWrapping="Wrap" />
                                                 </Grid>
                                             </DataTemplate>
                                         </Setter.Value>
@@ -440,7 +465,7 @@
                                     <Setter Property="ItemTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="0 0 0 20">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto" MaxWidth="800"/>
                                                         <ColumnDefinition Width="Auto" MaxWidth="800"/>
@@ -453,22 +478,21 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    
-                                                    <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                                        <Label Content="Start date: "/>
-                                                        <DatePicker Text="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                                        <Label Margin="20 0 0 0" Content="End date: "/>
-                                                        <DatePicker  Text="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                    <Label Content="Start date: " FontSize="16" Grid.Column="0" Grid.Row="0"/>
+                                                    <StackPanel Grid.Row="0" Grid.Column="1"  Orientation="Horizontal">
+                                                        <DatePicker FontSize="16" Text="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        <Label FontSize="16" Margin="20 0 0 0" Content="End date: "/>
+                                                        <DatePicker FontSize="16" Text="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                     </StackPanel>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="University: "/>
-                                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding University}" Width="300" TextWrapping="Wrap"/>
+                                                    <Label Grid.Row="1" FontSize="16" Grid.Column="0" Content="University: "/>
+                                                    <TextBox Grid.Row="1" MaxLength="100" FontSize="16" Grid.Column="1" Text="{Binding University}" Width="300" TextWrapping="Wrap"/>
 
-                                                    <Label Grid.Row="2" Grid.Column="0" Content="Faculty: "/>
-                                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Faculty}"  Width="300" TextWrapping="Wrap" />
+                                                    <Label Grid.Row="2" FontSize="16" Grid.Column="0" Content="Faculty: "/>
+                                                    <TextBox Grid.Row="2" MaxLength="100" FontSize="16" Grid.Column="1" Text="{Binding Faculty}"  Width="300" TextWrapping="Wrap" />
 
-                                                    <Label Grid.Row="3" Grid.Column="0" Content="Speciality: "/>
-                                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Speciality}"  Width="300" TextWrapping="Wrap" />
+                                                    <Label Grid.Row="3" Grid.Column="0" FontSize="16" Content="Speciality: "/>
+                                                    <TextBox Grid.Row="3" MaxLength="100" Grid.Column="1" FontSize="16" Text="{Binding Speciality}"  Width="300" TextWrapping="Wrap" />
 
                                                     <Button Margin="20 0 0 0"
                                                             Grid.Column="2"
@@ -495,6 +519,12 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
+                <TextBlock TextWrapping="Wrap"
+                       Margin="0 10 0 0"
+                       FontSize="14"
+                       Visibility="{Binding EducationErrorsVisibility}"
+                       Text="{Binding EducationErrors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="#FFFB6363"/>
                 <StackPanel Visibility="{Binding IsChecked, ElementName=EducationsEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
                             Margin="0 20 0 0"
                             Orientation="Horizontal">
@@ -537,16 +567,16 @@
                 </StackPanel>
                 <ListBox ItemsSource="{Binding Sertificates, UpdateSourceTrigger=PropertyChanged}" 
                          BorderThickness="0"
-                         IsEnabled="{Binding IsChecked, ElementName=SertificatesEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                         HorizontalAlignment="Left"
+                         MaxHeight="400" MaxWidth="500">
                     <ListBox.Style>
                         <Style TargetType="ListBox">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsChecked, ElementName=SertificatesEditToggleButton, UpdateSourceTrigger=PropertyChanged}" Value="False">
                                     <Setter Property="ItemTemplate">
                                         <Setter.Value>
-
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="0 0 0 20">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
@@ -556,11 +586,11 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Sertificated: "/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Date}" Width="300" TextWrapping="Wrap"/>
+                                                    <Label Grid.Row="0" FontSize="16" Grid.Column="0" Content="Sertificated: "/>
+                                                    <TextBlock Grid.Row="0" FontSize="16" VerticalAlignment="Center" Grid.Column="1" Text="{Binding Date}" Width="300" TextWrapping="Wrap"/>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="Area: "/>
-                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Name}" Width="300" TextWrapping="Wrap"/>
+                                                    <Label Grid.Row="1" Grid.Column="0" FontSize="16" Content="Area: "/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" FontSize="16" VerticalAlignment="Center" Foreground="{StaticResource DefaultAppColor}" Text="{Binding Name}" Width="300" TextWrapping="Wrap"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </Setter.Value>
@@ -570,7 +600,7 @@
                                     <Setter Property="ItemTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="0 0 0 20">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto" MaxWidth="800"/>
                                                         <ColumnDefinition Width="Auto" MaxWidth="800"/>
@@ -581,11 +611,12 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Sertificated: "/>
-                                                    <DatePicker Grid.Row="0" Grid.Column="1" Text="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="20"/>
+                                                    <Label Grid.Row="0" FontSize="16" Grid.Column="0" Content="Sertificated: "/>
+                                                    <DatePicker Grid.Row="0" FontSize="16" Grid.Column="1" Text="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="20"/>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="Area: "/>
+                                                    <Label Grid.Row="1" FontSize="16" Grid.Column="0" Content="Area: "/>
                                                     <TextBox Grid.Row="1"
+                                                             FontSize="16"
                                                             Grid.Column="1" 
                                                             Width="300"
                                                             Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
@@ -616,6 +647,12 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
+                <TextBlock TextWrapping="Wrap"
+                       Margin="0 10 0 0"
+                       FontSize="14"
+                       Visibility="{Binding CertificatesErrorsVisibility}"
+                       Text="{Binding CertificatesErrors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="#FFFB6363"/>
                 <StackPanel Visibility="{Binding IsChecked, ElementName=SertificatesEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
                             Margin="0 20 0 0"
                             Orientation="Horizontal">
@@ -645,7 +682,7 @@
             <!-- SERTIFICATES ENDED -->
             
             <!-- LANGUAGES -->
-            <StackPanel Grid.Row="6" Margin="0 20 0 0" >
+            <StackPanel Grid.Row="6" Margin="0 20 0 50" >
                 <StackPanel Orientation="Horizontal">
                     <Label  Content="Languages"
                             Margin="0"
@@ -657,8 +694,10 @@
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
                 <ListBox ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}" 
-                         BorderThickness="0"
-                         IsEnabled="{Binding IsChecked, ElementName=LanguagesEditToggleButton, UpdateSourceTrigger=PropertyChanged}">
+                         MaxHeight="400"
+                         HorizontalAlignment="Left"
+                         MaxWidth="500"
+                         BorderThickness="0">
                     <ListBox.Style>
                         <Style TargetType="ListBox">
                             <Style.Triggers>
@@ -666,7 +705,7 @@
                                     <Setter Property="ItemTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="0 0 0 20">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
@@ -676,11 +715,11 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Language: " VerticalAlignment="Top"/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="1" IsEnabled="False" Text="{Binding RelatedLanguage.Name}" Width="300"  TextWrapping="Wrap"/>
+                                                    <Label Grid.Row="0" FontSize="16" Grid.Column="0" Content="Language: " VerticalAlignment="Top"/>
+                                                    <TextBlock Grid.Row="0" FontSize="16" VerticalAlignment="Center" Grid.Column="1" Foreground="{StaticResource DefaultAppColor}" IsEnabled="False" Text="{Binding RelatedLanguage.Name}" Width="300"  TextWrapping="Wrap"/>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="Level: " VerticalAlignment="Top"/>
-                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LanguageLevelId, Converter={StaticResource LaguageLevelIdToNameConverter}, ConverterParameter={StaticResource LanguageLevels}}" Width="300" TextWrapping="Wrap"/>
+                                                    <Label Grid.Row="1" Grid.Column="0" FontSize="16" Content="Level: " VerticalAlignment="Top"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Text="{Binding LanguageLevelId, Converter={StaticResource LaguageLevelIdToNameConverter}, ConverterParameter={StaticResource LanguageLevels}}" Width="300" TextWrapping="Wrap"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </Setter.Value>
@@ -690,7 +729,7 @@
                                     <Setter Property="ItemTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <Grid>
+                                                <Grid Margin="0 0 0 20">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
@@ -701,18 +740,26 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <Label Grid.Row="0" Grid.Column="0" Content="Language: " VerticalAlignment="Top"/>
+                                                    <Label Grid.Row="0" Grid.Column="0" FontSize="16" Content="Language: "/>
                                                     <ComboBox Grid.Row="0" 
                                                             Grid.Column="1" 
-                                                            Width="300"
+                                                            FontSize="16"
+                                                            Height="Auto"
+                                                            MinWidth="100"
+                                                            Width="Auto"
                                                             Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                                                             DisplayMemberPath="Name"
+                                                            IsSynchronizedWithCurrentItem="False"
                                                             SelectedValue="{Binding LanguageId, UpdateSourceTrigger=PropertyChanged}"
                                                             SelectedValuePath="Id"
                                                             ItemsSource="{Binding Source={StaticResource LanguagesList}}"/>
 
-                                                    <Label Grid.Row="1" Grid.Column="0" Content="Level: " VerticalAlignment="Top"/>
-                                                    <ComboBox Grid.Row="1" Grid.Column="1"
+                                                    <Label Grid.Row="1" Grid.Column="0" FontSize="16" Content="Level: "/>
+                                                    <ComboBox Grid.Row="1" Grid.Column="1" 
+                                                              FontSize="16"
+                                                              Height="Auto"
+                                                              Width="Auto"
+                                                              MinWidth="100"
                                                               IsSynchronizedWithCurrentItem="False"
                                                               ItemsSource="{Binding Source={StaticResource LanguageLevels}}"
                                                               DisplayMemberPath="Name"
@@ -744,6 +791,12 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
+                <TextBlock TextWrapping="Wrap"
+                       Margin="0 10 0 0"
+                       FontSize="14"
+                       Visibility="{Binding LanguagesErrorsVisibility}"
+                       Text="{Binding LanguagesErrors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="#FFFB6363"/>
                 <StackPanel Visibility="{Binding IsChecked, ElementName=LanguagesEditToggleButton, Converter={StaticResource VisibleIfTrueConverter}}" 
                             Margin="0 20 0 0"
                             Orientation="Horizontal">

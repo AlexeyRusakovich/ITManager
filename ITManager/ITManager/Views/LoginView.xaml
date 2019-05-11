@@ -31,7 +31,7 @@
                     Style="{StaticResource DefaultLabelStyle}" 
                     HorizontalAlignment="Center"/>
             <TextBox Controls:TextBoxHelper.Watermark="Login"
-                     Text="{Binding Login, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                     Text="{Binding Login, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}"
                      Margin="0 20 0 0" Height="30" 
                      MaxLength="20"
                      VerticalContentAlignment="Center"

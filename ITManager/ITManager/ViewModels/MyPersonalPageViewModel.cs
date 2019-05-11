@@ -11,6 +11,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using AutoMapper;
 using Prism.Commands;
+using System.Windows;
+using ITManager.Helpers;
 
 namespace ITManager.ViewModels
 {
@@ -18,6 +20,29 @@ namespace ITManager.ViewModels
     {
         // Current user, taken from database
         public User User { get; set; }
+
+        #region Data validation properties
+
+        public string SkillsErrors { get; set;}
+
+        public Visibility SkillsErrorsVisibility => string.IsNullOrWhiteSpace(SkillsErrors) ? Visibility.Collapsed : Visibility.Visible;
+
+        public string ProjectsErrors { get; set;}
+
+        public Visibility ProjectsErrorsVisibility => string.IsNullOrWhiteSpace(ProjectsErrors) ? Visibility.Collapsed : Visibility.Visible;
+
+        public string EducationErrors { get; set;}
+
+        public Visibility EducationErrorsVisibility => string.IsNullOrWhiteSpace(EducationErrors) ? Visibility.Collapsed : Visibility.Visible;
+
+        public string CertificatesErrors { get; set;}
+
+        public Visibility CertificatesErrorsVisibility => string.IsNullOrWhiteSpace(CertificatesErrors) ? Visibility.Collapsed : Visibility.Visible;
+        public string LanguagesErrors { get; set;}
+
+        public Visibility LanguagesErrorsVisibility => string.IsNullOrWhiteSpace(LanguagesErrors) ? Visibility.Collapsed : Visibility.Visible;
+
+        #endregion
 
         #region Commands
 
@@ -137,48 +162,65 @@ namespace ITManager.ViewModels
 
         #region User saving
 
+        private bool IsSkillsValid()
+        {
+            SkillsErrors = null;
+
+            if(Skills.Any(s => s.SkillId == 0 || s.SkillLevelId == 0))
+                SkillsErrors += "Fill all the fields of your skills.\r\n";
+            if(Skills.GroupBy(x => x.SkillId).Any(group => group.Count() > 1))
+                SkillsErrors += "Remove identical skills.\r\n";
+
+            SkillsErrors = SkillsErrors?.Trim();
+
+            return SkillsErrors == null;
+        }
+
         private async void SaveSkillsMethod()
         {
-            using (var _database = new ITManagerEntities())
+            if(IsSkillsValid())
             {
-                var userSkills = (await _database.Users.Where(u => u.Id == User.Id)
-                    .Include(u => u.UserSkills)
-                    .FirstOrDefaultAsync()).UserSkills;
-
-                // Removing and changing skills
-                foreach (var userSkill in userSkills)
+                using (var _database = new ITManagerEntities())
                 {
-                    var _userSkill = Skills.FirstOrDefault(l => l.Id == userSkill.Id);
-                    // If exists in local collection, change data
-                    if (_userSkill != null)
+                    var userSkills = (await _database.Users.Where(u => u.Id == User.Id)
+                        .Include(u => u.UserSkills)
+                        .FirstOrDefaultAsync()).UserSkills;
+
+                    // Removing and changing skills
+                    foreach (var userSkill in userSkills.ToList())
                     {
-                        userSkill.SkillId = _userSkill.SkillId;
-                        userSkill.SkillLevelId = _userSkill.SkillLevelId;
-                        userSkill.UserId = User.Id;
+                        var _userSkill = Skills.FirstOrDefault(l => l.Id == userSkill.Id);
+                        // If exists in local collection, change data
+                        if (_userSkill != null)
+                        {
+                            userSkill.SkillId = _userSkill.SkillId;
+                            userSkill.SkillLevelId = _userSkill.SkillLevelId;
+                            userSkill.UserId = User.Id;
+                        }
+                        // If not exists in local collection - remove.
+                        else
+                        {
+                            _database.UserSkills.Remove(userSkill);
+                        }
                     }
-                    // If not exists in local collection - remove.
-                    else
+
+                    // Adding new skill
+                    foreach (var newSkill in Skills.Where(l => l.Id == 0))
                     {
-                        userSkills.Remove(userSkill);
+                        userSkills.Add(new UserSkill
+                        {
+                            SkillId = newSkill.SkillId,
+                            SkillLevelId = newSkill.SkillLevelId,
+                            UserId = User.Id
+                        });
                     }
+
+                    IsSkillsChecked = false;
+                    User.UserSkills = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.UserSkills;
+
+                    await _database.SaveChangesAsync();
                 }
-
-                // Adding new skill
-                foreach (var newSkill in Skills.Where(l => l.Id == 0))
-                {
-                    userSkills.Add(new UserSkill
-                    {
-                        SkillId = newSkill.SkillId,
-                        SkillLevelId = newSkill.SkillLevelId,
-                        UserId = User.Id
-                    });
-                }
-
-                IsSkillsChecked = false;
-                User.UserSkills = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.UserSkills;
-
-                await _database.SaveChangesAsync();
-            }
+            }            
         }
         private void AddSkillMethod()
         {
@@ -215,16 +257,31 @@ namespace ITManager.ViewModels
             }
         }
 
+        private bool IsProjectsValid()
+        {
+            ProjectsErrors = null;
+
+            if(Projects.Any(p => p.PositionId == 0))
+                ProjectsErrors += "Fill all the fields of your proejects.\r\n";
+            if(Projects.GroupBy(x => x.ProjectId).Any(group => group.Count() > 1))
+                ProjectsErrors += "Remove identical projects.\r\n";
+
+            ProjectsErrors = ProjectsErrors?.Trim();
+
+            return ProjectsErrors == null;
+        }
         private async void SaveProjectsMethod()
         {
-            using (var _database = new ITManagerEntities())
+            if(IsProjectsValid())
             {
+                using (var _database = new ITManagerEntities())
+                {
                 var userProjects = (await _database.Users.Where(u => u.Id == User.Id)
                     .Include(u => u.UserProjects)
                     .FirstOrDefaultAsync()).UserProjects;
 
                 // Removing and changing projects
-                foreach (var userProject in userProjects)
+                foreach (var userProject in userProjects.ToList())
                 {
                     var _userProject = Projects.FirstOrDefault(l => l.Id == userProject.Id);
                     // If exists in local collection, change data
@@ -237,7 +294,7 @@ namespace ITManager.ViewModels
                     // If not exists in local collection - remove.
                     else
                     {
-                        userProjects.Remove(userProject);
+                        _database.UserProjects.Remove(userProject);
                     }
                 }
 
@@ -259,6 +316,7 @@ namespace ITManager.ViewModels
 
                 await _database.SaveChangesAsync();
             }
+            }            
         }
         private void AddProjectMethod()
         {
@@ -269,53 +327,79 @@ namespace ITManager.ViewModels
             Projects.Remove(project);
         }
 
+        private bool IsEducationValid()
+        {
+            EducationErrors = null;
+
+            if(Educations.Any(p => p.Faculty.IsNullOrWhiteSpace()))
+                EducationErrors += "Faculty field must be filled.\r\n";
+            if(Educations.Any(p => p.Speciality.IsNullOrWhiteSpace()))
+                EducationErrors += "Speciality field must be filled.\r\n";
+            if(Educations.Any(p => p.University.IsNullOrWhiteSpace()))
+                EducationErrors += "University field must be filled.\r\n";
+            if(Educations.Any(p => p.StartDate == default(DateTime)))
+                EducationErrors += "StartDate field must be filled.\r\n";
+            if(Educations.Any(p => p.EndDate == null))
+                EducationErrors += "EndDate field must be filled.\r\n";
+            if(Educations.Any(p => p.StartDate != default(DateTime) && p.EndDate !=null && p.StartDate > p.EndDate))
+                EducationErrors += "Start date must be less than end date field.\r\n";
+            if(Projects.GroupBy(x => x.ProjectId).Any(group => group.Count() > 1))
+                EducationErrors += "Remove identical projects.\r\n";
+
+            EducationErrors = EducationErrors?.Trim();
+
+            return EducationErrors == null;
+        }
         private async void SaveEducationsMethod()
         {
-            using (var _database = new ITManagerEntities())
+            if(IsEducationValid())
             {
-                var userEducations = (await _database.Users.Where(u => u.Id == User.Id)
-                    .Include(u => u.Educations)
-                    .FirstOrDefaultAsync()).Educations;
-
-                // Removing and changing educations
-                foreach (var userEducation in userEducations)
+                 using (var _database = new ITManagerEntities())
                 {
-                    var _userEducation = Educations.FirstOrDefault(l => l.Id == userEducation.Id);
-                    // If exists in local collection, change data
-                    if (_userEducation != null)
+                    var userEducations = (await _database.Users.Where(u => u.Id == User.Id)
+                        .Include(u => u.Educations)
+                        .FirstOrDefaultAsync()).Educations;
+
+                    // Removing and changing educations
+                    foreach (var userEducation in userEducations.ToList())
                     {
-                        userEducation.StartDate = _userEducation.StartDate;
-                        userEducation.EndDate = _userEducation.EndDate;
-                        userEducation.Faculty = _userEducation.Faculty;
-                        userEducation.Speciality = _userEducation.Speciality;
-                        userEducation.University = _userEducation.University;
+                        var _userEducation = Educations.FirstOrDefault(l => l.Id == userEducation.Id);
+                        // If exists in local collection, change data
+                        if (_userEducation != null)
+                        {
+                            userEducation.StartDate = _userEducation.StartDate;
+                            userEducation.EndDate = _userEducation.EndDate;
+                            userEducation.Faculty = _userEducation.Faculty;
+                            userEducation.Speciality = _userEducation.Speciality;
+                            userEducation.University = _userEducation.University;
+                        }
+                        // If not exists in local collection - remove.
+                        else
+                        {
+                            _database.Educations.Remove(userEducation);
+                        }
                     }
-                    // If not exists in local collection - remove.
-                    else
+
+                    // Adding new education
+                    foreach (var newEducation in Educations.Where(l => l.Id == 0))
                     {
-                        userEducations.Remove(userEducation);
+                        userEducations.Add(new Education
+                        {
+                            StartDate = newEducation.StartDate,
+                            EndDate = newEducation.EndDate,
+                            Faculty = newEducation.Faculty,
+                            Speciality = newEducation.Speciality,
+                            University = newEducation.University,
+                            UserId = User.Id
+                        });
                     }
+
+                    IsEducationsChecked = false;
+                    User.Educations = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Educations;
+
+                    await _database.SaveChangesAsync();
                 }
-
-                // Adding new education
-                foreach (var newEducation in Educations.Where(l => l.Id == 0))
-                {
-                    userEducations.Add(new Education
-                    {
-                        StartDate = newEducation.StartDate,
-                        EndDate = newEducation.EndDate,
-                        Faculty = newEducation.Faculty,
-                        Speciality = newEducation.Speciality,
-                        University = newEducation.University,
-                        UserId = User.Id
-                    });
-                }
-
-                IsEducationsChecked = false;
-                User.Educations = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Educations;
-
-                await _database.SaveChangesAsync();
-            }
+            }           
         }
         private void AddEducationMethod()
         {
@@ -326,47 +410,63 @@ namespace ITManager.ViewModels
             Educations.Remove(education);
         }
 
+        private bool IsCertificatesValid()
+        {
+            CertificatesErrors = null;
+
+            if(Sertificates.Any(s => s.Date == default(DateTime)))
+                CertificatesErrors += "Date field must be filled.\r\n";
+            if(Sertificates.Any(s => s.Name.IsNullOrWhiteSpace()))
+                CertificatesErrors += "Area field must be filled.\r\n";
+
+            CertificatesErrors = CertificatesErrors?.Trim();
+
+            return CertificatesErrors == null;
+        }
         private async void SaveSertificatesMethod()
         {
-            using (var _database = new ITManagerEntities())
+            if(IsCertificatesValid())
             {
-                var userSertificates = (await _database.Users.Where(u => u.Id == User.Id)
-                    .Include(u => u.Sertificates)
-                    .FirstOrDefaultAsync()).Sertificates;
-
-                // Removing and changing sertificates
-                foreach (var userSertificate in userSertificates)
+                using (var _database = new ITManagerEntities())
                 {
-                    var _userSertificate = Sertificates.FirstOrDefault(l => l.Id == userSertificate.Id);
-                    // If exists in local collection, change data
-                    if (_userSertificate != null)
+                    var userSertificates = (await _database.Users.Where(u => u.Id == User.Id)
+                        .Include(u => u.Sertificates)
+                        .FirstOrDefaultAsync()).Sertificates;
+
+                    // Removing and changing sertificates
+                    foreach (var userSertificate in userSertificates.ToList())
                     {
-                         userSertificate.Name = _userSertificate.Name;
-                        userSertificate.Date = _userSertificate.Date;
+                        var _userSertificate = Sertificates.FirstOrDefault(l => l.Id == userSertificate.Id);
+                        // If exists in local collection, change data
+                        if (_userSertificate != null)
+                        {
+                             userSertificate.Name = _userSertificate.Name;
+                            userSertificate.Date = _userSertificate.Date;
+                        }
+                        // If not exists in local collection - remove.
+                        else
+                        {
+                            _database.Sertificates.Remove(userSertificate);
+                        }
                     }
-                    // If not exists in local collection - remove.
-                    else
+
+                    // Adding new sertificates
+                    foreach (var newSertificate in Sertificates.Where(l => l.Id == 0))
                     {
-                        userSertificates.Remove(userSertificate);
+                        userSertificates.Add(new Sertificate
+                        {
+                            Name = newSertificate.Name,
+                            Date = newSertificate.Date,
+                            UserId = User.Id
+                        });
                     }
+
+                    IsSertificatesChecked = false;
+                    User.Sertificates = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Sertificates;
+
+                    await _database.SaveChangesAsync();
                 }
-
-                // Adding new sertificates
-                foreach (var newSertificate in Sertificates.Where(l => l.Id == 0))
-                {
-                    userSertificates.Add(new Sertificate
-                    {
-                        Name = newSertificate.Name,
-                        Date = newSertificate.Date,
-                        UserId = User.Id
-                    });
-                }
-
-                IsSertificatesChecked = false;
-                User.Sertificates = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Sertificates;
-
-                await _database.SaveChangesAsync();
-            }
+            }            
         }
         private void AddSertificateMethod()
         {
@@ -377,48 +477,66 @@ namespace ITManager.ViewModels
             Sertificates.Remove(sertificate);
         }
         
+        private bool IsLanguagesValid()
+        {
+            LanguagesErrors = null;
+
+            if(Languages.Any(s => s.LanguageId == 0))
+                LanguagesErrors += "Language field must be filled.\r\n";
+            if(Languages.Any(s => s.LanguageLevelId == 0))
+                LanguagesErrors += "Language level field must be filled.\r\n";
+            if(Languages.GroupBy(l => l.LanguageId).Any(l => l.Count() > 1))
+                LanguagesErrors += "Remove identical languages.\r\n";
+                
+            LanguagesErrors = LanguagesErrors?.Trim();
+
+            return LanguagesErrors == null;
+        }
         private async void SaveLanguagesMethod()
         {
-            using (var _database = new ITManagerEntities())
+            if(IsLanguagesValid())
             {
-                var userLanguages = (await _database.Users.Where(u => u.Id == User.Id)
-                    .Include(u => u.Languages)
-                    .FirstOrDefaultAsync()).Languages;
-
-                // Removing and changing languages
-                foreach (var userLanguage in userLanguages.ToList())
+                using (var _database = new ITManagerEntities())
                 {
-                    var _userLanguage = Languages.FirstOrDefault(l => l.Id == userLanguage.Id);
-                    // If exists in local collection, change data
-                    if (_userLanguage != null)
+                    var userLanguages = (await _database.Users.Where(u => u.Id == User.Id)
+                        .Include(u => u.Languages)
+                        .FirstOrDefaultAsync()).Languages;
+
+                    // Removing and changing languages
+                    foreach (var userLanguage in userLanguages.ToList())
                     {
-                        userLanguage.LanguageId = _userLanguage.LanguageId;
-                        userLanguage.LanguageLevelId = _userLanguage.LanguageLevelId;
+                        var _userLanguage = Languages.FirstOrDefault(l => l.Id == userLanguage.Id);
+                        // If exists in local collection, change data
+                        if (_userLanguage != null)
+                        {
+                            userLanguage.LanguageId = _userLanguage.LanguageId;
+                            userLanguage.LanguageLevelId = _userLanguage.LanguageLevelId;
+                        }
+                        // If not exists in local collection - remove.
+                        else
+                        {
+                            _database.Languages.Remove(userLanguage);
+                        }
                     }
-                    // If not exists in local collection - remove.
-                    else
+
+                    // Adding new languages
+                    foreach (var newLanguage in Languages.Where(l => l.Id == 0))
                     {
-                        _database.Languages.Remove(userLanguage);
+                        _database.Languages.Add(new Language
+                        {
+                            LanguageId = newLanguage.LanguageId,
+                            LanguageLevelId = newLanguage.LanguageLevelId,
+                            UserId = User.Id
+                        });
                     }
+
+                    IsLanguagesChecked = false;
+                    User.Languages = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Languages;
+                    MapLanguages();
+
+                    await _database.SaveChangesAsync();
                 }
-
-                // Adding new languages
-                foreach (var newLanguage in Languages.Where(l => l.Id == 0))
-                {
-                    _database.Languages.Add(new Language
-                    {
-                        LanguageId = newLanguage.LanguageId,
-                        LanguageLevelId = newLanguage.LanguageLevelId,
-                        UserId = User.Id
-                    });
-                }
-
-                IsLanguagesChecked = false;
-                User.Languages = (await _database.Users.Where(u => u.Id == User.Id).FirstOrDefaultAsync())?.Languages;
-                MapLanguages();
-
-                await _database.SaveChangesAsync();
-            }
+            }            
         }
         private void AddLanguageMethod()
         {

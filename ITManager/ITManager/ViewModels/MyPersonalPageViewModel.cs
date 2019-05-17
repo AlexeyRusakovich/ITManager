@@ -288,7 +288,6 @@ namespace ITManager.ViewModels
                     if (_userProject != null)
                     {
                         userProject.ProjectId = _userProject.ProjectId;
-                        userProject.Comment = _userProject.Comment;
                         userProject.PositionId = _userProject.PositionId;
                     }
                     // If not exists in local collection - remove.
@@ -304,7 +303,6 @@ namespace ITManager.ViewModels
                     userProjects.Add(new UserProject
                     {
                         ProjectId = newProject.ProjectId,
-                        Comment = newProject.Comment,
                         PositionId = newProject.PositionId,
                         UserId = User.Id
                     });

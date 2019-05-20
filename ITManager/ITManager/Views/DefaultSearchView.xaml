@@ -28,9 +28,10 @@
             </StackPanel.Resources>
             <toolkit:AutoCompleteBox ItemsSource="{Binding Users}"
                                      ItemTemplate="{StaticResource AutoCompleteBoxItemTemplate}"
-                                     ItemFilter="{Binding PersonFilter}"
                                      ValueMemberPath="Name"
-                                     Margin="0 0 20 0" Width="300" Height="20" 
+                                     ItemFilter="{Binding PersonFilter}"
+                                     FontSize="16"
+                                     Margin="0 0 20 0" Width="300" Height="30" 
                                      Text="{Binding SearchedString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <Button Style="{StaticResource DefaultButtonStyle}"
                     Content="Search" Width="100" Margin="0"

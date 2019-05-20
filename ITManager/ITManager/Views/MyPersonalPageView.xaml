@@ -556,7 +556,7 @@
             <!-- SERTIFICATES -->
             <StackPanel Grid.Row="5" Margin="0 20 0 0" >
                 <StackPanel Orientation="Horizontal">
-                    <Label  Content="Sertificates"
+                    <Label  Content="Certificates"
                             Margin="0"
                             Style="{StaticResource SectionTitleStyle}"/>
                     <ToggleButton Content="✎"

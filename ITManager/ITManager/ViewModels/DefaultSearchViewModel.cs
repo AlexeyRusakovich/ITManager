@@ -26,7 +26,7 @@ namespace ITManager.ViewModels
 
         public ObservableCollection<User> SearchedUsers { get; set; } = new ObservableCollection<User>();
 
-        public string SearchedString { get; set; }
+        public string SearchedString { get; set; } = string.Empty;
 
         #endregion
 

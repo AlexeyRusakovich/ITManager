@@ -261,7 +261,7 @@ namespace ITManager.ViewModels
         {
             ProjectsErrors = null;
 
-            if(Projects.Any(p => p.PositionId == 0))
+            if(Projects.Any(p => p.PositionId == 0) || Projects.Any(x => x.ProjectId == 0))
                 ProjectsErrors += "Fill all the fields of your proejects.\r\n";
             if(Projects.GroupBy(x => x.ProjectId).Any(group => group.Count() > 1))
                 ProjectsErrors += "Remove identical projects.\r\n";

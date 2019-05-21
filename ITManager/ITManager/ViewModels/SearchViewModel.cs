@@ -38,13 +38,13 @@ namespace ITManager.ViewModels
         public IList<SkillLevel> SkillLevels { get; set; }
         public IList<LanguageLevel> LanguageLevels { get; set; }
 
-        public IList<Models.UserPageModel.ProfessionalSkill> Skills { get; set; }
+        public IList<Models.UserPageModel.ProfessionalSkill> Skills { get; set; } = new List<Models.UserPageModel.ProfessionalSkill>();
         public ObservableCollection<Models.UserPageModel.ProfessionalSkill> SelectedSkills { get; set; }  = new ObservableCollection<Models.UserPageModel.ProfessionalSkill>();
 
-        public IList<Models.ProjectsManagementPageModels.Project> Projects { get; set; }
+        public IList<Models.ProjectsManagementPageModels.Project> Projects { get; set; } = new List<Models.ProjectsManagementPageModels.Project>();
         public ObservableCollection<Models.ProjectsManagementPageModels.Project> SelectedProjects { get; set; } = new ObservableCollection<Models.ProjectsManagementPageModels.Project>();
 
-        public IList<Models.UserPageModel.LanguagesList> Languages { get; set; }
+        public IList<Models.UserPageModel.LanguagesList> Languages { get; set; } = new List<Models.UserPageModel.LanguagesList>();
         public ObservableCollection<Models.UserPageModel.LanguagesList> SelectedLanguages { get; set; } = new ObservableCollection<Models.UserPageModel.LanguagesList>();
 
         public List<User> Users { get; set;}
@@ -163,11 +163,13 @@ namespace ITManager.ViewModels
         private void OpenCloseOptions1Method()
         {
             Options1Open  = Options1Open ? false : true;
+            SkillsSelectionChangedMethod();
         }
 
         private void OpenCloseOptions2Method()
         {
             Options2Open  = Options2Open ? false : true;
+            LanguagesSelectionChangedMethod();
         }
 
         private async void SaveQueryMethod()
@@ -259,9 +261,9 @@ namespace ITManager.ViewModels
         {
             using (var _database = new ITManagerEntities())
             {
+                Languages = Mapper.Map<IList<LanguagesList>, IList<Models.UserPageModel.LanguagesList>>(await _database.LanguagesLists.ToListAsync());
                 Skills = Mapper.Map<IList<ProfessionalSkill>, IList<Models.UserPageModel.ProfessionalSkill>>(await _database.ProfessionalSkills.ToListAsync());
                 Projects = Mapper.Map<IList<Project>, IList<Models.ProjectsManagementPageModels.Project>>(await _database.Projects.ToListAsync());
-                Languages = Mapper.Map<IList<LanguagesList>, IList<Models.UserPageModel.LanguagesList>>(await _database.LanguagesLists.ToListAsync());
                 SkillLevels = await _database.SkillLevels.ToListAsync();
                 LanguageLevels = await _database.LanguageLevels.ToListAsync();
             }
@@ -284,7 +286,7 @@ namespace ITManager.ViewModels
 
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if(Skills == null)
+            if(Skills?.Count == 0)
                 Init();
             InitUsers();
             var parameters = navigationContext.Parameters;

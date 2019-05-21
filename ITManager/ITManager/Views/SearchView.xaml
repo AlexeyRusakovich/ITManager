@@ -65,6 +65,7 @@
                                             DisplayMemberPath="Name"
                                             AllowMultiSelect="True"
                                             DefaultText="..Choose skills.."
+                                            HorizontalAlignment="Left"
                                             SelectedValueDelimiter=", "
                                             Width="300">
                             <i:Interaction.Triggers>
@@ -115,6 +116,7 @@
                         <syncfusion:ComboBoxAdv ItemsSource="{Binding Languages}"
                                             SelectedItems="{Binding SelectedLanguages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Background="White"
+                                            HorizontalAlignment="Left"
                                             DisplayMemberPath="Name"
                                             AllowMultiSelect="True"
                                             DefaultText="..Choose languages.."
@@ -149,13 +151,13 @@
                                         <Label Grid.Column="0" Content="{Binding Language.Name}"/>
                                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                                             <Label Content="From"/>
-                                            <ComboBox Width="100" 
+                                            <ComboBox Width="70" 
                                                       ItemsSource="{Binding Source={StaticResource LanguageLevels}}"
                                                       DisplayMemberPath="Name"
                                                       SelectedValue="{Binding From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                       IsSynchronizedWithCurrentItem="False"/>
                                             <Label Content="To"/>
-                                            <ComboBox Width="100" 
+                                            <ComboBox Width="70" 
                                                       ItemsSource="{Binding Source={StaticResource LanguageLevels}}"
                                                       DisplayMemberPath="Name"
                                                       SelectedValue="{Binding To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

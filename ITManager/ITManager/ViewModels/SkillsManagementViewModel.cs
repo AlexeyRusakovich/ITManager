@@ -53,33 +53,41 @@ namespace ITManager.ViewModels
 
         private async void SaveSkillsMethod()
         {
-            using (var _database = new ITManagerEntities())
+            if (!Skills.Any(s => string.IsNullOrWhiteSpace(s.Name) || s.Name.Length < 2 || s.Name.Length > 50))
             {
-                var skills = await _database.ProfessionalSkills.ToListAsync();
-
-                foreach (var skill in skills)
+                using (var _database = new ITManagerEntities())
                 {
-                    var _skill = Skills.FirstOrDefault(s => s.Id == skill.Id);
-                    if(_skill != null)
+                    var skills = await _database.ProfessionalSkills.ToListAsync();
+
+                    foreach (var skill in skills)
                     {
-                        skill.Name = _skill.Name;
+                        var _skill = Skills.FirstOrDefault(s => s.Id == skill.Id);
+                        if (_skill != null)
+                        {
+                            skill.Name = _skill.Name;
+                        }
+                        else
+                        {
+                            _database.ProfessionalSkills.Remove(skill);
+                        }
                     }
-                    else
-                    {
-                        _database.ProfessionalSkills.Remove(skill);
-                    }                    
-                }
 
-                foreach (var skill in Skills.Where(s => s.Id == 0))
-                {
-                    _database.ProfessionalSkills.Add(new ProfessionalSkill
+                    foreach (var skill in Skills.Where(s => s.Id == 0))
                     {
-                        Name = skill.Name
-                    });
+                        _database.ProfessionalSkills.Add(new ProfessionalSkill
+                        {
+                            Name = skill.Name
+                        });
+                    }
+
+                    await _database.SaveChangesAsync();
+                    FillSkills();
                 }
-                
-                await _database.SaveChangesAsync();  
-                FillSkills();
+                Errors = string.Empty;
+            }
+            else
+            {
+                Errors = "All skills must contains from 2 to 50 symbols.";
             }
         }
 
@@ -96,7 +104,7 @@ namespace ITManager.ViewModels
                 Errors = errors;
                 using (var _database = new ITManagerEntities())
                 {
-                    if (!_database.ProfessionalSkills.Any(s => s.Name == SkillName))
+                    if (!_database.ProfessionalSkills.Any(s => s.Name == SkillName) && !Skills.Any(s => s.Name == SkillName))
                     {
                         Skills.Add(new Models.UserPageModel.ProfessionalSkill
                         {

@@ -35,8 +35,8 @@
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" IsReadOnly="True" Binding="{Binding Id}" Width="*"/>
-                <DataGridTextColumn Header="Name"  Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Start date"  Binding="{Binding StartDate}" Width="*"/>
+                <DataGridTextColumn Header="Name" IsReadOnly="True"  Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Start date" IsReadOnly="True"  Binding="{Binding StartDate}" Width="*"/>
                 <DataGridTextColumn Header="End date"  Binding="{Binding EndDate}" Width="*"/>
                 <DataGridTextColumn Header="Description"  Binding="{Binding Description}" Width="*"/>
                 <DataGridTemplateColumn Width="*">

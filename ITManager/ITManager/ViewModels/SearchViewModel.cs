@@ -51,7 +51,9 @@ namespace ITManager.ViewModels
 
         public ObservableCollection<SearchedUserModel> SearchedUsers { get; set; }
 
-        public string QueryDescription { get; set; }
+        public string QueryDescription { get; set; } = string.Empty;
+
+        public string QueryErrors { get; set; }
 
         #endregion
 
@@ -164,35 +166,47 @@ namespace ITManager.ViewModels
         {
             Options1Open  = Options1Open ? false : true;
             SkillsSelectionChangedMethod();
+            if (SelectedProjects == null)
+                SelectedProjects = new ObservableCollection<Models.ProjectsManagementPageModels.Project>();
         }
 
         private void OpenCloseOptions2Method()
         {
             Options2Open  = Options2Open ? false : true;
             LanguagesSelectionChangedMethod();
+            if (SelectedProjects == null)
+                SelectedProjects = new ObservableCollection<Models.ProjectsManagementPageModels.Project>();
         }
 
         private async void SaveQueryMethod()
         {
-            var skillsQuery = string.Join(",", SkillsConditions?.Select(s => $"{s.Skill.Id}:{s.From.Id}-{s.To.Id}"));
-            var languagesQuery = string.Join(",", LanguagesConditions?.Select(l => $"{l.Language.Id}:{l.From.Id}-{l.To.Id}"));
-            var projectsQuery = string.Join(",", SelectedProjects?.Select(p => p.Id));
-
-            var query = $"{skillsQuery}&{languagesQuery}&{projectsQuery}";
-
-            using (var _database = new ITManagerEntities())
+            if (QueryDescription.Length > 1 && QueryDescription.Length < 100)
             {
-                var user = await _database.Users.Where(u => u.Id == ShellViewModel.CurrentUserId)
-                    .Include(u => u.Queries).FirstOrDefaultAsync();
-                user.Queries.Add(new Query()
+                var skillsQuery = string.Join(",", SkillsConditions?.Select(s => $"{s.Skill.Id}:{s.From.Id}-{s.To.Id}"));
+                var languagesQuery = string.Join(",", LanguagesConditions?.Select(l => $"{l.Language.Id}:{l.From.Id}-{l.To.Id}"));
+                var projectsQuery = string.Join(",", SelectedProjects?.Select(p => p.Id));
+
+                var query = $"{skillsQuery}&{languagesQuery}&{projectsQuery}";
+
+                using (var _database = new ITManagerEntities())
                 {
-                    Description = QueryDescription,
-                    QueryString = query,
-                    UserId = ShellViewModel.CurrentUserId
-                });
-                await _database.SaveChangesAsync();
+                    var user = await _database.Users.Where(u => u.Id == ShellViewModel.CurrentUserId)
+                        .Include(u => u.Queries).FirstOrDefaultAsync();
+                    user.Queries.Add(new Query()
+                    {
+                        Description = QueryDescription,
+                        QueryString = query,
+                        UserId = ShellViewModel.CurrentUserId
+                    });
+                    await _database.SaveChangesAsync();
+                }
+                _eventAggregator.GetEvent<UpdateQueriesEvent>().Publish();
+                QueryErrors = string.Empty;
             }
-            _eventAggregator.GetEvent<UpdateQueriesEvent>().Publish();
+            else
+            {
+                QueryErrors = "Query description length must be from 1 to 100 sybmols.";
+            }
         }
 
         private void NavigateToUserMethod(object user)

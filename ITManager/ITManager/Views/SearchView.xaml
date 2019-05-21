@@ -49,6 +49,7 @@
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MaxHeight="800"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
@@ -60,11 +61,13 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
                         <syncfusion:ComboBoxAdv ItemsSource="{Binding Skills}"
+                                                Height="30"
+                                                FontSize="14"
                                             SelectedItems="{Binding SelectedSkills, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Background="White"
                                             DisplayMemberPath="Name"
                                             AllowMultiSelect="True"
-                                            DefaultText="..Choose skills.."
+                                            DefaultText="Choose skills.."
                                             HorizontalAlignment="Left"
                                             SelectedValueDelimiter=", "
                                             Width="300">
@@ -75,6 +78,7 @@
                             </i:Interaction.Triggers>
                         </syncfusion:ComboBoxAdv>
                         <Label      Width="130" 
+                                    FontSize="14"
                                     HorizontalAlignment="Left"
                                     Content="Advanced options" Foreground="Blue">
                             <i:Interaction.Triggers>
@@ -116,10 +120,12 @@
                         <syncfusion:ComboBoxAdv ItemsSource="{Binding Languages}"
                                             SelectedItems="{Binding SelectedLanguages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Background="White"
+                                            FontSize="14"
+                                            Height="30"
                                             HorizontalAlignment="Left"
                                             DisplayMemberPath="Name"
                                             AllowMultiSelect="True"
-                                            DefaultText="..Choose languages.."
+                                            DefaultText="Choose languages.."
                                             SelectedValueDelimiter=", "
                                             Margin="0 20 0 0"
                                             Width="300">
@@ -130,7 +136,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </syncfusion:ComboBoxAdv>
-                        <Label Content="Advanced options" Foreground="Blue">
+                        <Label Content="Advanced options" Foreground="Blue" FontSize="14">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                     <i:InvokeCommandAction Command="{Binding OpenCloseOptions2}"/>
@@ -171,14 +177,17 @@
                         <syncfusion:ComboBoxAdv ItemsSource="{Binding Projects}"
                                             SelectedItems="{Binding SelectedProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Background="White"
+                                            FontSize="14"
+                                            Height="30"
                                             DisplayMemberPath="Name"
                                             AllowMultiSelect="True"
-                                            DefaultText="..Choose projects.."
+                                            DefaultText="Choose projects.."
                                             SelectedValueDelimiter=", "
                                             Margin="0 20 0 0"
                                             Width="300"/>
                     </StackPanel>
                     <Button Content="Search"
+                            FontSize="14"
                             VerticalAlignment="Top"
                             HorizontalAlignment="Left"
                             Grid.Column="1"
@@ -189,21 +198,28 @@
 
                 <StackPanel Orientation="Horizontal">
                     <TextBox Text="{Binding QueryDescription, UpdateSourceTrigger=PropertyChanged}"
+                             mah:TextBoxHelper.Watermark="Query name"
+                             FontSize="14"
                              a:UserRolesAttachedProperties.RequiredRoles="2"
                              MaxLength="100"
                              Width="300" Height="30" Margin="0 20 0 0"
                              VerticalAlignment="Bottom"/>
                     <Button Content="Save search query"
+                            FontSize="14"
                             a:UserRolesAttachedProperties.RequiredRoles="2"
                             Style="{StaticResource DefaultButtonStyle}"
                             Width="150" Height="30" Margin="20 0 0 0" 
                             Command="{Binding SaveQueryCommand}"
                             VerticalAlignment="Bottom"/>
                 </StackPanel>
+                <TextBlock Text="{Binding QueryErrors}" Margin="0 10 0 10" Foreground="#FFFB6363"/>
             </StackPanel>
         </StackPanel>
+        <Rectangle Grid.Row="1"
+                   Fill="Gray"
+               Height="2"/>
         <ScrollViewer Margin="20 20 0 0"
-                 Grid.Row="1">
+                 Grid.Row="2">
             <ListBox ItemsSource="{Binding SearchedUsers}" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>

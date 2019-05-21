@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:c="clr-namespace:ITManager.Converters"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -51,6 +51,7 @@
             <StackPanel Height="30"
                         Orientation="Horizontal">
                 <TextBox Name="SkillTextBox" 
+                         mah:TextBoxHelper.Watermark="New skill name"
                          Text="{Binding SkillName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Width="300"
                          MaxLength="50"

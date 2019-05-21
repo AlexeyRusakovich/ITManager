@@ -17,6 +17,23 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <PublishUrl>C:\Users\alru\Desktop\publish folder\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <UpdateUrl>http://localhost/ITManager/</UpdateUrl>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,6 +53,18 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>9C7DE897F70C25C90CAE645BEA9BBC7C05FF0FB1</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>ITManager_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
@@ -378,6 +407,7 @@
     <None Include="Database\ManagerDatabase.edmx.diagram">
       <DependentUpon>ManagerDatabase.edmx</DependentUpon>
     </None>
+    <None Include="ITManager_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -387,7 +417,18 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
@@ -403,14 +444,16 @@
       <LastGenOutput>ManagerDatabase.cs</LastGenOutput>
     </Content>
     <Content Include="Database\Scripts\Admin creation.sql" />
+    <Content Include="Database\Scripts\Database script%28schema and data%29.sql" />
+    <Content Include="Database\Scripts\LanguageLevels.sql" />
+    <Content Include="Database\Scripts\Languages.sql" />
     <Content Include="Database\Scripts\Positions.sql" />
+    <Content Include="Database\Scripts\ProfessionalSkillsList.sql" />
     <Content Include="Database\Scripts\Roles.sql" />
-    <Content Include="Database\Scripts\Tables.sql" />
+    <Content Include="Database\Scripts\SkillLevels.sql" />
     <Resource Include="Images\false.png" />
     <Resource Include="Images\true.png" />
-    <Content Include="Database\Scripts\TablesWithData.sql" />
     <Content Include="Libraries\Syncfusion.Shared.WPF.dll" />
-    <Content Include="Libraries\Syncfusion.Shared.WPF.resources.dll" />
     <Resource Include="Images\add.ico" />
     <Resource Include="Images\remove.ico" />
     <Resource Include="FodyWeavers.xml" />

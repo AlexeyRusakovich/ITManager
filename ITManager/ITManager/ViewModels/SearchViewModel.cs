@@ -180,6 +180,8 @@ namespace ITManager.ViewModels
 
         private async void SaveQueryMethod()
         {
+            if (SelectedProjects == null)
+                SelectedProjects = new ObservableCollection<Models.ProjectsManagementPageModels.Project>();
             if (QueryDescription.Length > 1 && QueryDescription.Length < 100)
             {
                 var skillsQuery = string.Join(",", SkillsConditions?.Select(s => $"{s.Skill.Id}:{s.From.Id}-{s.To.Id}"));

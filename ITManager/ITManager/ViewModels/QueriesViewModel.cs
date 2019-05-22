@@ -58,10 +58,11 @@ namespace ITManager.ViewModels
             var _query = (Query)query;
             using (var _database = new ITManagerEntities())
             {
+                _database.Queries.Remove(_database.Queries.FirstOrDefault(q => q.Id == _query.Id));
+                await _database.SaveChangesAsync();
                 var user = await _database.Users.Where(u => u.Id == ShellViewModel.CurrentUserId)
                     .Include(u => u.Queries).FirstOrDefaultAsync();
-                user.Queries.Remove(_query);
-                await _database.SaveChangesAsync();
+                Queries = new ObservableCollection<Query>(user.Queries);
             }
         }
     }

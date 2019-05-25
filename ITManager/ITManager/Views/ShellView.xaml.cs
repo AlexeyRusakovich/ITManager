@@ -25,10 +25,6 @@ namespace ITManager.Views
     {
         public ShellView()
         {
-            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
-            ci.DateTimeFormat.ShortDatePattern = "dd.MM.yyyy";
-            Thread.CurrentThread.CurrentCulture = ci;
-
             InitializeComponent();
         }
     }

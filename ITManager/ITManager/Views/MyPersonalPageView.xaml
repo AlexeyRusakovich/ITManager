@@ -277,7 +277,7 @@
                                                     </Label>
 
                                                     <Label Grid.Row="2" Grid.Column="0" FontSize="16" Content="Description: "/>
-                                                    <TextBlock Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding RelatedProject.Description}"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding RelatedProject.Description}" MaxWidth="400"/>
 
                                                     <Label Grid.Row="3" Grid.Column="0" FontSize="16" Content="Position: "/>
                                                     <Label Grid.Row="3" Grid.Column="1" FontSize="16" Content="{Binding PositionId, Converter={StaticResource PositionIdToNameConverter}, ConverterParameter={StaticResource Positions}}"/>
@@ -315,7 +315,7 @@
 
                                                     <Label Content="Start date: " Grid.Row="1" Grid.Column="0" FontSize="16"/>
                                                     <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-                                                            <DatePicker FontSize="16" Text="{Binding SelectedItem.StartDate, ElementName=SelectedProject, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+                                                        <DatePicker FontSize="16" Text="{Binding SelectedItem.StartDate, ElementName=SelectedProject, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsEnabled="False"/>
                                                             <CheckBox Content="StillGoes"
                                                                   FontSize="16"
                                                                   IsEnabled="False"
@@ -415,7 +415,7 @@
                                   Name="EducationsEditToggleButton"
                                   Style="{StaticResource MetroCircleToggleButtonStyle}" Width="40" Height="40"/>
                 </StackPanel>
-                <ListBox MaxHeight="400" MaxWidth="500" 
+                <ListBox MaxHeight="400" MaxWidth="600" 
                          HorizontalAlignment="Left"
                          ItemsSource="{Binding Educations, UpdateSourceTrigger=PropertyChanged}" 
                          BorderThickness="0">
@@ -611,7 +611,7 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <Label Grid.Row="0" FontSize="16" Grid.Column="0" Content="Sertificated: "/>
+                                                    <Label Grid.Row="0" FontSize="16" Grid.Column="0" Content="Сertificated: "/>
                                                     <DatePicker Grid.Row="0" FontSize="16" Grid.Column="1" Text="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="20"/>
 
                                                     <Label Grid.Row="1" FontSize="16" Grid.Column="0" Content="Area: "/>
